@@ -1,4 +1,4 @@
-﻿' Exported: 2026-03-18 23:55:01 +02:00
+﻿' Exported: 2026-03-19 00:42:54 +02:00
 ' Project:  Pharmacy.vbproj
 ' Source:   frmChooseDrug.vb
 '
@@ -113,12 +113,12 @@ Public Class frmChooseDrug
 
                         ' Aν είμαστε σε φάση ανταλλαγής ΑΠΟ
                         If AreExchangedDrugsFrom = True Then
-                            frmCustomers.dgvExchangeFrom2.Rows(rowIndex).Cells(4).Value = myReader("AP_TIMH_XON")
+                            frmCustomers.dgvExchangeFrom2.Rows(rowIndex).Cells(4).Value = GetEffectiveDrugXondr(Convert.ToString(grpDrugDetails.Text), CType(myReader("AP_TIMH_XON"), Decimal))
 
                             'αλλιως
                         Else
 
-                            frmCustomers.dgvExchangeTo2.Rows(rowIndex).Cells(4).Value = myReader("AP_TIMH_XON")
+                            frmCustomers.dgvExchangeTo2.Rows(rowIndex).Cells(4).Value = GetEffectiveDrugXondr(Convert.ToString(grpDrugDetails.Text), CType(myReader("AP_TIMH_XON"), Decimal))
 
                         End If
                     Loop

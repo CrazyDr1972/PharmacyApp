@@ -1540,4 +1540,93 @@ Public Class GlobalFunctions
     End Sub
 
 
+    Public Shared Sub EnsureDrugXondrOverridesTable()
+        Dim sql As String = "IF OBJECT_ID('[PharmacyCustomFiles].[dbo].[DrugXondrOverrides]', 'U') IS NULL " & _
+                            "BEGIN " & _
+                            "CREATE TABLE [PharmacyCustomFiles].[dbo].[DrugXondrOverrides](" & _
+                            "[Id] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY, " & _
+                            "[AP_Code] [nvarchar](50) NOT NULL, " & _
+                            "[DrugName] [nvarchar](255) NULL, " & _
+                            "[UnitXondr] [money] NOT NULL, " & _
+                            "[LastUpdated] [datetime] NOT NULL CONSTRAINT [DF_DrugXondrOverrides_LastUpdated] DEFAULT (GETDATE())" & _
+                            "); " & _
+                            "CREATE UNIQUE INDEX [IX_DrugXondrOverrides_AP_Code] ON [PharmacyCustomFiles].[dbo].[DrugXondrOverrides]([AP_Code]); " & _
+                            "END"
+
+        Using con As New SqlClient.SqlConnection(connectionstring)
+            Using cmd As New SqlClient.SqlCommand(sql, con)
+                con.Open()
+                cmd.ExecuteNonQuery()
+            End Using
+        End Using
+    End Sub
+
+    Public Shared Function GetDrugXondrOverride(ByVal apCode As String) As Nullable(Of Decimal)
+        If String.IsNullOrWhiteSpace(apCode) Then Return Nothing
+
+        EnsureDrugXondrOverridesTable()
+
+        Dim sql As String = "SELECT TOP 1 UnitXondr FROM [PharmacyCustomFiles].[dbo].[DrugXondrOverrides] WHERE AP_Code = @AP_Code"
+
+        Using con As New SqlClient.SqlConnection(connectionstring)
+            Using cmd As New SqlClient.SqlCommand(sql, con)
+                cmd.Parameters.AddWithValue("@AP_Code", apCode.Trim())
+                con.Open()
+
+                Dim result = cmd.ExecuteScalar()
+                If result Is Nothing OrElse IsDBNull(result) Then Return Nothing
+
+                Return CType(result, Decimal)
+            End Using
+        End Using
+    End Function
+
+    Public Shared Function GetEffectiveDrugXondr(ByVal apCode As String, Optional ByVal fallbackXondr As Decimal = -1D) As Decimal
+        Dim overrideXondr = GetDrugXondrOverride(apCode)
+        If overrideXondr.HasValue Then Return overrideXondr.Value
+
+        If fallbackXondr >= 0D Then Return fallbackXondr
+
+        Dim sql As String = "SELECT AP_TIMH_XON FROM APOTIKH WHERE AP_CODE = @AP_CODE"
+
+        Using con As New SqlClient.SqlConnection(connectionstring)
+            Using cmd As New SqlClient.SqlCommand(sql, con)
+                cmd.Parameters.AddWithValue("@AP_CODE", apCode)
+                con.Open()
+
+                Dim result = cmd.ExecuteScalar()
+                If result Is Nothing OrElse IsDBNull(result) Then Return 0D
+
+                Return CType(result, Decimal)
+            End Using
+        End Using
+    End Function
+
+    Public Shared Sub SaveDrugXondrOverride(ByVal apCode As String, ByVal drugName As String, ByVal unitXondr As Decimal)
+        If String.IsNullOrWhiteSpace(apCode) Then Exit Sub
+
+        EnsureDrugXondrOverridesTable()
+
+        Dim sql As String = "IF EXISTS (SELECT 1 FROM [PharmacyCustomFiles].[dbo].[DrugXondrOverrides] WHERE AP_Code = @AP_Code) " & _
+                            "BEGIN " & _
+                            "UPDATE [PharmacyCustomFiles].[dbo].[DrugXondrOverrides] " & _
+                            "SET DrugName = @DrugName, UnitXondr = @UnitXondr, LastUpdated = GETDATE() " & _
+                            "WHERE AP_Code = @AP_Code " & _
+                            "END " & _
+                            "ELSE " & _
+                            "BEGIN " & _
+                            "INSERT INTO [PharmacyCustomFiles].[dbo].[DrugXondrOverrides] ([AP_Code], [DrugName], [UnitXondr]) " & _
+                            "VALUES (@AP_Code, @DrugName, @UnitXondr) " & _
+                            "END"
+
+        Using con As New SqlClient.SqlConnection(connectionstring)
+            Using cmd As New SqlClient.SqlCommand(sql, con)
+                cmd.Parameters.AddWithValue("@AP_Code", apCode.Trim())
+                cmd.Parameters.AddWithValue("@DrugName", If(String.IsNullOrWhiteSpace(drugName), DBNull.Value, CType(drugName.Trim(), Object)))
+                cmd.Parameters.AddWithValue("@UnitXondr", unitXondr)
+                con.Open()
+                cmd.ExecuteNonQuery()
+            End Using
+        End Using
+    End Sub
 End Class

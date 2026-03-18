@@ -1,4 +1,4 @@
-﻿' Exported: 2026-03-18 23:55:01 +02:00
+﻿' Exported: 2026-03-19 00:42:54 +02:00
 ' Project:  Pharmacy.vbproj
 ' Source:   frmCustomers.vb
 '
@@ -11156,36 +11156,33 @@ Handles dgvDebtsList.EditingControlShowing
     End Sub
 
     Private Function GetXondrSelectedDrug(ByVal ApCode As String) As Decimal
-        Dim SQLstring As String = "SELECT AP_TIMH_XON " &
-                          "FROM APOTIKH  " &
-                          "WHERE AP_CODE = '" & ApCode & "' "
-        Dim Xondr As Decimal = 0
-
-        'Initialization νεας σύνδεσης με το connectionString που παίρνει από τις GlobalVariables
-        Using con As New SqlClient.SqlConnection(connectionstring)
-
-            'Initialization νέου CommandAdapter με την Stringα αναζήτησης και την σύνδεση
-            Using cmd As New SqlClient.SqlCommand(SQLstring, con)
-
-                ' Ανοίγει την σύνδεση
-                con.Open()
-
-                'Ορισμός ExecuteReader 
-                Dim myReader As SqlClient.SqlDataReader = cmd.ExecuteReader()
-
-                If myReader.HasRows Then
-                    Do While myReader.Read()
-
-                        Xondr = myReader(0)
-                        SelectedDetailsXondr = Xondr
-                        Return Xondr
-                    Loop
-                End If
-
-            End Using
-        End Using
-        Return 0
+        Dim Xondr As Decimal = GetEffectiveDrugXondr(ApCode)
+        SelectedDetailsXondr = Xondr
+        Return Xondr
     End Function
+
+    Private Sub PersistExchangeXondrOverride(ByVal dgv As DataGridView, ByVal rowIndex As Integer)
+        Try
+            If rowIndex < 0 OrElse rowIndex >= dgv.Rows.Count Then Exit Sub
+            If dgv.Rows(rowIndex).IsNewRow Then Exit Sub
+
+            Dim apCode As String = Convert.ToString(dgv.Rows(rowIndex).Cells(6).Value).Trim()
+            If String.IsNullOrWhiteSpace(apCode) Then Exit Sub
+
+            Dim drugName As String = Convert.ToString(dgv.Rows(rowIndex).Cells(1).Value).Trim()
+            Dim qnt As Integer = 0
+            Dim totalXondr As Decimal = 0D
+
+            Integer.TryParse(Convert.ToString(dgv.Rows(rowIndex).Cells(3).Value), qnt)
+            Decimal.TryParse(Convert.ToString(dgv.Rows(rowIndex).Cells(4).Value), totalXondr)
+
+            If qnt <= 0 OrElse totalXondr < 0D Then Exit Sub
+
+            Dim unitXondr As Decimal = Decimal.Round(totalXondr / qnt, 4, MidpointRounding.AwayFromZero)
+            SaveDrugXondrOverride(apCode, drugName, unitXondr)
+        Catch ex As Exception
+        End Try
+    End Sub
 
     'Private Sub dgvGivenTo_CellValidating(sender As Object, e As DataGridViewCellValidatingEventArgs) Handles dgvGivenTo.CellValidating
 
@@ -11286,12 +11283,23 @@ Handles dgvDebtsList.EditingControlShowing
 
     Private Sub ApplyReadOnlyOnExchangeGrids()
         For Each dgv As DataGridView In New DataGridView() {dgvGivenTo, dgvTakenFrom}
-            dgv.ReadOnly = True                                   ' καμία επεξεργασία από χρήστη
-            dgv.EditMode = DataGridViewEditMode.EditProgrammatically ' ούτε με F2/διπλό-κλικ
+            dgv.ReadOnly = False
+            dgv.EditMode = DataGridViewEditMode.EditOnEnter
             dgv.AllowUserToAddRows = False                        ' χωρίς new-row
             dgv.AllowUserToDeleteRows = False                     ' χωρίς delete από πληκτρολόγιο
             dgv.MultiSelect = True                                ' κρατάμε multi-select για μαζικές διαγραφές με το κουμπί
             dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+
+            If dgv.Columns.Count > 0 Then
+                For Each col As DataGridViewColumn In dgv.Columns
+                    col.ReadOnly = True
+                Next
+
+                If dgv.Columns.Count > 4 Then
+                    dgv.Columns(4).ReadOnly = False
+                    dgv.Columns(4).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+                End If
+            End If
         Next
     End Sub
 
@@ -14413,6 +14421,9 @@ Handles dgvDebtsList.EditingControlShowing
     End Sub
 
     Private Sub dgvGivenTo_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles dgvGivenTo.CellValueChanged
+        If e.RowIndex < 0 Then Exit Sub
+        If e.ColumnIndex = 4 Then PersistExchangeXondrOverride(dgvGivenTo, e.RowIndex)
+
         'Όποτε αλλάζει η τιμή του cell και..
 
         'είμαστε σε manual καταχώρηση..
@@ -14495,6 +14506,9 @@ Handles dgvDebtsList.EditingControlShowing
 
 
     Private Sub dgvTakenFrom_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles dgvTakenFrom.CellValueChanged
+        If e.RowIndex < 0 Then Exit Sub
+        If e.ColumnIndex = 4 Then PersistExchangeXondrOverride(dgvTakenFrom, e.RowIndex)
+
         'Όποτε αλλάζει η τιμή του cell και..
 
         'είμαστε σε manual καταχώρηση..

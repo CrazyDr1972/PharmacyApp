@@ -39,7 +39,7 @@ Public Class frmParadrugSelectedDetails
                             lblParadrugMorfi.Text = ""
                         End Try
 
-                        Xondr = myReader(2)
+                        Xondr = GetEffectiveDrugXondr(SelectedDetailsApCode, CType(myReader(2), Decimal))
                         Lian = myReader(3)
                         lblXondr.Text = Xondr.ToString("c")
                         lblLian.Text = Lian.ToString("c")

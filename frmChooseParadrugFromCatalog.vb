@@ -42,7 +42,16 @@ Public Class frmChooseParadrugFromCatalog
 
         End If
 
-        myTot = FillDatagrid(dgvMorfes, bsMorfesNew, {"Μορφές", "Χονδρ", "Λιαν"}, {240, 40, 40}, {"0", "F2", "F2"}, {})
+                myTot = FillDatagrid(dgvMorfes, bsMorfesNew, {"Μορφές", "Χονδρ", "Λιαν"}, {240, 40, 40}, {"0", "F2", "F2"}, {})
+
+        For Each row As DataGridViewRow In dgvMorfes.Rows
+            If row.IsNewRow Then Continue For
+
+            Dim apCode As String = Convert.ToString(row.Cells(3).Value)
+            Dim baseXondr As Decimal = 0D
+            Decimal.TryParse(Convert.ToString(row.Cells(1).Value), baseXondr)
+            row.Cells(1).Value = GetEffectiveDrugXondr(apCode, baseXondr)
+        Next
 
         Return myTot
 
@@ -142,8 +151,10 @@ Public Class frmChooseParadrugFromCatalog
         Catch : End Try
 
         Try
-            unitXondr = CDec(dgvMorfes.SelectedRows(0).Cells(1).Value) ' AP_TIMH_XON
+            unitXondr = CDec(dgvMorfes.SelectedRows(0).Cells(1).Value) ' effective χονδρική
         Catch : End Try
+
+        unitXondr = GetEffectiveDrugXondr(apCode, unitXondr)
 
         ' Ποσότητα από textbox (fallback: 1)
         Dim qnt As Integer = 1

@@ -109,12 +109,12 @@ Public Class frmChooseDrug
 
                         ' Aν είμαστε σε φάση ανταλλαγής ΑΠΟ
                         If AreExchangedDrugsFrom = True Then
-                            frmCustomers.dgvExchangeFrom2.Rows(rowIndex).Cells(4).Value = myReader("AP_TIMH_XON")
+                            frmCustomers.dgvExchangeFrom2.Rows(rowIndex).Cells(4).Value = GetEffectiveDrugXondr(Convert.ToString(grpDrugDetails.Text), CType(myReader("AP_TIMH_XON"), Decimal))
 
                             'αλλιως
                         Else
 
-                            frmCustomers.dgvExchangeTo2.Rows(rowIndex).Cells(4).Value = myReader("AP_TIMH_XON")
+                            frmCustomers.dgvExchangeTo2.Rows(rowIndex).Cells(4).Value = GetEffectiveDrugXondr(Convert.ToString(grpDrugDetails.Text), CType(myReader("AP_TIMH_XON"), Decimal))
 
                         End If
                     Loop
