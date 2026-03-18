@@ -1,0 +1,509 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5AD85008-F97F-4695-A6DD-3973BCC953E0}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>Pharmacy.My.MyApplication</StartupObject>
+    <RootNamespace>Pharmacy</RootNamespace>
+    <AssemblyName>Pharmacy</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>WindowsForms</MyType>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>C:\Users\thema_000\Desktop\Pharmacy\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>Pharmacy.xml</DocumentationFile>
+    <NoWarn>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</NoWarn>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>Pharmacy.xml</DocumentationFile>
+    <NoWarn>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</NoWarn>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Binary</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>DE92AB28BF255982650203DB14AFED744F181FEE</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>Pharmacy_5_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>1371640338_45211.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Windows.Forms" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+    <Import Include="System.Threading.Tasks" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ApplicationEvents.vb" />
+    <Compile Include="frmAddManualExchangeNonDrug.Designer.vb">
+      <DependentUpon>frmAddManualExchangeNonDrug.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmAddManualExchangeNonDrug.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmBackupInfo.Designer.vb">
+      <DependentUpon>frmBackupInfo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmBackupInfo.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAddAgoresToList.Designer.vb">
+      <DependentUpon>frmAddAgoresToList.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmAddAgoresToList.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAddDrugOnLoan.Designer.vb">
+      <DependentUpon>frmAddDrugOnLoan.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmAddDrugOnLoan.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmChooseDrug.Designer.vb">
+      <DependentUpon>frmChooseDrug.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmChooseDrug.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmChooseParadrugFromCatalog.Designer.vb">
+      <DependentUpon>frmChooseParadrugFromCatalog.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmChooseParadrugFromCatalog.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmDatabaseBackupProgression.Designer.vb">
+      <DependentUpon>frmDatabaseBackupProgression.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmDatabaseBackupProgression.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmDebtEntry.Designer.vb">
+      <DependentUpon>frmDebtEntry.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmDebtEntry.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmDrugListEdit.Designer.vb">
+      <DependentUpon>frmDrugListEdit.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmDrugListEdit.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCustomersEdit.Designer.vb">
+      <DependentUpon>frmCustomersEdit.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmCustomersEdit.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCustomers.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCustomers.Designer.vb">
+      <DependentUpon>frmCustomers.vb</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmDrugs.Designer.vb">
+      <DependentUpon>frmDrugs.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmDrugs.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmDrugsOrParadrugsExpiring.Designer.vb">
+      <DependentUpon>frmDrugsOrParadrugsExpiring.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmDrugsOrParadrugsExpiring.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmEditRecipes.Designer.vb">
+      <DependentUpon>frmEditRecipes.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmEditRecipes.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmExchangesTotalsPerPharmacist.Designer.vb">
+      <DependentUpon>frmExchangesTotalsPerPharmacist.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmExchangesTotalsPerPharmacist.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmExpirationsList.Designer.vb">
+      <DependentUpon>frmExpirationsList.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmExpirationsList.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmExpirDrugsList.Designer.vb">
+      <DependentUpon>frmExpirDrugsList.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmExpirDrugsList.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmIFETprice.Designer.vb">
+      <DependentUpon>frmIFETprice.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmIFETprice.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmMainForm.Designer.vb">
+      <DependentUpon>frmMainForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmMainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmMyBarcodes.Designer.vb">
+      <DependentUpon>frmMyBarcodes.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmMyBarcodes.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmNarkoticWithSpecialExchange.Designer.vb">
+      <DependentUpon>frmNarkoticWithSpecialExchange.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmNarkoticWithSpecialExchange.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmParadrugSelectedDetails.Designer.vb">
+      <DependentUpon>frmParadrugSelectedDetails.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmParadrugSelectedDetails.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmPayDebt.Designer.vb">
+      <DependentUpon>frmPayDebt.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmPayDebt.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmPrescriptionInfo.Designer.vb">
+      <DependentUpon>frmPrescriptionInfo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmPrescriptionInfo.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmPrescriptionsExpiring.Designer.vb">
+      <DependentUpon>frmPrescriptionsExpiring.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmPrescriptionsExpiring.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmSelectBatch.Designer.vb">
+      <DependentUpon>frmSelectBatch.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmSelectBatch.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmSetPrescriptionExpirationDates-3.Designer.vb">
+      <DependentUpon>frmSetPrescriptionExpirationDates-3.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmSetPrescriptionExpirationDates-3.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmUpdateFarmNetDB.Designer.vb">
+      <DependentUpon>frmUpdateFarmNetDB.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmUpdateFarmNetDB.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GlobalFunctions.vb" />
+    <Compile Include="GlobalVariables.vb" />
+    <Compile Include="frmImportExcel2Datagrid.Designer.vb">
+      <DependentUpon>frmImportExcel2Datagrid.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmImportExcel2Datagrid.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmMasterForm.Designer.vb">
+      <DependentUpon>frmMasterForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmMasterForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="frmAddManualExchangeNonDrug.resx">
+      <DependentUpon>frmAddManualExchangeNonDrug.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmBackupInfo.resx">
+      <DependentUpon>frmBackupInfo.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmAddAgoresToList.resx">
+      <DependentUpon>frmAddAgoresToList.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmAddDrugOnLoan.resx">
+      <DependentUpon>frmAddDrugOnLoan.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmChooseDrug.resx">
+      <DependentUpon>frmChooseDrug.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmChooseParadrugFromCatalog.resx">
+      <DependentUpon>frmChooseParadrugFromCatalog.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmDatabaseBackupProgression.resx">
+      <DependentUpon>frmDatabaseBackupProgression.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmDebtEntry.resx">
+      <DependentUpon>frmDebtEntry.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmDrugListEdit.resx">
+      <DependentUpon>frmDrugListEdit.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmCustomers.resx">
+      <DependentUpon>frmCustomers.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmCustomersEdit.resx">
+      <DependentUpon>frmCustomersEdit.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmDrugs.resx">
+      <DependentUpon>frmDrugs.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmDrugsOrParadrugsExpiring.resx">
+      <DependentUpon>frmDrugsOrParadrugsExpiring.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmEditRecipes.resx">
+      <DependentUpon>frmEditRecipes.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmExchangesTotalsPerPharmacist.resx">
+      <DependentUpon>frmExchangesTotalsPerPharmacist.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmExpirationsList.resx">
+      <DependentUpon>frmExpirationsList.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmExpirDrugsList.resx">
+      <DependentUpon>frmExpirDrugsList.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmIFETprice.resx">
+      <DependentUpon>frmIFETprice.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmMainForm.resx">
+      <DependentUpon>frmMainForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmMasterForm.resx">
+      <DependentUpon>frmMasterForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmMyBarcodes.resx">
+      <DependentUpon>frmMyBarcodes.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmNarkoticWithSpecialExchange.resx">
+      <DependentUpon>frmNarkoticWithSpecialExchange.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmParadrugSelectedDetails.resx">
+      <DependentUpon>frmParadrugSelectedDetails.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmPayDebt.resx">
+      <DependentUpon>frmPayDebt.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmPrescriptionInfo.resx">
+      <DependentUpon>frmPrescriptionInfo.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmPrescriptionsExpiring.resx">
+      <DependentUpon>frmPrescriptionsExpiring.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmImportExcel2Datagrid.resx">
+      <DependentUpon>frmImportExcel2Datagrid.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSelectBatch.resx">
+      <DependentUpon>frmSelectBatch.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSetPrescriptionExpirationDates-3.resx">
+      <DependentUpon>frmSetPrescriptionExpirationDates-3.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmUpdateFarmNetDB.resx">
+      <DependentUpon>frmUpdateFarmNetDB.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Chat\Latest\UpdateVersion.ps1" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="App.config" />
+    <None Include="Pharmacy_1_TemporaryKey.pfx" />
+    <None Include="Pharmacy_2_TemporaryKey.pfx" />
+    <None Include="Pharmacy_3_TemporaryKey.pfx" />
+    <None Include="Pharmacy_4_TemporaryKey.pfx" />
+    <None Include="Pharmacy_5_TemporaryKey.pfx" />
+    <None Include="Pharmacy_TemporaryKey.pfx" />
+    <None Include="tools\PostBuild.cmd" />
+    <None Include="tools\Update-Version.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.SqlServer.Express.11.0">
+      <Visible>False</Visible>
+      <ProductName>SQL Server 2012 Express</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="1371640338_45211.ico" />
+    <Content Include="Chat\Latest\frmChooseParadrugFromCatalog.vb.txt" />
+    <Content Include="Chat\Latest\GlobalFunctions.vb.txt" />
+    <Content Include="Chat\Latest\GlobalVariables.vb.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="Microsoft.Office.Core">
+      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>7</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="Microsoft.Office.Interop.Excel">
+      <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>8</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="VBIDE">
+      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>3</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>powershell -ExecutionPolicy Bypass -NoProfile -File "E:\- Documents &amp; Projects\Visual Studio 2012 - LEARNING\Pharmacy\Pharmacy\tools\Update-Version.ps1" -Root "E:\- Documents &amp; Projects\Visual Studio 2012 - LEARNING\Pharmacy\Pharmacy" || exit /b 1
+powershell -ExecutionPolicy Bypass -NoProfile -File "E:\- Documents &amp; Projects\Visual Studio 2012 - LEARNING\Pharmacy\Pharmacy\tools\ExportAllVbAsTxt.ps1" -Root "E:\- Documents &amp; Projects\Visual Studio 2012 - LEARNING\Pharmacy\Pharmacy" || exit /b 1
+
+</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

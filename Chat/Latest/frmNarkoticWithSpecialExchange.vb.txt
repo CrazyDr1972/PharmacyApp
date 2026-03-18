@@ -1,0 +1,50 @@
+﻿' Exported: 2025-10-23 00:24:46 +03:00
+' Project:  Pharmacy.vbproj
+' Source:   frmNarkoticWithSpecialExchange.vb
+'
+Imports Pharmacy.GlobalFunctions
+Imports Pharmacy.GlobalVariables
+Imports System.Data.SqlClient
+Imports System.Windows.Forms.Timer
+Imports System.Threading.Timer
+Imports System.Globalization
+Imports System.Threading
+
+Public Class frmNarkoticWithSpecialExchange
+
+    
+
+    Private Sub frmNarkoticWithSpecialExchange_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
+        frmCustomers.Enabled = True
+    End Sub
+
+
+    Private Sub btnSpecialExchangeYes_Click(sender As Object, e As EventArgs) Handles btnSpecialExchangeYes.Click
+        If ExchangesGivenOrTaken = "given" Then
+            frmCustomers.dgvGivenTo.SelectedRows(0).Cells(5).Value = "X"
+            frmCustomers.dgvGivenTo.CurrentCell = frmCustomers.dgvGivenTo.SelectedRows(0).Cells(4)
+        ElseIf ExchangesGivenOrTaken = "taken" Then
+            frmCustomers.dgvTakenFrom.SelectedRows(0).Cells(5).Value = "X"
+            frmCustomers.dgvTakenFrom.CurrentCell = frmCustomers.dgvTakenFrom.SelectedRows(0).Cells(4)
+        End If
+
+        Me.Close()
+    End Sub
+
+    Private Sub btnSpecialExchangeNo_Click(sender As Object, e As EventArgs) Handles btnSpecialExchangeNo.Click
+        If ExchangesGivenOrTaken = "given" Then
+            frmCustomers.dgvGivenTo.SelectedRows(0).Cells(5).Value = ""
+            frmCustomers.dgvGivenTo.CurrentCell = frmCustomers.dgvGivenTo.SelectedRows(0).Cells(4)
+
+        ElseIf ExchangesGivenOrTaken = "taken" Then
+            frmCustomers.dgvTakenFrom.SelectedRows(0).Cells(5).Value = ""
+            frmCustomers.dgvTakenFrom.CurrentCell = frmCustomers.dgvTakenFrom.SelectedRows(0).Cells(4)
+        End If
+
+        Me.Close()
+    End Sub
+
+    Private Sub frmNarkoticWithSpecialExchange_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+    End Sub
+End Class

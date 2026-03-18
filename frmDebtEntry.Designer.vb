@@ -1,0 +1,194 @@
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+Partial Class frmDebtEntry
+    Inherits System.Windows.Forms.Form
+
+    'Form overrides dispose
+    <System.Diagnostics.DebuggerNonUserCode()>
+    Protected Overrides Sub Dispose(disposing As Boolean)
+        Try
+            If disposing AndAlso components IsNot Nothing Then components.Dispose()
+        Finally
+            MyBase.Dispose(disposing)
+        End Try
+    End Sub
+
+    Private components As System.ComponentModel.IContainer
+
+    <System.Diagnostics.DebuggerStepThrough()>
+    Private Sub InitializeComponent()
+        Me.lblDate = New System.Windows.Forms.Label()
+        Me.dtpDate = New System.Windows.Forms.DateTimePicker()
+        Me.lblRetail = New System.Windows.Forms.Label()
+        Me.txtRetail = New System.Windows.Forms.TextBox()
+        Me.lblCode = New System.Windows.Forms.Label()
+        Me.txtCode = New System.Windows.Forms.TextBox()
+        Me.rbTyping = New System.Windows.Forms.RadioButton()
+        Me.rbScanner = New System.Windows.Forms.RadioButton()
+        Me.lblInfo = New System.Windows.Forms.Label()
+        Me.btnSave = New System.Windows.Forms.Button()
+        Me.btnCancel = New System.Windows.Forms.Button()
+        Me.lblPriceErrorMsg = New System.Windows.Forms.Label()
+        Me.SuspendLayout()
+        '
+        'lblDate
+        '
+        Me.lblDate.AutoSize = True
+        Me.lblDate.Location = New System.Drawing.Point(18, 18)
+        Me.lblDate.Name = "lblDate"
+        Me.lblDate.Size = New System.Drawing.Size(69, 13)
+        Me.lblDate.TabIndex = 0
+        Me.lblDate.Text = "Ημερομηνία:"
+        '
+        'dtpDate
+        '
+        Me.dtpDate.CustomFormat = "dd/MM/yyyy"
+        Me.dtpDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom
+        Me.dtpDate.Location = New System.Drawing.Point(110, 14)
+        Me.dtpDate.Name = "dtpDate"
+        Me.dtpDate.Size = New System.Drawing.Size(100, 20)
+        Me.dtpDate.TabIndex = 0
+        '
+        'lblRetail
+        '
+        Me.lblRetail.AutoSize = True
+        Me.lblRetail.Location = New System.Drawing.Point(18, 52)
+        Me.lblRetail.Name = "lblRetail"
+        Me.lblRetail.Size = New System.Drawing.Size(62, 13)
+        Me.lblRetail.TabIndex = 0
+        Me.lblRetail.Text = "Λιανική (€):"
+        '
+        'txtRetail
+        '
+        Me.txtRetail.Location = New System.Drawing.Point(110, 48)
+        Me.txtRetail.Name = "txtRetail"
+        Me.txtRetail.Size = New System.Drawing.Size(100, 20)
+        Me.txtRetail.TabIndex = 1
+        Me.txtRetail.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'lblCode
+        '
+        Me.lblCode.AutoSize = True
+        Me.lblCode.Location = New System.Drawing.Point(18, 86)
+        Me.lblCode.Name = "lblCode"
+        Me.lblCode.Size = New System.Drawing.Size(92, 13)
+        Me.lblCode.TabIndex = 0
+        Me.lblCode.Text = "Κωδικός/Περιγρ.:"
+        '
+        'txtCode
+        '
+        Me.txtCode.Location = New System.Drawing.Point(110, 82)
+        Me.txtCode.Name = "txtCode"
+        Me.txtCode.Size = New System.Drawing.Size(330, 20)
+        Me.txtCode.TabIndex = 2
+        '
+        'rbTyping
+        '
+        Me.rbTyping.AutoSize = True
+        Me.rbTyping.Location = New System.Drawing.Point(110, 118)
+        Me.rbTyping.Name = "rbTyping"
+        Me.rbTyping.Size = New System.Drawing.Size(102, 17)
+        Me.rbTyping.TabIndex = 3
+        Me.rbTyping.TabStop = True
+        Me.rbTyping.Text = "Πληκτρολόγηση"
+        Me.rbTyping.UseVisualStyleBackColor = True
+        '
+        'rbScanner
+        '
+        Me.rbScanner.AutoSize = True
+        Me.rbScanner.Checked = True
+        Me.rbScanner.Location = New System.Drawing.Point(220, 118)
+        Me.rbScanner.Name = "rbScanner"
+        Me.rbScanner.Size = New System.Drawing.Size(65, 17)
+        Me.rbScanner.TabIndex = 4
+        Me.rbScanner.TabStop = True
+        Me.rbScanner.Text = "Scanner"
+        Me.rbScanner.UseVisualStyleBackColor = True
+        '
+        'lblInfo
+        '
+        Me.lblInfo.AutoSize = True
+        Me.lblInfo.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.lblInfo.ForeColor = System.Drawing.Color.DarkOrange
+        Me.lblInfo.Location = New System.Drawing.Point(18, 152)
+        Me.lblInfo.Name = "lblInfo"
+        Me.lblInfo.Size = New System.Drawing.Size(171, 15)
+        Me.lblInfo.TabIndex = 0
+        Me.lblInfo.Text = "Λειτουργία: Πληκτρολόγηση"
+        '
+        'btnSave
+        '
+        Me.btnSave.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnSave.Location = New System.Drawing.Point(368, 187)
+        Me.btnSave.Name = "btnSave"
+        Me.btnSave.Size = New System.Drawing.Size(78, 27)
+        Me.btnSave.TabIndex = 5
+        Me.btnSave.Text = "Αποθήκευση"
+        Me.btnSave.UseVisualStyleBackColor = True
+        '
+        'btnCancel
+        '
+        Me.btnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.btnCancel.Location = New System.Drawing.Point(392, 146)
+        Me.btnCancel.Name = "btnCancel"
+        Me.btnCancel.Size = New System.Drawing.Size(54, 27)
+        Me.btnCancel.TabIndex = 6
+        Me.btnCancel.Text = "Άκυρο"
+        Me.btnCancel.UseVisualStyleBackColor = True
+        Me.btnCancel.Visible = False
+        '
+        'lblPriceErrorMsg
+        '
+        Me.lblPriceErrorMsg.AutoSize = True
+        Me.lblPriceErrorMsg.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.lblPriceErrorMsg.ForeColor = System.Drawing.Color.OrangeRed
+        Me.lblPriceErrorMsg.Location = New System.Drawing.Point(217, 50)
+        Me.lblPriceErrorMsg.Name = "lblPriceErrorMsg"
+        Me.lblPriceErrorMsg.Size = New System.Drawing.Size(166, 15)
+        Me.lblPriceErrorMsg.TabIndex = 7
+        Me.lblPriceErrorMsg.Text = "Καταχωρήστε έγκυρη τιμή!"
+        '
+        'frmDebtEntry
+        '
+        Me.AcceptButton = Me.btnSave
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.CancelButton = Me.btnCancel
+        Me.ClientSize = New System.Drawing.Size(458, 226)
+        Me.Controls.Add(Me.lblPriceErrorMsg)
+        Me.Controls.Add(Me.btnCancel)
+        Me.Controls.Add(Me.btnSave)
+        Me.Controls.Add(Me.lblInfo)
+        Me.Controls.Add(Me.rbScanner)
+        Me.Controls.Add(Me.rbTyping)
+        Me.Controls.Add(Me.txtCode)
+        Me.Controls.Add(Me.lblCode)
+        Me.Controls.Add(Me.txtRetail)
+        Me.Controls.Add(Me.lblRetail)
+        Me.Controls.Add(Me.dtpDate)
+        Me.Controls.Add(Me.lblDate)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
+        Me.KeyPreview = True
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
+        Me.Name = "frmDebtEntry"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.Manual
+        Me.Text = "Νέα Εγγραφή Οφειλής"
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
+
+    End Sub
+
+    Friend WithEvents lblDate As Label
+    Friend WithEvents dtpDate As DateTimePicker
+    Friend WithEvents lblRetail As Label
+    Friend WithEvents txtRetail As TextBox
+    Friend WithEvents lblCode As Label
+    Friend WithEvents txtCode As TextBox
+    Friend WithEvents rbTyping As RadioButton
+    Friend WithEvents rbScanner As RadioButton
+    Friend WithEvents lblInfo As Label
+    Friend WithEvents btnSave As Button
+    Friend WithEvents btnCancel As Button
+    Friend WithEvents lblPriceErrorMsg As Label
+End Class

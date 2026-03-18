@@ -1,0 +1,29 @@
+﻿Imports Recipes.GlobalFunctions
+Imports Recipes.GlobalVariables
+Imports System.Data.SqlClient
+Imports System.Windows.Forms.Timer
+Imports System.Threading.Timer
+Imports System.Globalization
+Imports System.Threading
+Imports System.IO
+Imports System.Collections.Generic
+Imports System.ComponentModel
+Imports System.Data
+Imports System.Drawing
+Imports System.Linq
+Imports System.Text
+Imports System.Windows.Forms
+Imports System.Configuration
+Imports Excel = Microsoft.Office.Interop.Excel
+Imports System.Math
+
+Public Class frmMainForm
+
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+    End Sub
+
+    Private Sub Label1_Click(sender As Object, e As EventArgs) Handles Label1.Click
+
+    End Sub
+End Class

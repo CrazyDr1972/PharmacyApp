@@ -1,0 +1,57 @@
+﻿Imports Pharmacy.GlobalFunctions
+Imports Pharmacy.GlobalVariables
+Imports System.Data.SqlClient
+Imports System.Windows.Forms.Timer
+Imports System.Threading.Timer
+Imports System.Globalization
+Imports System.Threading
+Imports System.IO
+Imports System.Collections.Generic
+Imports System.ComponentModel
+Imports System.Data
+Imports System.Drawing
+Imports System.Linq
+Imports System.Text
+Imports System.Windows.Forms
+Imports System.Configuration
+Imports Excel = Microsoft.Office.Interop.Excel
+Imports System.Math
+
+Public Class frmMasterForm
+
+    Private Sub frmMasterForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        DB1_Status.Text = GetDatabaseStatus("Pharmacy2013C")
+        DB2_Status.Text = GetDatabaseStatus("PharmacyCustomFiles")
+    End Sub
+
+    Private Function GetDatabaseStatus(ByVal dtb As String) As String
+        Dim sqlString As String = ""
+        Dim DatabaseStatus As String
+
+        sqlString = "SELECT distinct '" & dtb & "', state_desc FROM sys.databases"
+
+        'Initialization νεας σύνδεσης με το connectionString που παίρνει από τις GlobalVariables
+        Using con As New SqlClient.SqlConnection(connectionstring)
+
+            'Initialization νέου CommandAdapter με την Stringα αναζήτησης και την σύνδεση
+            Using cmd As New SqlClient.SqlCommand(sqlString, con)
+
+                ' Ανοίγει την σύνδεση
+                con.Open()
+
+                'Ορισμός ExecuteReader 
+                Dim myReader As SqlClient.SqlDataReader = cmd.ExecuteReader()
+
+                If myReader.HasRows Then
+                    Do While myReader.Read()
+                        DatabaseStatus = myReader(1)
+                    Loop
+                Else
+                End If
+
+            End Using
+        End Using
+
+        Return DatabaseStatus
+    End Function
+End Class

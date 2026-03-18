@@ -1,0 +1,121 @@
+﻿Imports System.Data.SqlClient
+Imports Microsoft.Office.Interop.Excel
+Imports Pharmacy.GlobalFunctions
+Imports Pharmacy.GlobalVariables
+
+Public Class frmAddManualExchangeNonDrug
+
+    Private Sub frmAddManualExchangeNonDrug_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ' Προεπιλογές
+        If cboFPA.Items.Count = 0 Then
+            cboFPA.Items.AddRange(New Object() {"6", "13", "24"})
+        End If
+        cboFPA.SelectedItem = "24" ' Συνήθως 24% για μη-φάρμακα
+        nudQnt.Value = 1
+        nudUnitXondr.DecimalPlaces = 2
+        nudUnitXondr.ThousandsSeparator = True
+        dtpDate.Value = Now
+
+        lblDirection.Text = If(String.Equals(ExchangesGivenOrTaken, "taken", StringComparison.OrdinalIgnoreCase),
+                               "Κατεύθυνση: Πήραμε (FromTo=1)",
+                               "Κατεύθυνση: Δώσαμε (FromTo=0)")
+        UpdateTotalPreview()
+    End Sub
+
+    Private Sub nudQnt_ValueChanged(sender As Object, e As EventArgs) Handles nudQnt.ValueChanged
+        UpdateTotalPreview()
+    End Sub
+
+    Private Sub nudUnitXondr_ValueChanged(sender As Object, e As EventArgs) Handles nudUnitXondr.ValueChanged
+        UpdateTotalPreview()
+    End Sub
+
+    Private Sub UpdateTotalPreview()
+        Dim total As Decimal = nudUnitXondr.Value * nudQnt.Value
+        lblTotal.Text = "Σύνολο Χονδρική: " & total.ToString("###,###.00 €")
+    End Sub
+
+    Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
+        ' Έλεγχοι
+        Dim fullName As String = txtFullName.Text.Trim()
+        If fullName = "" Then
+            MessageBox.Show("Συμπλήρωσε όνομα/περιγραφή.", "Έλεγχος", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            txtFullName.Focus()
+            Exit Sub
+        End If
+        If nudQnt.Value <= 0 Then
+            MessageBox.Show("Η ποσότητα πρέπει να είναι > 0.", "Έλεγχος", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            nudQnt.Focus()
+            Exit Sub
+        End If
+        If nudUnitXondr.Value < 0D Then
+            MessageBox.Show("Η χονδρική/τμχ δεν μπορεί να είναι αρνητική.", "Έλεγχος", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            nudUnitXondr.Focus()
+            Exit Sub
+        End If
+        If cboFPA.SelectedItem Is Nothing Then
+            MessageBox.Show("Διάλεξε ΦΠΑ.", "Έλεγχος", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            cboFPA.DroppedDown = True
+            Exit Sub
+        End If
+
+        Dim exch As String = ""
+        Dim host As frmCustomers = TryCast(Me.Owner, frmCustomers)
+        If host IsNot Nothing Then
+            exch = host.cbExchangers.Text
+        End If
+
+        If String.IsNullOrWhiteSpace(exch) Then
+            MessageBox.Show("Δεν έχει επιλεγεί συνεργάτης (Exch). Επίλεξέ τον από το frmCustomers.", "Έλεγχος", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Exit Sub
+        End If
+
+        Dim qnt As Integer = CInt(nudQnt.Value)
+        Dim unitXondr As Decimal = nudUnitXondr.Value
+        Dim xondrTotal As Decimal = unitXondr * qnt
+        Dim fpa As Decimal = CDec(cboFPA.SelectedItem)
+        Dim fromTo As Integer = If(String.Equals(ExchangesGivenOrTaken, "taken", StringComparison.OrdinalIgnoreCase), 1, 0)
+
+        ' Εισαγωγή
+        Try
+            Using con As New SqlConnection(connectionstring)
+                con.Open()
+                Dim sql As String =
+                    "INSERT INTO PharmacyCustomFiles.dbo.Exchanges " &
+                    "([DrugName],[Xondr],[Qnt],[RP],[AP_Code],[MyDate],[Exch],[FromTo],[FPA]) " &
+                    "VALUES (@DrugName,@Xondr,@Qnt,@RP,@AP_Code,@MyDate,@Exch,@FromTo,@FPA);"
+
+                Using cmd As New SqlCommand(sql, con)
+                    cmd.Parameters.AddWithValue("@DrugName", fullName)
+                    cmd.Parameters.AddWithValue("@Xondr", xondrTotal)
+                    cmd.Parameters.AddWithValue("@Qnt", qnt)
+                    cmd.Parameters.AddWithValue("@RP", DBNull.Value)         ' Δεν έχει RP εδώ
+                    cmd.Parameters.AddWithValue("@AP_Code", 0)               ' Μη-φάρμακο
+                    cmd.Parameters.AddWithValue("@MyDate", dtpDate.Value)
+                    cmd.Parameters.AddWithValue("@Exch", exch)
+                    cmd.Parameters.AddWithValue("@FromTo", fromTo)           ' 0=given, 1=taken
+                    cmd.Parameters.AddWithValue("@FPA", fpa)
+
+                    cmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Me.DialogResult = DialogResult.OK
+            Me.Close()
+
+        Catch ex As Exception
+            MessageBox.Show("Σφάλμα κατά την αποθήκευση: " & ex.Message, "Σφάλμα", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub btnCancel_Click(sender As Object, e As EventArgs) Handles btnCancel.Click
+        Me.DialogResult = DialogResult.Cancel
+        Me.Close()
+    End Sub
+
+    Private Sub frmAddManualExchangeNonDrug_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+        If e.KeyCode = Keys.Escape Then
+            btnCancel.PerformClick()
+        End If
+    End Sub
+End Class

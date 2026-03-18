@@ -1,0 +1,237 @@
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+Partial Class frmAddManualExchangeNonDrug
+    Inherits System.Windows.Forms.Form
+
+    'Form overrides dispose to clean up the component list.
+    <System.Diagnostics.DebuggerNonUserCode()>
+    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
+        Try
+            If disposing AndAlso components IsNot Nothing Then
+                components.Dispose()
+            End If
+        Finally
+            MyBase.Dispose(disposing)
+        End Try
+    End Sub
+
+    'Required by the Windows Form Designer
+    Private components As System.ComponentModel.IContainer
+
+    'NOTE: The following procedure is required by the Windows Form Designer
+    'It can be modified using the Windows Form Designer.  
+    'Do not modify it using the code editor.
+    <System.Diagnostics.DebuggerStepThrough()>
+    Private Sub InitializeComponent()
+        Me.lblTitle = New System.Windows.Forms.Label()
+        Me.lblDirection = New System.Windows.Forms.Label()
+        Me.lblFullName = New System.Windows.Forms.Label()
+        Me.txtFullName = New System.Windows.Forms.TextBox()
+        Me.lblUnitXondr = New System.Windows.Forms.Label()
+        Me.nudUnitXondr = New System.Windows.Forms.NumericUpDown()
+        Me.lblQnt = New System.Windows.Forms.Label()
+        Me.nudQnt = New System.Windows.Forms.NumericUpDown()
+        Me.lblFPA = New System.Windows.Forms.Label()
+        Me.cboFPA = New System.Windows.Forms.ComboBox()
+        Me.lblDate = New System.Windows.Forms.Label()
+        Me.dtpDate = New System.Windows.Forms.DateTimePicker()
+        Me.lblTotal = New System.Windows.Forms.Label()
+        Me.btnSave = New System.Windows.Forms.Button()
+        Me.btnCancel = New System.Windows.Forms.Button()
+        CType(Me.nudUnitXondr, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.nudQnt, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.SuspendLayout()
+        '
+        'lblTitle
+        '
+        Me.lblTitle.AutoSize = True
+        Me.lblTitle.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold)
+        Me.lblTitle.Location = New System.Drawing.Point(10, 8)
+        Me.lblTitle.Name = "lblTitle"
+        Me.lblTitle.Size = New System.Drawing.Size(259, 21)
+        Me.lblTitle.TabIndex = 0
+        Me.lblTitle.Text = "Νέα εγγραφή (ΜΗ ΦΑΡΜΑΚΟ) —"
+        '
+        'lblDirection
+        '
+        Me.lblDirection.AutoSize = True
+        Me.lblDirection.Location = New System.Drawing.Point(11, 30)
+        Me.lblDirection.Name = "lblDirection"
+        Me.lblDirection.Size = New System.Drawing.Size(129, 13)
+        Me.lblDirection.TabIndex = 1
+        Me.lblDirection.Text = "Κατεύθυνση: (FromTo=?)"
+        '
+        'lblFullName
+        '
+        Me.lblFullName.AutoSize = True
+        Me.lblFullName.Location = New System.Drawing.Point(11, 61)
+        Me.lblFullName.Name = "lblFullName"
+        Me.lblFullName.Size = New System.Drawing.Size(101, 13)
+        Me.lblFullName.TabIndex = 2
+        Me.lblFullName.Text = "Όνομα/Περιγραφή"
+        '
+        'txtFullName
+        '
+        Me.txtFullName.Location = New System.Drawing.Point(14, 76)
+        Me.txtFullName.Name = "txtFullName"
+        Me.txtFullName.Size = New System.Drawing.Size(361, 20)
+        Me.txtFullName.TabIndex = 0
+        '
+        'lblUnitXondr
+        '
+        Me.lblUnitXondr.AutoSize = True
+        Me.lblUnitXondr.Location = New System.Drawing.Point(11, 108)
+        Me.lblUnitXondr.Name = "lblUnitXondr"
+        Me.lblUnitXondr.Size = New System.Drawing.Size(118, 13)
+        Me.lblUnitXondr.TabIndex = 4
+        Me.lblUnitXondr.Text = "Χονδρική / Τεμάχιο (€)"
+        '
+        'nudUnitXondr
+        '
+        Me.nudUnitXondr.DecimalPlaces = 2
+        Me.nudUnitXondr.Increment = New Decimal(New Integer() {1, 0, 0, 131072})
+        Me.nudUnitXondr.Location = New System.Drawing.Point(14, 124)
+        Me.nudUnitXondr.Maximum = New Decimal(New Integer() {1000000, 0, 0, 0})
+        Me.nudUnitXondr.Name = "nudUnitXondr"
+        Me.nudUnitXondr.Size = New System.Drawing.Size(103, 20)
+        Me.nudUnitXondr.TabIndex = 1
+        Me.nudUnitXondr.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.nudUnitXondr.ThousandsSeparator = True
+        '
+        'lblQnt
+        '
+        Me.lblQnt.AutoSize = True
+        Me.lblQnt.Location = New System.Drawing.Point(141, 108)
+        Me.lblQnt.Name = "lblQnt"
+        Me.lblQnt.Size = New System.Drawing.Size(58, 13)
+        Me.lblQnt.TabIndex = 6
+        Me.lblQnt.Text = "Ποσότητα"
+        '
+        'nudQnt
+        '
+        Me.nudQnt.Location = New System.Drawing.Point(144, 124)
+        Me.nudQnt.Maximum = New Decimal(New Integer() {10000, 0, 0, 0})
+        Me.nudQnt.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
+        Me.nudQnt.Name = "nudQnt"
+        Me.nudQnt.Size = New System.Drawing.Size(69, 20)
+        Me.nudQnt.TabIndex = 2
+        Me.nudQnt.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.nudQnt.Value = New Decimal(New Integer() {1, 0, 0, 0})
+        '
+        'lblFPA
+        '
+        Me.lblFPA.AutoSize = True
+        Me.lblFPA.Location = New System.Drawing.Point(231, 108)
+        Me.lblFPA.Name = "lblFPA"
+        Me.lblFPA.Size = New System.Drawing.Size(31, 13)
+        Me.lblFPA.TabIndex = 8
+        Me.lblFPA.Text = "ΦΠΑ"
+        '
+        'cboFPA
+        '
+        Me.cboFPA.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboFPA.FormattingEnabled = True
+        Me.cboFPA.Location = New System.Drawing.Point(234, 124)
+        Me.cboFPA.Name = "cboFPA"
+        Me.cboFPA.Size = New System.Drawing.Size(61, 21)
+        Me.cboFPA.TabIndex = 3
+        '
+        'lblDate
+        '
+        Me.lblDate.AutoSize = True
+        Me.lblDate.Location = New System.Drawing.Point(309, 108)
+        Me.lblDate.Name = "lblDate"
+        Me.lblDate.Size = New System.Drawing.Size(66, 13)
+        Me.lblDate.TabIndex = 10
+        Me.lblDate.Text = "Ημερομηνία"
+        '
+        'dtpDate
+        '
+        Me.dtpDate.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.dtpDate.Location = New System.Drawing.Point(312, 124)
+        Me.dtpDate.Name = "dtpDate"
+        Me.dtpDate.Size = New System.Drawing.Size(103, 20)
+        Me.dtpDate.TabIndex = 4
+        '
+        'lblTotal
+        '
+        Me.lblTotal.AutoSize = True
+        Me.lblTotal.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.lblTotal.Location = New System.Drawing.Point(11, 157)
+        Me.lblTotal.Name = "lblTotal"
+        Me.lblTotal.Size = New System.Drawing.Size(146, 15)
+        Me.lblTotal.TabIndex = 12
+        Me.lblTotal.Text = "Σύνολο Χονδρική: 0,00 €"
+        '
+        'btnSave
+        '
+        Me.btnSave.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnSave.Location = New System.Drawing.Point(263, 190)
+        Me.btnSave.Name = "btnSave"
+        Me.btnSave.Size = New System.Drawing.Size(81, 26)
+        Me.btnSave.TabIndex = 5
+        Me.btnSave.Text = "Αποθήκευση"
+        Me.btnSave.UseVisualStyleBackColor = True
+        '
+        'btnCancel
+        '
+        Me.btnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.btnCancel.Location = New System.Drawing.Point(349, 190)
+        Me.btnCancel.Name = "btnCancel"
+        Me.btnCancel.Size = New System.Drawing.Size(66, 26)
+        Me.btnCancel.TabIndex = 6
+        Me.btnCancel.Text = "Άκυρο"
+        Me.btnCancel.UseVisualStyleBackColor = True
+        '
+        'frmAddManualExchangeNonDrug
+        '
+        Me.AcceptButton = Me.btnSave
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.CancelButton = Me.btnCancel
+        Me.ClientSize = New System.Drawing.Size(425, 226)
+        Me.ControlBox = False
+        Me.Controls.Add(Me.btnCancel)
+        Me.Controls.Add(Me.btnSave)
+        Me.Controls.Add(Me.lblTotal)
+        Me.Controls.Add(Me.dtpDate)
+        Me.Controls.Add(Me.lblDate)
+        Me.Controls.Add(Me.cboFPA)
+        Me.Controls.Add(Me.lblFPA)
+        Me.Controls.Add(Me.nudQnt)
+        Me.Controls.Add(Me.lblQnt)
+        Me.Controls.Add(Me.nudUnitXondr)
+        Me.Controls.Add(Me.lblUnitXondr)
+        Me.Controls.Add(Me.txtFullName)
+        Me.Controls.Add(Me.lblFullName)
+        Me.Controls.Add(Me.lblDirection)
+        Me.Controls.Add(Me.lblTitle)
+        Me.KeyPreview = True
+        Me.MaximumSize = New System.Drawing.Size(441, 265)
+        Me.MinimumSize = New System.Drawing.Size(441, 265)
+        Me.Name = "frmAddManualExchangeNonDrug"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
+        Me.Text = "Προσθήκη μη-φαρμάκου στις Ανταλλαγές"
+        CType(Me.nudUnitXondr, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.nudQnt, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
+
+    End Sub
+
+    Friend WithEvents lblTitle As Label
+    Friend WithEvents lblDirection As Label
+    Friend WithEvents lblFullName As Label
+    Friend WithEvents txtFullName As TextBox
+    Friend WithEvents lblUnitXondr As Label
+    Friend WithEvents nudUnitXondr As NumericUpDown
+    Friend WithEvents lblQnt As Label
+    Friend WithEvents nudQnt As NumericUpDown
+    Friend WithEvents lblFPA As Label
+    Friend WithEvents cboFPA As ComboBox
+    Friend WithEvents lblDate As Label
+    Friend WithEvents dtpDate As DateTimePicker
+    Friend WithEvents lblTotal As Label
+    Friend WithEvents btnSave As Button
+    Friend WithEvents btnCancel As Button
+End Class

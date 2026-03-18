@@ -1,0 +1,91 @@
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+Partial Class frmImportExcel2Datagrid
+    Inherits System.Windows.Forms.Form
+
+    'Form overrides dispose to clean up the component list.
+    <System.Diagnostics.DebuggerNonUserCode()> _
+    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
+        Try
+            If disposing AndAlso components IsNot Nothing Then
+                components.Dispose()
+            End If
+        Finally
+            MyBase.Dispose(disposing)
+        End Try
+    End Sub
+
+    'Required by the Windows Form Designer
+    Private components As System.ComponentModel.IContainer
+
+    'NOTE: The following procedure is required by the Windows Form Designer
+    'It can be modified using the Windows Form Designer.  
+    'Do not modify it using the code editor.
+    <System.Diagnostics.DebuggerStepThrough()> _
+    Private Sub InitializeComponent()
+        Me.btnImportExcel = New System.Windows.Forms.Button()
+        Me.lblInfo = New System.Windows.Forms.Label()
+        Me.lblInfo2 = New System.Windows.Forms.Label()
+        Me.lblInfo3 = New System.Windows.Forms.Label()
+        Me.SuspendLayout()
+        '
+        'btnImportExcel
+        '
+        Me.btnImportExcel.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.btnImportExcel.Location = New System.Drawing.Point(12, 76)
+        Me.btnImportExcel.Name = "btnImportExcel"
+        Me.btnImportExcel.Size = New System.Drawing.Size(58, 23)
+        Me.btnImportExcel.TabIndex = 71
+        Me.btnImportExcel.Text = "ΚΟΡΡΕΣ"
+        Me.btnImportExcel.UseVisualStyleBackColor = True
+        '
+        'lblInfo
+        '
+        Me.lblInfo.AutoSize = True
+        Me.lblInfo.Location = New System.Drawing.Point(12, 9)
+        Me.lblInfo.Name = "lblInfo"
+        Me.lblInfo.Size = New System.Drawing.Size(39, 13)
+        Me.lblInfo.TabIndex = 72
+        Me.lblInfo.Text = "Label1"
+        '
+        'lblInfo2
+        '
+        Me.lblInfo2.AutoSize = True
+        Me.lblInfo2.Location = New System.Drawing.Point(12, 30)
+        Me.lblInfo2.Name = "lblInfo2"
+        Me.lblInfo2.Size = New System.Drawing.Size(39, 13)
+        Me.lblInfo2.TabIndex = 73
+        Me.lblInfo2.Text = "Label1"
+        '
+        'lblInfo3
+        '
+        Me.lblInfo3.AutoSize = True
+        Me.lblInfo3.Location = New System.Drawing.Point(12, 49)
+        Me.lblInfo3.Name = "lblInfo3"
+        Me.lblInfo3.Size = New System.Drawing.Size(39, 13)
+        Me.lblInfo3.TabIndex = 74
+        Me.lblInfo3.Text = "Label1"
+        '
+        'frmImportExcel2Datagrid
+        '
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(309, 114)
+        Me.Controls.Add(Me.lblInfo3)
+        Me.Controls.Add(Me.lblInfo2)
+        Me.Controls.Add(Me.lblInfo)
+        Me.Controls.Add(Me.btnImportExcel)
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
+        Me.Name = "frmImportExcel2Datagrid"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
+        Me.Text = "Εισαγωγή αρχείων Excel"
+        Me.TopMost = True
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
+
+    End Sub
+    Friend WithEvents btnImportExcel As System.Windows.Forms.Button
+    Friend WithEvents lblInfo As System.Windows.Forms.Label
+    Friend WithEvents lblInfo2 As System.Windows.Forms.Label
+    Friend WithEvents lblInfo3 As System.Windows.Forms.Label
+End Class

@@ -1,0 +1,1006 @@
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+Partial Class frmPrescriptionInfo
+    Inherits System.Windows.Forms.Form
+
+    'Form overrides dispose to clean up the component list.
+    <System.Diagnostics.DebuggerNonUserCode()> _
+    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
+        Try
+            If disposing AndAlso components IsNot Nothing Then
+                components.Dispose()
+            End If
+        Finally
+            MyBase.Dispose(disposing)
+        End Try
+    End Sub
+
+    'Required by the Windows Form Designer
+    Private components As System.ComponentModel.IContainer
+
+    'NOTE: The following procedure is required by the Windows Form Designer
+    'It can be modified using the Windows Form Designer.  
+    'Do not modify it using the code editor.
+    <System.Diagnostics.DebuggerStepThrough()> _
+    Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.txtBarcode = New System.Windows.Forms.TextBox()
+        Me.Label7 = New System.Windows.Forms.Label()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.lblCustomerName = New System.Windows.Forms.Label()
+        Me.lblDrug1 = New System.Windows.Forms.Label()
+        Me.lblDrug2 = New System.Windows.Forms.Label()
+        Me.lblDrug3 = New System.Windows.Forms.Label()
+        Me.dgvEmporikes = New System.Windows.Forms.DataGridView()
+        Me.cboDrug1 = New System.Windows.Forms.ComboBox()
+        Me.cboDrug2 = New System.Windows.Forms.ComboBox()
+        Me.cboDrug3 = New System.Windows.Forms.ComboBox()
+        Me.cboEktelesis = New System.Windows.Forms.ComboBox()
+        Me.btnEnterPrescription = New System.Windows.Forms.Button()
+        Me.lblPrescriptionProcessed = New System.Windows.Forms.Label()
+        Me.grpCustomerName = New System.Windows.Forms.GroupBox()
+        Me.Button1 = New System.Windows.Forms.Button()
+        Me.txtDrastiki = New System.Windows.Forms.TextBox()
+        Me.lblEmporikesMessage = New System.Windows.Forms.Label()
+        Me.chkAnalosima = New System.Windows.Forms.CheckBox()
+        Me.txtNotes = New System.Windows.Forms.TextBox()
+        Me.Label8 = New System.Windows.Forms.Label()
+        Me.tmrPrescription = New System.Windows.Forms.Timer(Me.components)
+        Me.dtpInitDate = New System.Windows.Forms.DateTimePicker()
+        Me.dtpEndDate = New System.Windows.Forms.DateTimePicker()
+        Me.dtpProcessedDate = New System.Windows.Forms.DateTimePicker()
+        Me.btnNext = New System.Windows.Forms.Button()
+        Me.btnPrevious = New System.Windows.Forms.Button()
+        Me.cbMultiplePrescription = New System.Windows.Forms.ComboBox()
+        Me.Label9 = New System.Windows.Forms.Label()
+        Me.lblMultimonthPrescriptionInfo = New System.Windows.Forms.Label()
+        Me.chkManualllyInsertBarcode = New System.Windows.Forms.CheckBox()
+        Me.cboDrug6 = New System.Windows.Forms.ComboBox()
+        Me.cboDrug5 = New System.Windows.Forms.ComboBox()
+        Me.cboDrug4 = New System.Windows.Forms.ComboBox()
+        Me.lblDrug6 = New System.Windows.Forms.Label()
+        Me.lblDrug5 = New System.Windows.Forms.Label()
+        Me.lblDrug4 = New System.Windows.Forms.Label()
+        Me.cboDrug9 = New System.Windows.Forms.ComboBox()
+        Me.cboDrug8 = New System.Windows.Forms.ComboBox()
+        Me.cboDrug7 = New System.Windows.Forms.ComboBox()
+        Me.lblDrug9 = New System.Windows.Forms.Label()
+        Me.lblDrug8 = New System.Windows.Forms.Label()
+        Me.lblDrug7 = New System.Windows.Forms.Label()
+        Me.cboDrug10 = New System.Windows.Forms.ComboBox()
+        Me.lblDrug10 = New System.Windows.Forms.Label()
+        Me.cboDrug20 = New System.Windows.Forms.ComboBox()
+        Me.lblDrug20 = New System.Windows.Forms.Label()
+        Me.cboDrug19 = New System.Windows.Forms.ComboBox()
+        Me.cboDrug18 = New System.Windows.Forms.ComboBox()
+        Me.cboDrug17 = New System.Windows.Forms.ComboBox()
+        Me.lblDrug19 = New System.Windows.Forms.Label()
+        Me.lblDrug18 = New System.Windows.Forms.Label()
+        Me.lblDrug17 = New System.Windows.Forms.Label()
+        Me.cboDrug16 = New System.Windows.Forms.ComboBox()
+        Me.cboDrug15 = New System.Windows.Forms.ComboBox()
+        Me.cboDrug14 = New System.Windows.Forms.ComboBox()
+        Me.lblDrug16 = New System.Windows.Forms.Label()
+        Me.lblDrug15 = New System.Windows.Forms.Label()
+        Me.lblDrug14 = New System.Windows.Forms.Label()
+        Me.cboDrug13 = New System.Windows.Forms.ComboBox()
+        Me.cboDrug12 = New System.Windows.Forms.ComboBox()
+        Me.cboDrug11 = New System.Windows.Forms.ComboBox()
+        Me.lblDrug13 = New System.Windows.Forms.Label()
+        Me.lblDrug12 = New System.Windows.Forms.Label()
+        Me.lblDrug11 = New System.Windows.Forms.Label()
+        Me.grpListDrugsInPrescription = New System.Windows.Forms.GroupBox()
+        CType(Me.dgvEmporikes, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.grpCustomerName.SuspendLayout()
+        Me.grpListDrugsInPrescription.SuspendLayout()
+        Me.SuspendLayout()
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label1.Location = New System.Drawing.Point(12, 127)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(45, 13)
+        Me.Label1.TabIndex = 45
+        Me.Label1.Text = "Έναρξη"
+        '
+        'txtBarcode
+        '
+        Me.txtBarcode.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.txtBarcode.Location = New System.Drawing.Point(202, 87)
+        Me.txtBarcode.Name = "txtBarcode"
+        Me.txtBarcode.Size = New System.Drawing.Size(128, 20)
+        Me.txtBarcode.TabIndex = 43
+        '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label7.Location = New System.Drawing.Point(199, 71)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(47, 13)
+        Me.Label7.TabIndex = 43
+        Me.Label7.Text = "Barcode"
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label2.Location = New System.Drawing.Point(119, 127)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(31, 13)
+        Me.Label2.TabIndex = 47
+        Me.Label2.Text = "Λήξη"
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label3.Location = New System.Drawing.Point(119, 71)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(54, 13)
+        Me.Label3.TabIndex = 49
+        Me.Label3.Text = "Εκτέλεση"
+        '
+        'lblCustomerName
+        '
+        Me.lblCustomerName.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblCustomerName.Location = New System.Drawing.Point(5, 16)
+        Me.lblCustomerName.Name = "lblCustomerName"
+        Me.lblCustomerName.Size = New System.Drawing.Size(366, 21)
+        Me.lblCustomerName.TabIndex = 25
+        Me.lblCustomerName.Text = "Όνομα"
+        Me.lblCustomerName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'lblDrug1
+        '
+        Me.lblDrug1.AutoSize = True
+        Me.lblDrug1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblDrug1.Location = New System.Drawing.Point(20, 37)
+        Me.lblDrug1.Name = "lblDrug1"
+        Me.lblDrug1.Size = New System.Drawing.Size(13, 13)
+        Me.lblDrug1.TabIndex = 52
+        Me.lblDrug1.Text = "1"
+        '
+        'lblDrug2
+        '
+        Me.lblDrug2.AutoSize = True
+        Me.lblDrug2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblDrug2.Location = New System.Drawing.Point(20, 62)
+        Me.lblDrug2.Name = "lblDrug2"
+        Me.lblDrug2.Size = New System.Drawing.Size(13, 13)
+        Me.lblDrug2.TabIndex = 54
+        Me.lblDrug2.Text = "2"
+        '
+        'lblDrug3
+        '
+        Me.lblDrug3.AutoSize = True
+        Me.lblDrug3.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblDrug3.Location = New System.Drawing.Point(20, 87)
+        Me.lblDrug3.Name = "lblDrug3"
+        Me.lblDrug3.Size = New System.Drawing.Size(13, 13)
+        Me.lblDrug3.TabIndex = 56
+        Me.lblDrug3.Text = "3"
+        '
+        'dgvEmporikes
+        '
+        Me.dgvEmporikes.AllowUserToAddRows = False
+        Me.dgvEmporikes.AllowUserToDeleteRows = False
+        Me.dgvEmporikes.AllowUserToResizeColumns = False
+        Me.dgvEmporikes.AllowUserToResizeRows = False
+        Me.dgvEmporikes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvEmporikes.Location = New System.Drawing.Point(473, 34)
+        Me.dgvEmporikes.Name = "dgvEmporikes"
+        Me.dgvEmporikes.ReadOnly = True
+        Me.dgvEmporikes.RowHeadersVisible = False
+        Me.dgvEmporikes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
+        Me.dgvEmporikes.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.dgvEmporikes.ShowEditingIcon = False
+        Me.dgvEmporikes.Size = New System.Drawing.Size(309, 176)
+        Me.dgvEmporikes.TabIndex = 57
+        '
+        'cboDrug1
+        '
+        Me.cboDrug1.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboDrug1.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboDrug1.DropDownWidth = 330
+        Me.cboDrug1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.cboDrug1.FormattingEnabled = True
+        Me.cboDrug1.Items.AddRange(New Object() {"ΧΩΡΙΣ"})
+        Me.cboDrug1.Location = New System.Drawing.Point(39, 32)
+        Me.cboDrug1.Name = "cboDrug1"
+        Me.cboDrug1.Size = New System.Drawing.Size(210, 23)
+        Me.cboDrug1.TabIndex = 71
+        Me.cboDrug1.Text = "ΧΩΡΙΣ"
+        '
+        'cboDrug2
+        '
+        Me.cboDrug2.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboDrug2.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboDrug2.DropDownWidth = 330
+        Me.cboDrug2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.cboDrug2.FormattingEnabled = True
+        Me.cboDrug2.Items.AddRange(New Object() {"ΧΩΡΙΣ"})
+        Me.cboDrug2.Location = New System.Drawing.Point(39, 57)
+        Me.cboDrug2.Name = "cboDrug2"
+        Me.cboDrug2.Size = New System.Drawing.Size(210, 23)
+        Me.cboDrug2.TabIndex = 72
+        Me.cboDrug2.Text = "ΧΩΡΙΣ"
+        '
+        'cboDrug3
+        '
+        Me.cboDrug3.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboDrug3.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboDrug3.DropDownWidth = 330
+        Me.cboDrug3.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.cboDrug3.FormattingEnabled = True
+        Me.cboDrug3.Items.AddRange(New Object() {"ΧΩΡΙΣ"})
+        Me.cboDrug3.Location = New System.Drawing.Point(39, 82)
+        Me.cboDrug3.Name = "cboDrug3"
+        Me.cboDrug3.Size = New System.Drawing.Size(210, 23)
+        Me.cboDrug3.TabIndex = 73
+        Me.cboDrug3.Text = "ΧΩΡΙΣ"
+        '
+        'cboEktelesis
+        '
+        Me.cboEktelesis.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboEktelesis.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboEktelesis.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.cboEktelesis.FormattingEnabled = True
+        Me.cboEktelesis.Items.AddRange(New Object() {"1η", "2η", "3η", "4η", "5η", "6η"})
+        Me.cboEktelesis.Location = New System.Drawing.Point(122, 87)
+        Me.cboEktelesis.Name = "cboEktelesis"
+        Me.cboEktelesis.Size = New System.Drawing.Size(60, 23)
+        Me.cboEktelesis.TabIndex = 42
+        Me.cboEktelesis.Text = "2η"
+        '
+        'btnEnterPrescription
+        '
+        Me.btnEnterPrescription.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.btnEnterPrescription.Location = New System.Drawing.Point(630, 233)
+        Me.btnEnterPrescription.Name = "btnEnterPrescription"
+        Me.btnEnterPrescription.Size = New System.Drawing.Size(93, 36)
+        Me.btnEnterPrescription.TabIndex = 76
+        Me.btnEnterPrescription.Text = "Εγγραφή τρίμηνης"
+        Me.btnEnterPrescription.UseVisualStyleBackColor = True
+        '
+        'lblPrescriptionProcessed
+        '
+        Me.lblPrescriptionProcessed.AutoSize = True
+        Me.lblPrescriptionProcessed.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblPrescriptionProcessed.Location = New System.Drawing.Point(246, 127)
+        Me.lblPrescriptionProcessed.Name = "lblPrescriptionProcessed"
+        Me.lblPrescriptionProcessed.Size = New System.Drawing.Size(71, 13)
+        Me.lblPrescriptionProcessed.TabIndex = 78
+        Me.lblPrescriptionProcessed.Text = "Εκτελέστηκε"
+        '
+        'grpCustomerName
+        '
+        Me.grpCustomerName.Controls.Add(Me.lblCustomerName)
+        Me.grpCustomerName.Location = New System.Drawing.Point(14, 15)
+        Me.grpCustomerName.Name = "grpCustomerName"
+        Me.grpCustomerName.Size = New System.Drawing.Size(423, 45)
+        Me.grpCustomerName.TabIndex = 50
+        Me.grpCustomerName.TabStop = False
+        '
+        'Button1
+        '
+        Me.Button1.Font = New System.Drawing.Font("Microsoft Sans Serif", 6.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Button1.Location = New System.Drawing.Point(354, 141)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(29, 25)
+        Me.Button1.TabIndex = 79
+        Me.Button1.Text = "OK"
+        Me.Button1.UseVisualStyleBackColor = True
+        '
+        'txtDrastiki
+        '
+        Me.txtDrastiki.BackColor = System.Drawing.SystemColors.ScrollBar
+        Me.txtDrastiki.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.txtDrastiki.Location = New System.Drawing.Point(473, 15)
+        Me.txtDrastiki.Name = "txtDrastiki"
+        Me.txtDrastiki.ReadOnly = True
+        Me.txtDrastiki.Size = New System.Drawing.Size(309, 20)
+        Me.txtDrastiki.TabIndex = 80
+        '
+        'lblEmporikesMessage
+        '
+        Me.lblEmporikesMessage.AutoSize = True
+        Me.lblEmporikesMessage.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblEmporikesMessage.Location = New System.Drawing.Point(657, 214)
+        Me.lblEmporikesMessage.Name = "lblEmporikesMessage"
+        Me.lblEmporikesMessage.Size = New System.Drawing.Size(25, 13)
+        Me.lblEmporikesMessage.TabIndex = 81
+        Me.lblEmporikesMessage.Text = "???"
+        '
+        'chkAnalosima
+        '
+        Me.chkAnalosima.Location = New System.Drawing.Point(16, 178)
+        Me.chkAnalosima.Name = "chkAnalosima"
+        Me.chkAnalosima.Size = New System.Drawing.Size(91, 30)
+        Me.chkAnalosima.TabIndex = 82
+        Me.chkAnalosima.Text = "Αναλώσιμα"
+        Me.chkAnalosima.UseVisualStyleBackColor = True
+        '
+        'txtNotes
+        '
+        Me.txtNotes.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.txtNotes.Location = New System.Drawing.Point(605, 301)
+        Me.txtNotes.Multiline = True
+        Me.txtNotes.Name = "txtNotes"
+        Me.txtNotes.Size = New System.Drawing.Size(151, 56)
+        Me.txtNotes.TabIndex = 83
+        '
+        'Label8
+        '
+        Me.Label8.AutoSize = True
+        Me.Label8.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label8.Location = New System.Drawing.Point(602, 285)
+        Me.Label8.Name = "Label8"
+        Me.Label8.Size = New System.Drawing.Size(80, 13)
+        Me.Label8.TabIndex = 84
+        Me.Label8.Text = "Παρατηρήσεις"
+        '
+        'tmrPrescription
+        '
+        Me.tmrPrescription.Interval = 500
+        '
+        'dtpInitDate
+        '
+        Me.dtpInitDate.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.dtpInitDate.Location = New System.Drawing.Point(15, 143)
+        Me.dtpInitDate.Name = "dtpInitDate"
+        Me.dtpInitDate.Size = New System.Drawing.Size(100, 20)
+        Me.dtpInitDate.TabIndex = 85
+        '
+        'dtpEndDate
+        '
+        Me.dtpEndDate.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.dtpEndDate.Location = New System.Drawing.Point(122, 143)
+        Me.dtpEndDate.Name = "dtpEndDate"
+        Me.dtpEndDate.Size = New System.Drawing.Size(100, 20)
+        Me.dtpEndDate.TabIndex = 86
+        '
+        'dtpProcessedDate
+        '
+        Me.dtpProcessedDate.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.dtpProcessedDate.Location = New System.Drawing.Point(249, 143)
+        Me.dtpProcessedDate.Name = "dtpProcessedDate"
+        Me.dtpProcessedDate.ShowCheckBox = True
+        Me.dtpProcessedDate.Size = New System.Drawing.Size(100, 20)
+        Me.dtpProcessedDate.TabIndex = 87
+        '
+        'btnNext
+        '
+        Me.btnNext.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.btnNext.Location = New System.Drawing.Point(729, 238)
+        Me.btnNext.Name = "btnNext"
+        Me.btnNext.Size = New System.Drawing.Size(19, 25)
+        Me.btnNext.TabIndex = 88
+        Me.btnNext.Text = ">"
+        Me.btnNext.UseVisualStyleBackColor = True
+        '
+        'btnPrevious
+        '
+        Me.btnPrevious.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.btnPrevious.Location = New System.Drawing.Point(605, 238)
+        Me.btnPrevious.Name = "btnPrevious"
+        Me.btnPrevious.Size = New System.Drawing.Size(19, 25)
+        Me.btnPrevious.TabIndex = 89
+        Me.btnPrevious.Text = "<"
+        Me.btnPrevious.UseVisualStyleBackColor = True
+        '
+        'cbMultiplePrescription
+        '
+        Me.cbMultiplePrescription.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cbMultiplePrescription.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cbMultiplePrescription.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.cbMultiplePrescription.FormattingEnabled = True
+        Me.cbMultiplePrescription.Items.AddRange(New Object() {"Δίμηνη", "Τρίμηνη", "Εξάμηνη"})
+        Me.cbMultiplePrescription.Location = New System.Drawing.Point(17, 85)
+        Me.cbMultiplePrescription.Name = "cbMultiplePrescription"
+        Me.cbMultiplePrescription.Size = New System.Drawing.Size(76, 23)
+        Me.cbMultiplePrescription.TabIndex = 41
+        Me.cbMultiplePrescription.Text = "Τρίμηνη"
+        '
+        'Label9
+        '
+        Me.Label9.AutoSize = True
+        Me.Label9.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label9.Location = New System.Drawing.Point(14, 69)
+        Me.Label9.Name = "Label9"
+        Me.Label9.Size = New System.Drawing.Size(60, 13)
+        Me.Label9.TabIndex = 90
+        Me.Label9.Text = "Κατηγορία"
+        '
+        'lblMultimonthPrescriptionInfo
+        '
+        Me.lblMultimonthPrescriptionInfo.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblMultimonthPrescriptionInfo.ForeColor = System.Drawing.Color.DarkRed
+        Me.lblMultimonthPrescriptionInfo.Location = New System.Drawing.Point(14, 4)
+        Me.lblMultimonthPrescriptionInfo.Name = "lblMultimonthPrescriptionInfo"
+        Me.lblMultimonthPrescriptionInfo.Size = New System.Drawing.Size(377, 13)
+        Me.lblMultimonthPrescriptionInfo.TabIndex = 92
+        Me.lblMultimonthPrescriptionInfo.Text = "Καταχώρηση πολυμηνιαίας συνταγής:  #2"
+        Me.lblMultimonthPrescriptionInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'chkManualllyInsertBarcode
+        '
+        Me.chkManualllyInsertBarcode.Location = New System.Drawing.Point(336, 91)
+        Me.chkManualllyInsertBarcode.Name = "chkManualllyInsertBarcode"
+        Me.chkManualllyInsertBarcode.Size = New System.Drawing.Size(66, 16)
+        Me.chkManualllyInsertBarcode.TabIndex = 93
+        Me.chkManualllyInsertBarcode.Text = "Manual"
+        Me.chkManualllyInsertBarcode.UseVisualStyleBackColor = True
+        '
+        'cboDrug6
+        '
+        Me.cboDrug6.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboDrug6.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboDrug6.DropDownWidth = 330
+        Me.cboDrug6.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.cboDrug6.FormattingEnabled = True
+        Me.cboDrug6.Items.AddRange(New Object() {"ΧΩΡΙΣ"})
+        Me.cboDrug6.Location = New System.Drawing.Point(39, 157)
+        Me.cboDrug6.Name = "cboDrug6"
+        Me.cboDrug6.Size = New System.Drawing.Size(210, 23)
+        Me.cboDrug6.TabIndex = 99
+        Me.cboDrug6.Text = "ΧΩΡΙΣ"
+        '
+        'cboDrug5
+        '
+        Me.cboDrug5.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboDrug5.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboDrug5.DropDownWidth = 330
+        Me.cboDrug5.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.cboDrug5.FormattingEnabled = True
+        Me.cboDrug5.Items.AddRange(New Object() {"ΧΩΡΙΣ"})
+        Me.cboDrug5.Location = New System.Drawing.Point(39, 132)
+        Me.cboDrug5.Name = "cboDrug5"
+        Me.cboDrug5.Size = New System.Drawing.Size(210, 23)
+        Me.cboDrug5.TabIndex = 98
+        Me.cboDrug5.Text = "ΧΩΡΙΣ"
+        '
+        'cboDrug4
+        '
+        Me.cboDrug4.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboDrug4.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboDrug4.DropDownWidth = 330
+        Me.cboDrug4.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.cboDrug4.FormattingEnabled = True
+        Me.cboDrug4.Items.AddRange(New Object() {"ΧΩΡΙΣ"})
+        Me.cboDrug4.Location = New System.Drawing.Point(39, 107)
+        Me.cboDrug4.Name = "cboDrug4"
+        Me.cboDrug4.Size = New System.Drawing.Size(210, 23)
+        Me.cboDrug4.TabIndex = 97
+        Me.cboDrug4.Text = "ΧΩΡΙΣ"
+        '
+        'lblDrug6
+        '
+        Me.lblDrug6.AutoSize = True
+        Me.lblDrug6.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblDrug6.Location = New System.Drawing.Point(20, 162)
+        Me.lblDrug6.Name = "lblDrug6"
+        Me.lblDrug6.Size = New System.Drawing.Size(13, 13)
+        Me.lblDrug6.TabIndex = 96
+        Me.lblDrug6.Text = "6"
+        '
+        'lblDrug5
+        '
+        Me.lblDrug5.AutoSize = True
+        Me.lblDrug5.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblDrug5.Location = New System.Drawing.Point(20, 137)
+        Me.lblDrug5.Name = "lblDrug5"
+        Me.lblDrug5.Size = New System.Drawing.Size(13, 13)
+        Me.lblDrug5.TabIndex = 95
+        Me.lblDrug5.Text = "5"
+        '
+        'lblDrug4
+        '
+        Me.lblDrug4.AutoSize = True
+        Me.lblDrug4.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblDrug4.Location = New System.Drawing.Point(20, 112)
+        Me.lblDrug4.Name = "lblDrug4"
+        Me.lblDrug4.Size = New System.Drawing.Size(13, 13)
+        Me.lblDrug4.TabIndex = 94
+        Me.lblDrug4.Text = "4"
+        '
+        'cboDrug9
+        '
+        Me.cboDrug9.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboDrug9.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboDrug9.DropDownWidth = 330
+        Me.cboDrug9.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.cboDrug9.FormattingEnabled = True
+        Me.cboDrug9.Items.AddRange(New Object() {"ΧΩΡΙΣ"})
+        Me.cboDrug9.Location = New System.Drawing.Point(39, 233)
+        Me.cboDrug9.Name = "cboDrug9"
+        Me.cboDrug9.Size = New System.Drawing.Size(210, 23)
+        Me.cboDrug9.TabIndex = 105
+        Me.cboDrug9.Text = "ΧΩΡΙΣ"
+        '
+        'cboDrug8
+        '
+        Me.cboDrug8.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboDrug8.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboDrug8.DropDownWidth = 330
+        Me.cboDrug8.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.cboDrug8.FormattingEnabled = True
+        Me.cboDrug8.Items.AddRange(New Object() {"ΧΩΡΙΣ"})
+        Me.cboDrug8.Location = New System.Drawing.Point(39, 208)
+        Me.cboDrug8.Name = "cboDrug8"
+        Me.cboDrug8.Size = New System.Drawing.Size(210, 23)
+        Me.cboDrug8.TabIndex = 104
+        Me.cboDrug8.Text = "ΧΩΡΙΣ"
+        '
+        'cboDrug7
+        '
+        Me.cboDrug7.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboDrug7.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboDrug7.DropDownWidth = 330
+        Me.cboDrug7.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.cboDrug7.FormattingEnabled = True
+        Me.cboDrug7.Items.AddRange(New Object() {"ΧΩΡΙΣ"})
+        Me.cboDrug7.Location = New System.Drawing.Point(39, 183)
+        Me.cboDrug7.Name = "cboDrug7"
+        Me.cboDrug7.Size = New System.Drawing.Size(210, 23)
+        Me.cboDrug7.TabIndex = 103
+        Me.cboDrug7.Text = "ΧΩΡΙΣ"
+        '
+        'lblDrug9
+        '
+        Me.lblDrug9.AutoSize = True
+        Me.lblDrug9.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblDrug9.Location = New System.Drawing.Point(20, 238)
+        Me.lblDrug9.Name = "lblDrug9"
+        Me.lblDrug9.Size = New System.Drawing.Size(13, 13)
+        Me.lblDrug9.TabIndex = 102
+        Me.lblDrug9.Text = "9"
+        '
+        'lblDrug8
+        '
+        Me.lblDrug8.AutoSize = True
+        Me.lblDrug8.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblDrug8.Location = New System.Drawing.Point(20, 213)
+        Me.lblDrug8.Name = "lblDrug8"
+        Me.lblDrug8.Size = New System.Drawing.Size(13, 13)
+        Me.lblDrug8.TabIndex = 101
+        Me.lblDrug8.Text = "8"
+        '
+        'lblDrug7
+        '
+        Me.lblDrug7.AutoSize = True
+        Me.lblDrug7.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblDrug7.Location = New System.Drawing.Point(20, 188)
+        Me.lblDrug7.Name = "lblDrug7"
+        Me.lblDrug7.Size = New System.Drawing.Size(13, 13)
+        Me.lblDrug7.TabIndex = 100
+        Me.lblDrug7.Text = "7"
+        '
+        'cboDrug10
+        '
+        Me.cboDrug10.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboDrug10.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboDrug10.DropDownWidth = 330
+        Me.cboDrug10.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.cboDrug10.FormattingEnabled = True
+        Me.cboDrug10.Items.AddRange(New Object() {"ΧΩΡΙΣ"})
+        Me.cboDrug10.Location = New System.Drawing.Point(39, 258)
+        Me.cboDrug10.Name = "cboDrug10"
+        Me.cboDrug10.Size = New System.Drawing.Size(210, 23)
+        Me.cboDrug10.TabIndex = 107
+        Me.cboDrug10.Text = "ΧΩΡΙΣ"
+        '
+        'lblDrug10
+        '
+        Me.lblDrug10.AutoSize = True
+        Me.lblDrug10.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblDrug10.Location = New System.Drawing.Point(20, 263)
+        Me.lblDrug10.Name = "lblDrug10"
+        Me.lblDrug10.Size = New System.Drawing.Size(19, 13)
+        Me.lblDrug10.TabIndex = 106
+        Me.lblDrug10.Text = "10"
+        '
+        'cboDrug20
+        '
+        Me.cboDrug20.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboDrug20.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboDrug20.DropDownWidth = 330
+        Me.cboDrug20.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.cboDrug20.FormattingEnabled = True
+        Me.cboDrug20.Items.AddRange(New Object() {"ΧΩΡΙΣ"})
+        Me.cboDrug20.Location = New System.Drawing.Point(291, 258)
+        Me.cboDrug20.Name = "cboDrug20"
+        Me.cboDrug20.Size = New System.Drawing.Size(206, 23)
+        Me.cboDrug20.TabIndex = 127
+        Me.cboDrug20.Text = "ΧΩΡΙΣ"
+        '
+        'lblDrug20
+        '
+        Me.lblDrug20.AutoSize = True
+        Me.lblDrug20.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblDrug20.Location = New System.Drawing.Point(266, 263)
+        Me.lblDrug20.Name = "lblDrug20"
+        Me.lblDrug20.Size = New System.Drawing.Size(19, 13)
+        Me.lblDrug20.TabIndex = 126
+        Me.lblDrug20.Text = "20"
+        '
+        'cboDrug19
+        '
+        Me.cboDrug19.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboDrug19.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboDrug19.DropDownWidth = 330
+        Me.cboDrug19.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.cboDrug19.FormattingEnabled = True
+        Me.cboDrug19.Items.AddRange(New Object() {"ΧΩΡΙΣ"})
+        Me.cboDrug19.Location = New System.Drawing.Point(291, 233)
+        Me.cboDrug19.Name = "cboDrug19"
+        Me.cboDrug19.Size = New System.Drawing.Size(206, 23)
+        Me.cboDrug19.TabIndex = 125
+        Me.cboDrug19.Text = "ΧΩΡΙΣ"
+        '
+        'cboDrug18
+        '
+        Me.cboDrug18.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboDrug18.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboDrug18.DropDownWidth = 330
+        Me.cboDrug18.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.cboDrug18.FormattingEnabled = True
+        Me.cboDrug18.Items.AddRange(New Object() {"ΧΩΡΙΣ"})
+        Me.cboDrug18.Location = New System.Drawing.Point(291, 208)
+        Me.cboDrug18.Name = "cboDrug18"
+        Me.cboDrug18.Size = New System.Drawing.Size(206, 23)
+        Me.cboDrug18.TabIndex = 124
+        Me.cboDrug18.Text = "ΧΩΡΙΣ"
+        '
+        'cboDrug17
+        '
+        Me.cboDrug17.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboDrug17.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboDrug17.DropDownWidth = 330
+        Me.cboDrug17.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.cboDrug17.FormattingEnabled = True
+        Me.cboDrug17.Items.AddRange(New Object() {"ΧΩΡΙΣ"})
+        Me.cboDrug17.Location = New System.Drawing.Point(291, 183)
+        Me.cboDrug17.Name = "cboDrug17"
+        Me.cboDrug17.Size = New System.Drawing.Size(206, 23)
+        Me.cboDrug17.TabIndex = 123
+        Me.cboDrug17.Text = "ΧΩΡΙΣ"
+        '
+        'lblDrug19
+        '
+        Me.lblDrug19.AutoSize = True
+        Me.lblDrug19.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblDrug19.Location = New System.Drawing.Point(266, 238)
+        Me.lblDrug19.Name = "lblDrug19"
+        Me.lblDrug19.Size = New System.Drawing.Size(19, 13)
+        Me.lblDrug19.TabIndex = 122
+        Me.lblDrug19.Text = "19"
+        '
+        'lblDrug18
+        '
+        Me.lblDrug18.AutoSize = True
+        Me.lblDrug18.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblDrug18.Location = New System.Drawing.Point(266, 213)
+        Me.lblDrug18.Name = "lblDrug18"
+        Me.lblDrug18.Size = New System.Drawing.Size(19, 13)
+        Me.lblDrug18.TabIndex = 121
+        Me.lblDrug18.Text = "18"
+        '
+        'lblDrug17
+        '
+        Me.lblDrug17.AutoSize = True
+        Me.lblDrug17.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblDrug17.Location = New System.Drawing.Point(266, 188)
+        Me.lblDrug17.Name = "lblDrug17"
+        Me.lblDrug17.Size = New System.Drawing.Size(19, 13)
+        Me.lblDrug17.TabIndex = 120
+        Me.lblDrug17.Text = "17"
+        '
+        'cboDrug16
+        '
+        Me.cboDrug16.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboDrug16.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboDrug16.DropDownWidth = 330
+        Me.cboDrug16.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.cboDrug16.FormattingEnabled = True
+        Me.cboDrug16.Items.AddRange(New Object() {"ΧΩΡΙΣ"})
+        Me.cboDrug16.Location = New System.Drawing.Point(291, 157)
+        Me.cboDrug16.Name = "cboDrug16"
+        Me.cboDrug16.Size = New System.Drawing.Size(206, 23)
+        Me.cboDrug16.TabIndex = 119
+        Me.cboDrug16.Text = "ΧΩΡΙΣ"
+        '
+        'cboDrug15
+        '
+        Me.cboDrug15.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboDrug15.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboDrug15.DropDownWidth = 330
+        Me.cboDrug15.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.cboDrug15.FormattingEnabled = True
+        Me.cboDrug15.Items.AddRange(New Object() {"ΧΩΡΙΣ"})
+        Me.cboDrug15.Location = New System.Drawing.Point(291, 132)
+        Me.cboDrug15.Name = "cboDrug15"
+        Me.cboDrug15.Size = New System.Drawing.Size(206, 23)
+        Me.cboDrug15.TabIndex = 118
+        Me.cboDrug15.Text = "ΧΩΡΙΣ"
+        '
+        'cboDrug14
+        '
+        Me.cboDrug14.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboDrug14.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboDrug14.DropDownWidth = 330
+        Me.cboDrug14.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.cboDrug14.FormattingEnabled = True
+        Me.cboDrug14.Items.AddRange(New Object() {"ΧΩΡΙΣ"})
+        Me.cboDrug14.Location = New System.Drawing.Point(291, 107)
+        Me.cboDrug14.Name = "cboDrug14"
+        Me.cboDrug14.Size = New System.Drawing.Size(206, 23)
+        Me.cboDrug14.TabIndex = 117
+        Me.cboDrug14.Text = "ΧΩΡΙΣ"
+        '
+        'lblDrug16
+        '
+        Me.lblDrug16.AutoSize = True
+        Me.lblDrug16.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblDrug16.Location = New System.Drawing.Point(266, 162)
+        Me.lblDrug16.Name = "lblDrug16"
+        Me.lblDrug16.Size = New System.Drawing.Size(19, 13)
+        Me.lblDrug16.TabIndex = 116
+        Me.lblDrug16.Text = "16"
+        '
+        'lblDrug15
+        '
+        Me.lblDrug15.AutoSize = True
+        Me.lblDrug15.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblDrug15.Location = New System.Drawing.Point(266, 137)
+        Me.lblDrug15.Name = "lblDrug15"
+        Me.lblDrug15.Size = New System.Drawing.Size(19, 13)
+        Me.lblDrug15.TabIndex = 115
+        Me.lblDrug15.Text = "15"
+        '
+        'lblDrug14
+        '
+        Me.lblDrug14.AutoSize = True
+        Me.lblDrug14.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblDrug14.Location = New System.Drawing.Point(266, 112)
+        Me.lblDrug14.Name = "lblDrug14"
+        Me.lblDrug14.Size = New System.Drawing.Size(19, 13)
+        Me.lblDrug14.TabIndex = 114
+        Me.lblDrug14.Text = "14"
+        '
+        'cboDrug13
+        '
+        Me.cboDrug13.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboDrug13.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboDrug13.DropDownWidth = 330
+        Me.cboDrug13.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.cboDrug13.FormattingEnabled = True
+        Me.cboDrug13.Items.AddRange(New Object() {"ΧΩΡΙΣ"})
+        Me.cboDrug13.Location = New System.Drawing.Point(291, 82)
+        Me.cboDrug13.Name = "cboDrug13"
+        Me.cboDrug13.Size = New System.Drawing.Size(206, 23)
+        Me.cboDrug13.TabIndex = 113
+        Me.cboDrug13.Text = "ΧΩΡΙΣ"
+        '
+        'cboDrug12
+        '
+        Me.cboDrug12.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboDrug12.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboDrug12.DropDownWidth = 330
+        Me.cboDrug12.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.cboDrug12.FormattingEnabled = True
+        Me.cboDrug12.Items.AddRange(New Object() {"ΧΩΡΙΣ"})
+        Me.cboDrug12.Location = New System.Drawing.Point(291, 57)
+        Me.cboDrug12.Name = "cboDrug12"
+        Me.cboDrug12.Size = New System.Drawing.Size(206, 23)
+        Me.cboDrug12.TabIndex = 112
+        Me.cboDrug12.Text = "ΧΩΡΙΣ"
+        '
+        'cboDrug11
+        '
+        Me.cboDrug11.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboDrug11.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboDrug11.DropDownWidth = 330
+        Me.cboDrug11.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.cboDrug11.FormattingEnabled = True
+        Me.cboDrug11.Items.AddRange(New Object() {"ΧΩΡΙΣ"})
+        Me.cboDrug11.Location = New System.Drawing.Point(291, 32)
+        Me.cboDrug11.Name = "cboDrug11"
+        Me.cboDrug11.Size = New System.Drawing.Size(206, 23)
+        Me.cboDrug11.TabIndex = 111
+        Me.cboDrug11.Text = "ΧΩΡΙΣ"
+        '
+        'lblDrug13
+        '
+        Me.lblDrug13.AutoSize = True
+        Me.lblDrug13.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblDrug13.Location = New System.Drawing.Point(266, 87)
+        Me.lblDrug13.Name = "lblDrug13"
+        Me.lblDrug13.Size = New System.Drawing.Size(19, 13)
+        Me.lblDrug13.TabIndex = 110
+        Me.lblDrug13.Text = "13"
+        '
+        'lblDrug12
+        '
+        Me.lblDrug12.AutoSize = True
+        Me.lblDrug12.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblDrug12.Location = New System.Drawing.Point(266, 62)
+        Me.lblDrug12.Name = "lblDrug12"
+        Me.lblDrug12.Size = New System.Drawing.Size(19, 13)
+        Me.lblDrug12.TabIndex = 109
+        Me.lblDrug12.Text = "12"
+        '
+        'lblDrug11
+        '
+        Me.lblDrug11.AutoSize = True
+        Me.lblDrug11.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblDrug11.Location = New System.Drawing.Point(266, 37)
+        Me.lblDrug11.Name = "lblDrug11"
+        Me.lblDrug11.Size = New System.Drawing.Size(19, 13)
+        Me.lblDrug11.TabIndex = 108
+        Me.lblDrug11.Text = "11"
+        '
+        'grpListDrugsInPrescription
+        '
+        Me.grpListDrugsInPrescription.Controls.Add(Me.cboDrug11)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.cboDrug20)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.lblDrug1)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.lblDrug2)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.cboDrug19)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.lblDrug3)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.cboDrug18)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.cboDrug1)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.cboDrug17)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.cboDrug2)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.cboDrug3)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.lblDrug4)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.lblDrug5)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.cboDrug16)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.lblDrug6)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.cboDrug15)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.cboDrug4)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.cboDrug14)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.cboDrug5)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.cboDrug6)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.lblDrug7)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.lblDrug8)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.cboDrug13)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.lblDrug9)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.cboDrug12)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.cboDrug7)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.cboDrug8)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.cboDrug9)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.lblDrug10)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.cboDrug10)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.lblDrug20)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.lblDrug19)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.lblDrug18)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.lblDrug17)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.lblDrug16)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.lblDrug15)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.lblDrug14)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.lblDrug13)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.lblDrug12)
+        Me.grpListDrugsInPrescription.Controls.Add(Me.lblDrug11)
+        Me.grpListDrugsInPrescription.Location = New System.Drawing.Point(17, 214)
+        Me.grpListDrugsInPrescription.Name = "grpListDrugsInPrescription"
+        Me.grpListDrugsInPrescription.Size = New System.Drawing.Size(526, 301)
+        Me.grpListDrugsInPrescription.TabIndex = 128
+        Me.grpListDrugsInPrescription.TabStop = False
+        Me.grpListDrugsInPrescription.Text = "Λίστα δραστικών ουσιών"
+        '
+        'frmPrescriptionInfo
+        '
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(809, 528)
+        Me.Controls.Add(Me.grpListDrugsInPrescription)
+        Me.Controls.Add(Me.chkManualllyInsertBarcode)
+        Me.Controls.Add(Me.lblMultimonthPrescriptionInfo)
+        Me.Controls.Add(Me.cbMultiplePrescription)
+        Me.Controls.Add(Me.Label9)
+        Me.Controls.Add(Me.btnPrevious)
+        Me.Controls.Add(Me.btnNext)
+        Me.Controls.Add(Me.dtpProcessedDate)
+        Me.Controls.Add(Me.dtpEndDate)
+        Me.Controls.Add(Me.dtpInitDate)
+        Me.Controls.Add(Me.txtNotes)
+        Me.Controls.Add(Me.Label8)
+        Me.Controls.Add(Me.chkAnalosima)
+        Me.Controls.Add(Me.lblEmporikesMessage)
+        Me.Controls.Add(Me.txtDrastiki)
+        Me.Controls.Add(Me.Button1)
+        Me.Controls.Add(Me.lblPrescriptionProcessed)
+        Me.Controls.Add(Me.btnEnterPrescription)
+        Me.Controls.Add(Me.cboEktelesis)
+        Me.Controls.Add(Me.dgvEmporikes)
+        Me.Controls.Add(Me.grpCustomerName)
+        Me.Controls.Add(Me.Label3)
+        Me.Controls.Add(Me.Label2)
+        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.txtBarcode)
+        Me.Controls.Add(Me.Label7)
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
+        Me.Name = "frmPrescriptionInfo"
+        Me.Text = "Στοιχεία Συνταγών"
+        CType(Me.dgvEmporikes, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.grpCustomerName.ResumeLayout(False)
+        Me.grpListDrugsInPrescription.ResumeLayout(False)
+        Me.grpListDrugsInPrescription.PerformLayout()
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
+
+    End Sub
+    Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents txtBarcode As System.Windows.Forms.TextBox
+    Friend WithEvents Label7 As System.Windows.Forms.Label
+    Friend WithEvents Label2 As System.Windows.Forms.Label
+    Friend WithEvents Label3 As System.Windows.Forms.Label
+    Friend WithEvents lblCustomerName As System.Windows.Forms.Label
+    Friend WithEvents lblDrug1 As System.Windows.Forms.Label
+    Friend WithEvents lblDrug2 As System.Windows.Forms.Label
+    Friend WithEvents lblDrug3 As System.Windows.Forms.Label
+    Friend WithEvents dgvEmporikes As System.Windows.Forms.DataGridView
+    Friend WithEvents cboDrug1 As System.Windows.Forms.ComboBox
+    Friend WithEvents cboDrug2 As System.Windows.Forms.ComboBox
+    Friend WithEvents cboDrug3 As System.Windows.Forms.ComboBox
+    Friend WithEvents cboEktelesis As System.Windows.Forms.ComboBox
+    Friend WithEvents btnEnterPrescription As System.Windows.Forms.Button
+    Friend WithEvents lblPrescriptionProcessed As System.Windows.Forms.Label
+    Friend WithEvents grpCustomerName As System.Windows.Forms.GroupBox
+    Friend WithEvents Button1 As System.Windows.Forms.Button
+    Friend WithEvents txtDrastiki As System.Windows.Forms.TextBox
+    Friend WithEvents lblEmporikesMessage As System.Windows.Forms.Label
+    Friend WithEvents chkAnalosima As System.Windows.Forms.CheckBox
+    Friend WithEvents txtNotes As System.Windows.Forms.TextBox
+    Friend WithEvents Label8 As System.Windows.Forms.Label
+    Friend WithEvents tmrPrescription As System.Windows.Forms.Timer
+    Friend WithEvents dtpInitDate As System.Windows.Forms.DateTimePicker
+    Friend WithEvents dtpEndDate As System.Windows.Forms.DateTimePicker
+    Friend WithEvents dtpProcessedDate As System.Windows.Forms.DateTimePicker
+    Friend WithEvents btnNext As System.Windows.Forms.Button
+    Friend WithEvents btnPrevious As System.Windows.Forms.Button
+    Friend WithEvents cbMultiplePrescription As System.Windows.Forms.ComboBox
+    Friend WithEvents Label9 As System.Windows.Forms.Label
+    Friend WithEvents lblMultimonthPrescriptionInfo As System.Windows.Forms.Label
+    Friend WithEvents chkManualllyInsertBarcode As System.Windows.Forms.CheckBox
+    Friend WithEvents cboDrug6 As System.Windows.Forms.ComboBox
+    Friend WithEvents cboDrug5 As System.Windows.Forms.ComboBox
+    Friend WithEvents cboDrug4 As System.Windows.Forms.ComboBox
+    Friend WithEvents lblDrug6 As System.Windows.Forms.Label
+    Friend WithEvents lblDrug5 As System.Windows.Forms.Label
+    Friend WithEvents lblDrug4 As System.Windows.Forms.Label
+    Friend WithEvents cboDrug9 As System.Windows.Forms.ComboBox
+    Friend WithEvents cboDrug8 As System.Windows.Forms.ComboBox
+    Friend WithEvents cboDrug7 As System.Windows.Forms.ComboBox
+    Friend WithEvents lblDrug9 As System.Windows.Forms.Label
+    Friend WithEvents lblDrug8 As System.Windows.Forms.Label
+    Friend WithEvents lblDrug7 As System.Windows.Forms.Label
+    Friend WithEvents cboDrug10 As System.Windows.Forms.ComboBox
+    Friend WithEvents lblDrug10 As System.Windows.Forms.Label
+    Friend WithEvents cboDrug20 As System.Windows.Forms.ComboBox
+    Friend WithEvents lblDrug20 As System.Windows.Forms.Label
+    Friend WithEvents cboDrug19 As System.Windows.Forms.ComboBox
+    Friend WithEvents cboDrug18 As System.Windows.Forms.ComboBox
+    Friend WithEvents cboDrug17 As System.Windows.Forms.ComboBox
+    Friend WithEvents lblDrug19 As System.Windows.Forms.Label
+    Friend WithEvents lblDrug18 As System.Windows.Forms.Label
+    Friend WithEvents lblDrug17 As System.Windows.Forms.Label
+    Friend WithEvents cboDrug16 As System.Windows.Forms.ComboBox
+    Friend WithEvents cboDrug15 As System.Windows.Forms.ComboBox
+    Friend WithEvents cboDrug14 As System.Windows.Forms.ComboBox
+    Friend WithEvents lblDrug16 As System.Windows.Forms.Label
+    Friend WithEvents lblDrug15 As System.Windows.Forms.Label
+    Friend WithEvents lblDrug14 As System.Windows.Forms.Label
+    Friend WithEvents cboDrug13 As System.Windows.Forms.ComboBox
+    Friend WithEvents cboDrug12 As System.Windows.Forms.ComboBox
+    Friend WithEvents cboDrug11 As System.Windows.Forms.ComboBox
+    Friend WithEvents lblDrug13 As System.Windows.Forms.Label
+    Friend WithEvents lblDrug12 As System.Windows.Forms.Label
+    Friend WithEvents lblDrug11 As System.Windows.Forms.Label
+    Friend WithEvents grpListDrugsInPrescription As System.Windows.Forms.GroupBox
+End Class

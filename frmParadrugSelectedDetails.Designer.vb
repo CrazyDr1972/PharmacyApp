@@ -1,0 +1,430 @@
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+Partial Class frmParadrugSelectedDetails
+    Inherits System.Windows.Forms.Form
+
+    'Form overrides dispose to clean up the component list.
+    <System.Diagnostics.DebuggerNonUserCode()> _
+    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
+        Try
+            If disposing AndAlso components IsNot Nothing Then
+                components.Dispose()
+            End If
+        Finally
+            MyBase.Dispose(disposing)
+        End Try
+    End Sub
+
+    'Required by the Windows Form Designer
+    Private components As System.ComponentModel.IContainer
+
+    'NOTE: The following procedure is required by the Windows Form Designer
+    'It can be modified using the Windows Form Designer.  
+    'Do not modify it using the code editor.
+    <System.Diagnostics.DebuggerStepThrough()> _
+    Private Sub InitializeComponent()
+        Me.GroupBox3 = New System.Windows.Forms.GroupBox()
+        Me.lblParadrugMorfi = New System.Windows.Forms.Label()
+        Me.lblParadrugName = New System.Windows.Forms.Label()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.lblXondr = New System.Windows.Forms.Label()
+        Me.lblLian = New System.Windows.Forms.Label()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.btnEdit = New System.Windows.Forms.Button()
+        Me.btnDeleteCode = New System.Windows.Forms.Button()
+        Me.chkNarkvtiko = New System.Windows.Forms.CheckBox()
+        Me.chkNosokomeiako = New System.Windows.Forms.CheckBox()
+        Me.lblBarcode = New System.Windows.Forms.Label()
+        Me.Label4 = New System.Windows.Forms.Label()
+        Me.lblDrastiki = New System.Windows.Forms.Label()
+        Me.Label5 = New System.Windows.Forms.Label()
+        Me.lblIndication = New System.Windows.Forms.Label()
+        Me.Label6 = New System.Windows.Forms.Label()
+        Me.lblDosologia = New System.Windows.Forms.Label()
+        Me.Label7 = New System.Windows.Forms.Label()
+        Me.lblEidos = New System.Windows.Forms.Label()
+        Me.Label9 = New System.Windows.Forms.Label()
+        Me.chkIFET = New System.Windows.Forms.CheckBox()
+        Me.lblCategory = New System.Windows.Forms.Label()
+        Me.Label11 = New System.Windows.Forms.Label()
+        Me.lblYpokathgoria = New System.Windows.Forms.Label()
+        Me.Label12 = New System.Windows.Forms.Label()
+        Me.lblFPA = New System.Windows.Forms.Label()
+        Me.Label8 = New System.Windows.Forms.Label()
+        Me.lblNotes = New System.Windows.Forms.Label()
+        Me.Label10 = New System.Windows.Forms.Label()
+        Me.GroupBox3.SuspendLayout()
+        Me.SuspendLayout()
+        '
+        'GroupBox3
+        '
+        Me.GroupBox3.Controls.Add(Me.lblParadrugMorfi)
+        Me.GroupBox3.Controls.Add(Me.lblParadrugName)
+        Me.GroupBox3.Location = New System.Drawing.Point(12, 12)
+        Me.GroupBox3.Name = "GroupBox3"
+        Me.GroupBox3.Size = New System.Drawing.Size(373, 65)
+        Me.GroupBox3.TabIndex = 28
+        Me.GroupBox3.TabStop = False
+        '
+        'lblParadrugMorfi
+        '
+        Me.lblParadrugMorfi.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblParadrugMorfi.Location = New System.Drawing.Point(6, 35)
+        Me.lblParadrugMorfi.Name = "lblParadrugMorfi"
+        Me.lblParadrugMorfi.Size = New System.Drawing.Size(357, 21)
+        Me.lblParadrugMorfi.TabIndex = 26
+        Me.lblParadrugMorfi.Text = "Μορφή"
+        Me.lblParadrugMorfi.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'lblParadrugName
+        '
+        Me.lblParadrugName.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblParadrugName.Location = New System.Drawing.Point(6, 10)
+        Me.lblParadrugName.Name = "lblParadrugName"
+        Me.lblParadrugName.Size = New System.Drawing.Size(357, 21)
+        Me.lblParadrugName.TabIndex = 25
+        Me.lblParadrugName.Text = "Όνομα"
+        Me.lblParadrugName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'Label1
+        '
+        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label1.Location = New System.Drawing.Point(14, 315)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(81, 21)
+        Me.Label1.TabIndex = 29
+        Me.Label1.Text = "Χονδρική:"
+        Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'lblXondr
+        '
+        Me.lblXondr.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblXondr.Location = New System.Drawing.Point(101, 315)
+        Me.lblXondr.Name = "lblXondr"
+        Me.lblXondr.Size = New System.Drawing.Size(93, 21)
+        Me.lblXondr.TabIndex = 30
+        Me.lblXondr.Text = "0,00"
+        Me.lblXondr.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'lblLian
+        '
+        Me.lblLian.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblLian.Location = New System.Drawing.Point(101, 336)
+        Me.lblLian.Name = "lblLian"
+        Me.lblLian.Size = New System.Drawing.Size(93, 21)
+        Me.lblLian.TabIndex = 32
+        Me.lblLian.Text = "0,00"
+        Me.lblLian.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'Label3
+        '
+        Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label3.Location = New System.Drawing.Point(14, 336)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(81, 21)
+        Me.Label3.TabIndex = 31
+        Me.Label3.Text = "Λιανική:"
+        Me.Label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'btnEdit
+        '
+        Me.btnEdit.Location = New System.Drawing.Point(236, 342)
+        Me.btnEdit.Name = "btnEdit"
+        Me.btnEdit.Size = New System.Drawing.Size(82, 35)
+        Me.btnEdit.TabIndex = 33
+        Me.btnEdit.Text = "Τροποποίηση"
+        Me.btnEdit.UseVisualStyleBackColor = True
+        '
+        'btnDeleteCode
+        '
+        Me.btnDeleteCode.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.btnDeleteCode.Location = New System.Drawing.Point(324, 342)
+        Me.btnDeleteCode.Name = "btnDeleteCode"
+        Me.btnDeleteCode.Size = New System.Drawing.Size(61, 35)
+        Me.btnDeleteCode.TabIndex = 34
+        Me.btnDeleteCode.Text = "Διαγραφή κωδικού"
+        Me.btnDeleteCode.UseVisualStyleBackColor = True
+        '
+        'chkNarkvtiko
+        '
+        Me.chkNarkvtiko.AutoSize = True
+        Me.chkNarkvtiko.Location = New System.Drawing.Point(17, 285)
+        Me.chkNarkvtiko.Name = "chkNarkvtiko"
+        Me.chkNarkvtiko.Size = New System.Drawing.Size(79, 17)
+        Me.chkNarkvtiko.TabIndex = 35
+        Me.chkNarkvtiko.Text = "Ναρκωτικό"
+        Me.chkNarkvtiko.UseVisualStyleBackColor = True
+        '
+        'chkNosokomeiako
+        '
+        Me.chkNosokomeiako.AutoSize = True
+        Me.chkNosokomeiako.Location = New System.Drawing.Point(198, 285)
+        Me.chkNosokomeiako.Name = "chkNosokomeiako"
+        Me.chkNosokomeiako.Size = New System.Drawing.Size(96, 17)
+        Me.chkNosokomeiako.TabIndex = 37
+        Me.chkNosokomeiako.Text = "Νοσοκομειακό"
+        Me.chkNosokomeiako.UseVisualStyleBackColor = True
+        '
+        'lblBarcode
+        '
+        Me.lblBarcode.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblBarcode.Location = New System.Drawing.Point(295, 80)
+        Me.lblBarcode.Name = "lblBarcode"
+        Me.lblBarcode.Size = New System.Drawing.Size(90, 21)
+        Me.lblBarcode.TabIndex = 39
+        Me.lblBarcode.Text = "???"
+        Me.lblBarcode.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'Label4
+        '
+        Me.Label4.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label4.Location = New System.Drawing.Point(284, 80)
+        Me.Label4.Name = "Label4"
+        Me.Label4.Size = New System.Drawing.Size(10, 21)
+        Me.Label4.TabIndex = 38
+        Me.Label4.Text = "#"
+        Me.Label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'lblDrastiki
+        '
+        Me.lblDrastiki.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblDrastiki.Location = New System.Drawing.Point(82, 101)
+        Me.lblDrastiki.Name = "lblDrastiki"
+        Me.lblDrastiki.Size = New System.Drawing.Size(295, 21)
+        Me.lblDrastiki.TabIndex = 41
+        Me.lblDrastiki.Text = "Salbutamol"
+        Me.lblDrastiki.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'Label5
+        '
+        Me.Label5.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label5.Location = New System.Drawing.Point(14, 101)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(62, 21)
+        Me.Label5.TabIndex = 40
+        Me.Label5.Text = "Δραστική:"
+        Me.Label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'lblIndication
+        '
+        Me.lblIndication.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblIndication.Location = New System.Drawing.Point(82, 122)
+        Me.lblIndication.Name = "lblIndication"
+        Me.lblIndication.Size = New System.Drawing.Size(303, 21)
+        Me.lblIndication.TabIndex = 43
+        Me.lblIndication.Text = "Βρογχοδιασταλτικό"
+        Me.lblIndication.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'Label6
+        '
+        Me.Label6.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label6.Location = New System.Drawing.Point(14, 122)
+        Me.Label6.Name = "Label6"
+        Me.Label6.Size = New System.Drawing.Size(62, 21)
+        Me.Label6.TabIndex = 42
+        Me.Label6.Text = "Ένδειξη:"
+        Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'lblDosologia
+        '
+        Me.lblDosologia.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblDosologia.Location = New System.Drawing.Point(82, 143)
+        Me.lblDosologia.Name = "lblDosologia"
+        Me.lblDosologia.Size = New System.Drawing.Size(303, 21)
+        Me.lblDosologia.TabIndex = 45
+        Me.lblDosologia.Text = "1 x 2"
+        Me.lblDosologia.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'Label7
+        '
+        Me.Label7.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label7.Location = New System.Drawing.Point(14, 143)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(73, 21)
+        Me.Label7.TabIndex = 44
+        Me.Label7.Text = "Δοσολογία:"
+        Me.Label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'lblEidos
+        '
+        Me.lblEidos.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblEidos.Location = New System.Drawing.Point(82, 164)
+        Me.lblEidos.Name = "lblEidos"
+        Me.lblEidos.Size = New System.Drawing.Size(168, 21)
+        Me.lblEidos.TabIndex = 47
+        Me.lblEidos.Text = "Γενώσιμο"
+        Me.lblEidos.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'Label9
+        '
+        Me.Label9.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label9.Location = New System.Drawing.Point(14, 164)
+        Me.Label9.Name = "Label9"
+        Me.Label9.Size = New System.Drawing.Size(73, 21)
+        Me.Label9.TabIndex = 46
+        Me.Label9.Text = "Είδος:"
+        Me.Label9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'chkIFET
+        '
+        Me.chkIFET.AutoSize = True
+        Me.chkIFET.Location = New System.Drawing.Point(125, 285)
+        Me.chkIFET.Name = "chkIFET"
+        Me.chkIFET.Size = New System.Drawing.Size(50, 17)
+        Me.chkIFET.TabIndex = 48
+        Me.chkIFET.Text = "ΙΦΕΤ"
+        Me.chkIFET.UseVisualStyleBackColor = True
+        '
+        'lblCategory
+        '
+        Me.lblCategory.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblCategory.Location = New System.Drawing.Point(94, 199)
+        Me.lblCategory.Name = "lblCategory"
+        Me.lblCategory.Size = New System.Drawing.Size(291, 21)
+        Me.lblCategory.TabIndex = 50
+        Me.lblCategory.Text = "ΑΝΑΛΩΣΙΜΑ ΦΑΡΜΑΚΕΙΟΥ"
+        Me.lblCategory.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'Label11
+        '
+        Me.Label11.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label11.Location = New System.Drawing.Point(14, 199)
+        Me.Label11.Name = "Label11"
+        Me.Label11.Size = New System.Drawing.Size(73, 21)
+        Me.Label11.TabIndex = 49
+        Me.Label11.Text = "Κατηγορία:"
+        Me.Label11.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'lblYpokathgoria
+        '
+        Me.lblYpokathgoria.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblYpokathgoria.Location = New System.Drawing.Point(94, 220)
+        Me.lblYpokathgoria.Name = "lblYpokathgoria"
+        Me.lblYpokathgoria.Size = New System.Drawing.Size(291, 21)
+        Me.lblYpokathgoria.TabIndex = 52
+        Me.lblYpokathgoria.Text = "ΚΟΥΒΕΡΤΕΣ-ΘΕΡΜΟΦΟΡΕΣ"
+        Me.lblYpokathgoria.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'Label12
+        '
+        Me.Label12.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label12.Location = New System.Drawing.Point(12, 220)
+        Me.Label12.Name = "Label12"
+        Me.Label12.Size = New System.Drawing.Size(82, 21)
+        Me.Label12.TabIndex = 51
+        Me.Label12.Text = "Υποκατηγορία:"
+        Me.Label12.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'lblFPA
+        '
+        Me.lblFPA.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblFPA.Location = New System.Drawing.Point(49, 362)
+        Me.lblFPA.Name = "lblFPA"
+        Me.lblFPA.Size = New System.Drawing.Size(38, 21)
+        Me.lblFPA.TabIndex = 54
+        Me.lblFPA.Text = "14%"
+        Me.lblFPA.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'Label8
+        '
+        Me.Label8.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label8.Location = New System.Drawing.Point(15, 362)
+        Me.Label8.Name = "Label8"
+        Me.Label8.Size = New System.Drawing.Size(38, 21)
+        Me.Label8.TabIndex = 53
+        Me.Label8.Text = "ΦΠΑ: "
+        Me.Label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'lblNotes
+        '
+        Me.lblNotes.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblNotes.Location = New System.Drawing.Point(94, 249)
+        Me.lblNotes.Name = "lblNotes"
+        Me.lblNotes.Size = New System.Drawing.Size(291, 21)
+        Me.lblNotes.TabIndex = 56
+        Me.lblNotes.Text = "???"
+        Me.lblNotes.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'Label10
+        '
+        Me.Label10.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label10.Location = New System.Drawing.Point(12, 249)
+        Me.Label10.Name = "Label10"
+        Me.Label10.Size = New System.Drawing.Size(82, 21)
+        Me.Label10.TabIndex = 55
+        Me.Label10.Text = "Σημειώσεις:"
+        Me.Label10.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'frmParadrugSelectedDetails
+        '
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(397, 391)
+        Me.Controls.Add(Me.lblNotes)
+        Me.Controls.Add(Me.Label10)
+        Me.Controls.Add(Me.lblFPA)
+        Me.Controls.Add(Me.Label8)
+        Me.Controls.Add(Me.lblYpokathgoria)
+        Me.Controls.Add(Me.Label12)
+        Me.Controls.Add(Me.lblCategory)
+        Me.Controls.Add(Me.Label11)
+        Me.Controls.Add(Me.chkIFET)
+        Me.Controls.Add(Me.lblEidos)
+        Me.Controls.Add(Me.Label9)
+        Me.Controls.Add(Me.lblDosologia)
+        Me.Controls.Add(Me.Label7)
+        Me.Controls.Add(Me.lblIndication)
+        Me.Controls.Add(Me.Label6)
+        Me.Controls.Add(Me.lblDrastiki)
+        Me.Controls.Add(Me.Label5)
+        Me.Controls.Add(Me.lblBarcode)
+        Me.Controls.Add(Me.Label4)
+        Me.Controls.Add(Me.chkNosokomeiako)
+        Me.Controls.Add(Me.chkNarkvtiko)
+        Me.Controls.Add(Me.btnDeleteCode)
+        Me.Controls.Add(Me.btnEdit)
+        Me.Controls.Add(Me.lblLian)
+        Me.Controls.Add(Me.Label3)
+        Me.Controls.Add(Me.lblXondr)
+        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.GroupBox3)
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
+        Me.Name = "frmParadrugSelectedDetails"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
+        Me.Text = "Πληροφορίες Προιόντος"
+        Me.GroupBox3.ResumeLayout(False)
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
+
+    End Sub
+    Friend WithEvents GroupBox3 As System.Windows.Forms.GroupBox
+    Friend WithEvents lblParadrugMorfi As System.Windows.Forms.Label
+    Friend WithEvents lblParadrugName As System.Windows.Forms.Label
+    Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents lblXondr As System.Windows.Forms.Label
+    Friend WithEvents lblLian As System.Windows.Forms.Label
+    Friend WithEvents Label3 As System.Windows.Forms.Label
+    Friend WithEvents btnEdit As System.Windows.Forms.Button
+    Friend WithEvents btnDeleteCode As System.Windows.Forms.Button
+    Friend WithEvents chkNarkvtiko As System.Windows.Forms.CheckBox
+    Friend WithEvents chkNosokomeiako As System.Windows.Forms.CheckBox
+    Friend WithEvents lblBarcode As System.Windows.Forms.Label
+    Friend WithEvents Label4 As System.Windows.Forms.Label
+    Friend WithEvents lblDrastiki As System.Windows.Forms.Label
+    Friend WithEvents Label5 As System.Windows.Forms.Label
+    Friend WithEvents lblIndication As System.Windows.Forms.Label
+    Friend WithEvents Label6 As System.Windows.Forms.Label
+    Friend WithEvents lblDosologia As System.Windows.Forms.Label
+    Friend WithEvents Label7 As System.Windows.Forms.Label
+    Friend WithEvents lblEidos As System.Windows.Forms.Label
+    Friend WithEvents Label9 As System.Windows.Forms.Label
+    Friend WithEvents chkIFET As System.Windows.Forms.CheckBox
+    Friend WithEvents lblCategory As System.Windows.Forms.Label
+    Friend WithEvents Label11 As System.Windows.Forms.Label
+    Friend WithEvents lblYpokathgoria As System.Windows.Forms.Label
+    Friend WithEvents Label12 As System.Windows.Forms.Label
+    Friend WithEvents lblFPA As System.Windows.Forms.Label
+    Friend WithEvents Label8 As System.Windows.Forms.Label
+    Friend WithEvents lblNotes As System.Windows.Forms.Label
+    Friend WithEvents Label10 As System.Windows.Forms.Label
+End Class

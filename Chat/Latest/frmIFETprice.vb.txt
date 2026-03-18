@@ -1,0 +1,40 @@
+﻿' Exported: 2025-10-23 00:24:46 +03:00
+' Project:  Pharmacy.vbproj
+' Source:   frmIFETprice.vb
+'
+Imports Pharmacy.GlobalFunctions
+Imports Pharmacy.GlobalVariables
+Imports System.Data.SqlClient
+Imports System.Windows.Forms.Timer
+Imports System.Threading.Timer
+Imports System.Globalization
+Imports System.Threading
+
+Public Class frmIFETprice
+
+    Private Sub frmIFETprice_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
+        frmCustomers.Enabled = True
+        frmChooseParadrugFromCatalog.Enabled = True
+    End Sub
+
+    Private Sub frmIFETprice_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        txtIFETLian.Focus()
+    End Sub
+
+    Private Sub btnIFETOK_Click(sender As Object, e As EventArgs) Handles btnIFETOK.Click
+        Dim IFETXondr As Decimal = 0
+        Dim IFETLian As Decimal = CType(txtIFETLian.Text, Decimal)
+
+        MsgBox(rowIndex & " " & ExchangesGivenOrTaken)
+
+        IFETXondr = IFETLian / ((CType(txtIFETProfit.Text, Decimal) / 100) + 1) / ((CType(txtIFETFPA.Text, Decimal) / 100) + 1)
+
+        If ExchangesGivenOrTaken = "given" Then
+            frmCustomers.dgvGivenTo.Rows(rowIndex).Cells(3).Value = Qnt * IFETXondr ' Σύνολο (Ποσότητα x Χονδρική)
+        ElseIf ExchangesGivenOrTaken = "taken" Then
+            frmCustomers.dgvTakenFrom.Rows(rowIndex).Cells(3).Value = Qnt * IFETXondr ' Σύνολο (Ποσότητα x Χονδρική)
+        End If
+
+        Me.Close()
+    End Sub
+End Class

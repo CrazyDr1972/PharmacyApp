@@ -1,0 +1,364 @@
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+Partial Class frmChooseDrug
+    Inherits System.Windows.Forms.Form
+
+    'Form overrides dispose to clean up the component list.
+    <System.Diagnostics.DebuggerNonUserCode()> _
+    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
+        Try
+            If disposing AndAlso components IsNot Nothing Then
+                components.Dispose()
+            End If
+        Finally
+            MyBase.Dispose(disposing)
+        End Try
+    End Sub
+
+    'Required by the Windows Form Designer
+    Private components As System.ComponentModel.IContainer
+
+    'NOTE: The following procedure is required by the Windows Form Designer
+    'It can be modified using the Windows Form Designer.  
+    'Do not modify it using the code editor.
+    <System.Diagnostics.DebuggerStepThrough()> _
+    Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
+        Me.txtSearchDrugsByName = New System.Windows.Forms.TextBox()
+        Me.dgvDrugsNew = New System.Windows.Forms.DataGridView()
+        Me.grpDrugDescription = New System.Windows.Forms.GroupBox()
+        Me.btnOK = New System.Windows.Forms.Button()
+        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.grpDrugMorfi = New System.Windows.Forms.GroupBox()
+        Me.dgvMorfesNew = New System.Windows.Forms.DataGridView()
+        Me.tmrExchanges = New System.Windows.Forms.Timer(Me.components)
+        Me.grpDrugDetails = New System.Windows.Forms.GroupBox()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.txtAP_Lianiki = New System.Windows.Forms.TextBox()
+        Me.lblDetails3 = New System.Windows.Forms.Label()
+        Me.txtAP_Xondriki = New System.Windows.Forms.TextBox()
+        Me.lblDetails2 = New System.Windows.Forms.Label()
+        Me.txtAP_Morfi = New System.Windows.Forms.TextBox()
+        Me.lblDetails1 = New System.Windows.Forms.Label()
+        Me.txtAP_Description = New System.Windows.Forms.TextBox()
+        Me.tbcChooseDrug = New System.Windows.Forms.TabControl()
+        Me.tbpDescription = New System.Windows.Forms.TabPage()
+        Me.tbpBarcode = New System.Windows.Forms.TabPage()
+        Me.GroupBox2 = New System.Windows.Forms.GroupBox()
+        Me.chkBarcodeManually = New System.Windows.Forms.CheckBox()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.txtSearchDrugsByBarcode = New System.Windows.Forms.TextBox()
+        CType(Me.dgvDrugsNew, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.grpDrugDescription.SuspendLayout()
+        Me.GroupBox1.SuspendLayout()
+        Me.grpDrugMorfi.SuspendLayout()
+        CType(Me.dgvMorfesNew, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.grpDrugDetails.SuspendLayout()
+        Me.tbcChooseDrug.SuspendLayout()
+        Me.tbpDescription.SuspendLayout()
+        Me.tbpBarcode.SuspendLayout()
+        Me.GroupBox2.SuspendLayout()
+        Me.SuspendLayout()
+        '
+        'txtSearchDrugsByName
+        '
+        Me.txtSearchDrugsByName.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.txtSearchDrugsByName.Location = New System.Drawing.Point(9, 32)
+        Me.txtSearchDrugsByName.Name = "txtSearchDrugsByName"
+        Me.txtSearchDrugsByName.Size = New System.Drawing.Size(332, 20)
+        Me.txtSearchDrugsByName.TabIndex = 41
+        '
+        'dgvDrugsNew
+        '
+        Me.dgvDrugsNew.AllowUserToAddRows = False
+        Me.dgvDrugsNew.AllowUserToDeleteRows = False
+        Me.dgvDrugsNew.AllowUserToResizeColumns = False
+        Me.dgvDrugsNew.AllowUserToResizeRows = False
+        Me.dgvDrugsNew.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvDrugsNew.Location = New System.Drawing.Point(9, 19)
+        Me.dgvDrugsNew.Name = "dgvDrugsNew"
+        Me.dgvDrugsNew.ReadOnly = True
+        Me.dgvDrugsNew.RowHeadersVisible = False
+        Me.dgvDrugsNew.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.dgvDrugsNew.ShowEditingIcon = False
+        Me.dgvDrugsNew.Size = New System.Drawing.Size(197, 252)
+        Me.dgvDrugsNew.TabIndex = 39
+        '
+        'grpDrugDescription
+        '
+        Me.grpDrugDescription.Controls.Add(Me.dgvDrugsNew)
+        Me.grpDrugDescription.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.grpDrugDescription.Location = New System.Drawing.Point(6, 84)
+        Me.grpDrugDescription.Name = "grpDrugDescription"
+        Me.grpDrugDescription.Size = New System.Drawing.Size(216, 286)
+        Me.grpDrugDescription.TabIndex = 43
+        Me.grpDrugDescription.TabStop = False
+        '
+        'btnOK
+        '
+        Me.btnOK.Location = New System.Drawing.Point(264, 332)
+        Me.btnOK.Name = "btnOK"
+        Me.btnOK.Size = New System.Drawing.Size(47, 23)
+        Me.btnOK.TabIndex = 44
+        Me.btnOK.Text = "OK"
+        Me.btnOK.UseVisualStyleBackColor = True
+        Me.btnOK.Visible = False
+        '
+        'GroupBox1
+        '
+        Me.GroupBox1.Controls.Add(Me.Label2)
+        Me.GroupBox1.Controls.Add(Me.txtSearchDrugsByName)
+        Me.GroupBox1.Location = New System.Drawing.Point(6, 6)
+        Me.GroupBox1.Name = "GroupBox1"
+        Me.GroupBox1.Size = New System.Drawing.Size(378, 67)
+        Me.GroupBox1.TabIndex = 43
+        Me.GroupBox1.TabStop = False
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Location = New System.Drawing.Point(6, 16)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(150, 13)
+        Me.Label2.TabIndex = 42
+        Me.Label2.Text = "Καταχωρήστε την ονομασία"
+        '
+        'grpDrugMorfi
+        '
+        Me.grpDrugMorfi.Controls.Add(Me.dgvMorfesNew)
+        Me.grpDrugMorfi.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.grpDrugMorfi.Location = New System.Drawing.Point(228, 84)
+        Me.grpDrugMorfi.Name = "grpDrugMorfi"
+        Me.grpDrugMorfi.Size = New System.Drawing.Size(156, 223)
+        Me.grpDrugMorfi.TabIndex = 45
+        Me.grpDrugMorfi.TabStop = False
+        '
+        'dgvMorfesNew
+        '
+        Me.dgvMorfesNew.AllowUserToAddRows = False
+        Me.dgvMorfesNew.AllowUserToDeleteRows = False
+        Me.dgvMorfesNew.AllowUserToResizeColumns = False
+        Me.dgvMorfesNew.AllowUserToResizeRows = False
+        Me.dgvMorfesNew.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvMorfesNew.Location = New System.Drawing.Point(7, 19)
+        Me.dgvMorfesNew.Name = "dgvMorfesNew"
+        Me.dgvMorfesNew.ReadOnly = True
+        Me.dgvMorfesNew.RowHeadersVisible = False
+        Me.dgvMorfesNew.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.dgvMorfesNew.ShowEditingIcon = False
+        Me.dgvMorfesNew.Size = New System.Drawing.Size(140, 190)
+        Me.dgvMorfesNew.TabIndex = 39
+        '
+        'tmrExchanges
+        '
+        Me.tmrExchanges.Interval = 800
+        '
+        'grpDrugDetails
+        '
+        Me.grpDrugDetails.Controls.Add(Me.Label1)
+        Me.grpDrugDetails.Controls.Add(Me.txtAP_Lianiki)
+        Me.grpDrugDetails.Controls.Add(Me.lblDetails3)
+        Me.grpDrugDetails.Controls.Add(Me.txtAP_Xondriki)
+        Me.grpDrugDetails.Controls.Add(Me.lblDetails2)
+        Me.grpDrugDetails.Controls.Add(Me.txtAP_Morfi)
+        Me.grpDrugDetails.Controls.Add(Me.lblDetails1)
+        Me.grpDrugDetails.Controls.Add(Me.txtAP_Description)
+        Me.grpDrugDetails.Location = New System.Drawing.Point(21, 97)
+        Me.grpDrugDetails.Name = "grpDrugDetails"
+        Me.grpDrugDetails.Size = New System.Drawing.Size(355, 245)
+        Me.grpDrugDetails.TabIndex = 46
+        Me.grpDrugDetails.TabStop = False
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(147, 125)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(44, 13)
+        Me.Label1.TabIndex = 24
+        Me.Label1.Text = "Λιανική"
+        '
+        'txtAP_Lianiki
+        '
+        Me.txtAP_Lianiki.Location = New System.Drawing.Point(150, 141)
+        Me.txtAP_Lianiki.Name = "txtAP_Lianiki"
+        Me.txtAP_Lianiki.Size = New System.Drawing.Size(122, 20)
+        Me.txtAP_Lianiki.TabIndex = 23
+        '
+        'lblDetails3
+        '
+        Me.lblDetails3.AutoSize = True
+        Me.lblDetails3.Location = New System.Drawing.Point(6, 125)
+        Me.lblDetails3.Name = "lblDetails3"
+        Me.lblDetails3.Size = New System.Drawing.Size(52, 13)
+        Me.lblDetails3.TabIndex = 22
+        Me.lblDetails3.Text = "Χονδρική"
+        '
+        'txtAP_Xondriki
+        '
+        Me.txtAP_Xondriki.Location = New System.Drawing.Point(9, 141)
+        Me.txtAP_Xondriki.Name = "txtAP_Xondriki"
+        Me.txtAP_Xondriki.Size = New System.Drawing.Size(122, 20)
+        Me.txtAP_Xondriki.TabIndex = 21
+        '
+        'lblDetails2
+        '
+        Me.lblDetails2.AutoSize = True
+        Me.lblDetails2.Location = New System.Drawing.Point(6, 86)
+        Me.lblDetails2.Name = "lblDetails2"
+        Me.lblDetails2.Size = New System.Drawing.Size(111, 13)
+        Me.lblDetails2.TabIndex = 20
+        Me.lblDetails2.Text = "Μορφή - Συσκευασία"
+        '
+        'txtAP_Morfi
+        '
+        Me.txtAP_Morfi.Location = New System.Drawing.Point(9, 102)
+        Me.txtAP_Morfi.Name = "txtAP_Morfi"
+        Me.txtAP_Morfi.Size = New System.Drawing.Size(203, 20)
+        Me.txtAP_Morfi.TabIndex = 19
+        '
+        'lblDetails1
+        '
+        Me.lblDetails1.AutoSize = True
+        Me.lblDetails1.Location = New System.Drawing.Point(6, 47)
+        Me.lblDetails1.Name = "lblDetails1"
+        Me.lblDetails1.Size = New System.Drawing.Size(120, 13)
+        Me.lblDetails1.TabIndex = 18
+        Me.lblDetails1.Text = "Περιγραφή - Ονομασία"
+        '
+        'txtAP_Description
+        '
+        Me.txtAP_Description.Location = New System.Drawing.Point(9, 63)
+        Me.txtAP_Description.Name = "txtAP_Description"
+        Me.txtAP_Description.Size = New System.Drawing.Size(321, 20)
+        Me.txtAP_Description.TabIndex = 17
+        '
+        'tbcChooseDrug
+        '
+        Me.tbcChooseDrug.Controls.Add(Me.tbpDescription)
+        Me.tbcChooseDrug.Controls.Add(Me.tbpBarcode)
+        Me.tbcChooseDrug.Location = New System.Drawing.Point(0, 1)
+        Me.tbcChooseDrug.Name = "tbcChooseDrug"
+        Me.tbcChooseDrug.SelectedIndex = 0
+        Me.tbcChooseDrug.Size = New System.Drawing.Size(405, 399)
+        Me.tbcChooseDrug.TabIndex = 25
+        '
+        'tbpDescription
+        '
+        Me.tbpDescription.Controls.Add(Me.GroupBox1)
+        Me.tbpDescription.Controls.Add(Me.btnOK)
+        Me.tbpDescription.Controls.Add(Me.grpDrugMorfi)
+        Me.tbpDescription.Controls.Add(Me.grpDrugDescription)
+        Me.tbpDescription.Location = New System.Drawing.Point(4, 22)
+        Me.tbpDescription.Name = "tbpDescription"
+        Me.tbpDescription.Padding = New System.Windows.Forms.Padding(3)
+        Me.tbpDescription.Size = New System.Drawing.Size(397, 373)
+        Me.tbpDescription.TabIndex = 0
+        Me.tbpDescription.Text = "Όνομα"
+        Me.tbpDescription.UseVisualStyleBackColor = True
+        '
+        'tbpBarcode
+        '
+        Me.tbpBarcode.Controls.Add(Me.GroupBox2)
+        Me.tbpBarcode.Controls.Add(Me.grpDrugDetails)
+        Me.tbpBarcode.Location = New System.Drawing.Point(4, 22)
+        Me.tbpBarcode.Name = "tbpBarcode"
+        Me.tbpBarcode.Padding = New System.Windows.Forms.Padding(3)
+        Me.tbpBarcode.Size = New System.Drawing.Size(397, 373)
+        Me.tbpBarcode.TabIndex = 1
+        Me.tbpBarcode.Text = "Barcode"
+        Me.tbpBarcode.UseVisualStyleBackColor = True
+        '
+        'GroupBox2
+        '
+        Me.GroupBox2.Controls.Add(Me.chkBarcodeManually)
+        Me.GroupBox2.Controls.Add(Me.Label3)
+        Me.GroupBox2.Controls.Add(Me.txtSearchDrugsByBarcode)
+        Me.GroupBox2.Location = New System.Drawing.Point(21, 15)
+        Me.GroupBox2.Name = "GroupBox2"
+        Me.GroupBox2.Size = New System.Drawing.Size(355, 67)
+        Me.GroupBox2.TabIndex = 47
+        Me.GroupBox2.TabStop = False
+        '
+        'chkBarcodeManually
+        '
+        Me.chkBarcodeManually.AutoSize = True
+        Me.chkBarcodeManually.Location = New System.Drawing.Point(203, 32)
+        Me.chkBarcodeManually.Name = "chkBarcodeManually"
+        Me.chkBarcodeManually.Size = New System.Drawing.Size(74, 17)
+        Me.chkBarcodeManually.TabIndex = 45
+        Me.chkBarcodeManually.Text = "Manually?"
+        Me.chkBarcodeManually.UseVisualStyleBackColor = True
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(6, 16)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(136, 13)
+        Me.Label3.TabIndex = 44
+        Me.Label3.Text = "Καταχωρήστε το Barcode"
+        '
+        'txtSearchDrugsByBarcode
+        '
+        Me.txtSearchDrugsByBarcode.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.txtSearchDrugsByBarcode.Location = New System.Drawing.Point(9, 32)
+        Me.txtSearchDrugsByBarcode.Name = "txtSearchDrugsByBarcode"
+        Me.txtSearchDrugsByBarcode.Size = New System.Drawing.Size(165, 20)
+        Me.txtSearchDrugsByBarcode.TabIndex = 41
+        '
+        'frmChooseDrug
+        '
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(404, 399)
+        Me.Controls.Add(Me.tbcChooseDrug)
+        Me.DataBindings.Add(New System.Windows.Forms.Binding("Location", Global.Pharmacy.My.MySettings.Default, "MainFormLocation", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.Location = Global.Pharmacy.My.MySettings.Default.MainFormLocation
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
+        Me.Name = "frmChooseDrug"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
+        Me.Text = "Επιλογή προιόντος"
+        CType(Me.dgvDrugsNew, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.grpDrugDescription.ResumeLayout(False)
+        Me.GroupBox1.ResumeLayout(False)
+        Me.GroupBox1.PerformLayout()
+        Me.grpDrugMorfi.ResumeLayout(False)
+        CType(Me.dgvMorfesNew, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.grpDrugDetails.ResumeLayout(False)
+        Me.grpDrugDetails.PerformLayout()
+        Me.tbcChooseDrug.ResumeLayout(False)
+        Me.tbpDescription.ResumeLayout(False)
+        Me.tbpBarcode.ResumeLayout(False)
+        Me.GroupBox2.ResumeLayout(False)
+        Me.GroupBox2.PerformLayout()
+        Me.ResumeLayout(False)
+
+    End Sub
+    Friend WithEvents txtSearchDrugsByName As System.Windows.Forms.TextBox
+    Friend WithEvents dgvDrugsNew As System.Windows.Forms.DataGridView
+    Friend WithEvents grpDrugDescription As System.Windows.Forms.GroupBox
+    Friend WithEvents btnOK As System.Windows.Forms.Button
+    Friend WithEvents GroupBox1 As System.Windows.Forms.GroupBox
+    Friend WithEvents grpDrugMorfi As System.Windows.Forms.GroupBox
+    Friend WithEvents dgvMorfesNew As System.Windows.Forms.DataGridView
+    Friend WithEvents tmrExchanges As System.Windows.Forms.Timer
+    Friend WithEvents grpDrugDetails As System.Windows.Forms.GroupBox
+    Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents txtAP_Lianiki As System.Windows.Forms.TextBox
+    Friend WithEvents lblDetails3 As System.Windows.Forms.Label
+    Friend WithEvents txtAP_Xondriki As System.Windows.Forms.TextBox
+    Friend WithEvents lblDetails2 As System.Windows.Forms.Label
+    Friend WithEvents txtAP_Morfi As System.Windows.Forms.TextBox
+    Friend WithEvents lblDetails1 As System.Windows.Forms.Label
+    Friend WithEvents txtAP_Description As System.Windows.Forms.TextBox
+    Friend WithEvents tbcChooseDrug As System.Windows.Forms.TabControl
+    Friend WithEvents tbpDescription As System.Windows.Forms.TabPage
+    Friend WithEvents tbpBarcode As System.Windows.Forms.TabPage
+    Friend WithEvents GroupBox2 As System.Windows.Forms.GroupBox
+    Friend WithEvents txtSearchDrugsByBarcode As System.Windows.Forms.TextBox
+    Friend WithEvents Label2 As System.Windows.Forms.Label
+    Friend WithEvents chkBarcodeManually As System.Windows.Forms.CheckBox
+    Friend WithEvents Label3 As System.Windows.Forms.Label
+End Class

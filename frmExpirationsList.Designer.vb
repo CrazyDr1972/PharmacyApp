@@ -1,0 +1,199 @@
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+Partial Class frmExpirationsList
+    Inherits System.Windows.Forms.Form
+
+    'Form overrides dispose to clean up the component list.
+    <System.Diagnostics.DebuggerNonUserCode()> _
+    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
+        Try
+            If disposing AndAlso components IsNot Nothing Then
+                components.Dispose()
+            End If
+        Finally
+            MyBase.Dispose(disposing)
+        End Try
+    End Sub
+
+    'Required by the Windows Form Designer
+    Private components As System.ComponentModel.IContainer
+
+    'NOTE: The following procedure is required by the Windows Form Designer
+    'It can be modified using the Windows Form Designer.  
+    'Do not modify it using the code editor.
+    <System.Diagnostics.DebuggerStepThrough()> _
+    Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmExpirationsList))
+        Me.Button3 = New System.Windows.Forms.Button()
+        Me.grpSearchExpirationsOptions = New System.Windows.Forms.GroupBox()
+        Me.rbByBarcode = New System.Windows.Forms.RadioButton()
+        Me.rbByName = New System.Windows.Forms.RadioButton()
+        Me.dgvProducts = New System.Windows.Forms.DataGridView()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.txtSearchExpirations = New System.Windows.Forms.TextBox()
+        Me.rtxtExpirationsMessage = New System.Windows.Forms.RichTextBox()
+        Me.dgvExpirations = New System.Windows.Forms.DataGridView()
+        Me.btnPairing = New System.Windows.Forms.Button()
+        Me.txtLastExpDate = New System.Windows.Forms.TextBox()
+        Me.grpSearchExpirationsOptions.SuspendLayout()
+        CType(Me.dgvProducts, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dgvExpirations, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.SuspendLayout()
+        '
+        'Button3
+        '
+        Me.Button3.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Button3.Image = CType(resources.GetObject("Button3.Image"), System.Drawing.Image)
+        Me.Button3.Location = New System.Drawing.Point(196, 23)
+        Me.Button3.Name = "Button3"
+        Me.Button3.Size = New System.Drawing.Size(23, 23)
+        Me.Button3.TabIndex = 53
+        Me.Button3.UseVisualStyleBackColor = True
+        '
+        'grpSearchExpirationsOptions
+        '
+        Me.grpSearchExpirationsOptions.Controls.Add(Me.rbByBarcode)
+        Me.grpSearchExpirationsOptions.Controls.Add(Me.rbByName)
+        Me.grpSearchExpirationsOptions.Enabled = False
+        Me.grpSearchExpirationsOptions.Location = New System.Drawing.Point(230, 1)
+        Me.grpSearchExpirationsOptions.Name = "grpSearchExpirationsOptions"
+        Me.grpSearchExpirationsOptions.Size = New System.Drawing.Size(73, 59)
+        Me.grpSearchExpirationsOptions.TabIndex = 52
+        Me.grpSearchExpirationsOptions.TabStop = False
+        '
+        'rbByBarcode
+        '
+        Me.rbByBarcode.AutoSize = True
+        Me.rbByBarcode.Location = New System.Drawing.Point(5, 34)
+        Me.rbByBarcode.Name = "rbByBarcode"
+        Me.rbByBarcode.Size = New System.Drawing.Size(65, 17)
+        Me.rbByBarcode.TabIndex = 45
+        Me.rbByBarcode.Text = "Barcode"
+        Me.rbByBarcode.UseVisualStyleBackColor = True
+        '
+        'rbByName
+        '
+        Me.rbByName.AutoSize = True
+        Me.rbByName.Checked = True
+        Me.rbByName.Location = New System.Drawing.Point(5, 11)
+        Me.rbByName.Name = "rbByName"
+        Me.rbByName.Size = New System.Drawing.Size(59, 17)
+        Me.rbByName.TabIndex = 44
+        Me.rbByName.TabStop = True
+        Me.rbByName.Text = "Όνομα"
+        Me.rbByName.UseVisualStyleBackColor = True
+        '
+        'dgvProducts
+        '
+        Me.dgvProducts.AllowUserToAddRows = False
+        Me.dgvProducts.AllowUserToDeleteRows = False
+        Me.dgvProducts.AllowUserToResizeColumns = False
+        Me.dgvProducts.AllowUserToResizeRows = False
+        Me.dgvProducts.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvProducts.Location = New System.Drawing.Point(15, 66)
+        Me.dgvProducts.Name = "dgvProducts"
+        Me.dgvProducts.ReadOnly = True
+        Me.dgvProducts.RowHeadersVisible = False
+        Me.dgvProducts.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.dgvProducts.ShowEditingIcon = False
+        Me.dgvProducts.Size = New System.Drawing.Size(260, 222)
+        Me.dgvProducts.TabIndex = 49
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Location = New System.Drawing.Point(12, 9)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(66, 13)
+        Me.Label2.TabIndex = 51
+        Me.Label2.Text = "Αναζήτηση:"
+        '
+        'txtSearchExpirations
+        '
+        Me.txtSearchExpirations.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.txtSearchExpirations.Location = New System.Drawing.Point(15, 25)
+        Me.txtSearchExpirations.Name = "txtSearchExpirations"
+        Me.txtSearchExpirations.Size = New System.Drawing.Size(175, 20)
+        Me.txtSearchExpirations.TabIndex = 50
+        '
+        'rtxtExpirationsMessage
+        '
+        Me.rtxtExpirationsMessage.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.rtxtExpirationsMessage.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.rtxtExpirationsMessage.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.rtxtExpirationsMessage.Location = New System.Drawing.Point(15, 294)
+        Me.rtxtExpirationsMessage.Name = "rtxtExpirationsMessage"
+        Me.rtxtExpirationsMessage.Size = New System.Drawing.Size(260, 24)
+        Me.rtxtExpirationsMessage.TabIndex = 54
+        Me.rtxtExpirationsMessage.Text = ""
+        '
+        'dgvExpirations
+        '
+        Me.dgvExpirations.AllowUserToAddRows = False
+        Me.dgvExpirations.AllowUserToDeleteRows = False
+        Me.dgvExpirations.AllowUserToResizeColumns = False
+        Me.dgvExpirations.AllowUserToResizeRows = False
+        Me.dgvExpirations.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvExpirations.Location = New System.Drawing.Point(290, 66)
+        Me.dgvExpirations.Name = "dgvExpirations"
+        Me.dgvExpirations.ReadOnly = True
+        Me.dgvExpirations.RowHeadersVisible = False
+        Me.dgvExpirations.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
+        Me.dgvExpirations.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.dgvExpirations.ShowEditingIcon = False
+        Me.dgvExpirations.Size = New System.Drawing.Size(120, 222)
+        Me.dgvExpirations.TabIndex = 55
+        '
+        'btnPairing
+        '
+        Me.btnPairing.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.btnPairing.Location = New System.Drawing.Point(281, 291)
+        Me.btnPairing.Name = "btnPairing"
+        Me.btnPairing.Size = New System.Drawing.Size(86, 23)
+        Me.btnPairing.TabIndex = 56
+        Me.btnPairing.Text = "Αντιστοίχηση"
+        Me.btnPairing.UseVisualStyleBackColor = True
+        '
+        'txtLastExpDate
+        '
+        Me.txtLastExpDate.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.txtLastExpDate.Location = New System.Drawing.Point(309, 26)
+        Me.txtLastExpDate.Name = "txtLastExpDate"
+        Me.txtLastExpDate.Size = New System.Drawing.Size(117, 20)
+        Me.txtLastExpDate.TabIndex = 57
+        '
+        'frmExpirationsList
+        '
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(436, 319)
+        Me.Controls.Add(Me.txtLastExpDate)
+        Me.Controls.Add(Me.btnPairing)
+        Me.Controls.Add(Me.dgvExpirations)
+        Me.Controls.Add(Me.rtxtExpirationsMessage)
+        Me.Controls.Add(Me.Button3)
+        Me.Controls.Add(Me.grpSearchExpirationsOptions)
+        Me.Controls.Add(Me.dgvProducts)
+        Me.Controls.Add(Me.Label2)
+        Me.Controls.Add(Me.txtSearchExpirations)
+        Me.Name = "frmExpirationsList"
+        Me.Text = "frmExpirationsList"
+        Me.grpSearchExpirationsOptions.ResumeLayout(False)
+        Me.grpSearchExpirationsOptions.PerformLayout()
+        CType(Me.dgvProducts, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dgvExpirations, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
+
+    End Sub
+    Friend WithEvents Button3 As System.Windows.Forms.Button
+    Friend WithEvents grpSearchExpirationsOptions As System.Windows.Forms.GroupBox
+    Friend WithEvents rbByBarcode As System.Windows.Forms.RadioButton
+    Friend WithEvents rbByName As System.Windows.Forms.RadioButton
+    Friend WithEvents dgvProducts As System.Windows.Forms.DataGridView
+    Friend WithEvents Label2 As System.Windows.Forms.Label
+    Friend WithEvents txtSearchExpirations As System.Windows.Forms.TextBox
+    Friend WithEvents rtxtExpirationsMessage As System.Windows.Forms.RichTextBox
+    Friend WithEvents dgvExpirations As System.Windows.Forms.DataGridView
+    Friend WithEvents btnPairing As System.Windows.Forms.Button
+    Friend WithEvents txtLastExpDate As System.Windows.Forms.TextBox
+End Class

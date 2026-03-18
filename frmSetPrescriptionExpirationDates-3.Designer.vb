@@ -1,0 +1,287 @@
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+Partial Class frmSetPrescriptionExpirationDates_3
+    Inherits System.Windows.Forms.Form
+
+    'Form overrides dispose to clean up the component list.
+    <System.Diagnostics.DebuggerNonUserCode()> _
+    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
+        Try
+            If disposing AndAlso components IsNot Nothing Then
+                components.Dispose()
+            End If
+        Finally
+            MyBase.Dispose(disposing)
+        End Try
+    End Sub
+
+    'Required by the Windows Form Designer
+    Private components As System.ComponentModel.IContainer
+
+    'NOTE: The following procedure is required by the Windows Form Designer
+    'It can be modified using the Windows Form Designer.  
+    'Do not modify it using the code editor.
+    <System.Diagnostics.DebuggerStepThrough()> _
+    Private Sub InitializeComponent()
+        Me.dtpEndDate1 = New System.Windows.Forms.DateTimePicker()
+        Me.dtpInitDate1 = New System.Windows.Forms.DateTimePicker()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.Label4 = New System.Windows.Forms.Label()
+        Me.dtpEndDate2 = New System.Windows.Forms.DateTimePicker()
+        Me.dtpInitDate2 = New System.Windows.Forms.DateTimePicker()
+        Me.Label5 = New System.Windows.Forms.Label()
+        Me.dtpEndDate3 = New System.Windows.Forms.DateTimePicker()
+        Me.dtpInitDate3 = New System.Windows.Forms.DateTimePicker()
+        Me.Label6 = New System.Windows.Forms.Label()
+        Me.dtpEndDate6 = New System.Windows.Forms.DateTimePicker()
+        Me.dtpInitDate6 = New System.Windows.Forms.DateTimePicker()
+        Me.Label7 = New System.Windows.Forms.Label()
+        Me.dtpEndDate5 = New System.Windows.Forms.DateTimePicker()
+        Me.dtpInitDate5 = New System.Windows.Forms.DateTimePicker()
+        Me.Label8 = New System.Windows.Forms.Label()
+        Me.dtpEndDate4 = New System.Windows.Forms.DateTimePicker()
+        Me.dtpInitDate4 = New System.Windows.Forms.DateTimePicker()
+        Me.Button1 = New System.Windows.Forms.Button()
+        Me.SuspendLayout()
+        '
+        'dtpEndDate1
+        '
+        Me.dtpEndDate1.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.dtpEndDate1.Location = New System.Drawing.Point(194, 35)
+        Me.dtpEndDate1.Name = "dtpEndDate1"
+        Me.dtpEndDate1.Size = New System.Drawing.Size(100, 20)
+        Me.dtpEndDate1.TabIndex = 90
+        '
+        'dtpInitDate1
+        '
+        Me.dtpInitDate1.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.dtpInitDate1.Location = New System.Drawing.Point(87, 35)
+        Me.dtpInitDate1.Name = "dtpInitDate1"
+        Me.dtpInitDate1.Size = New System.Drawing.Size(100, 20)
+        Me.dtpInitDate1.TabIndex = 89
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label2.Location = New System.Drawing.Point(222, 15)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(31, 13)
+        Me.Label2.TabIndex = 88
+        Me.Label2.Text = "Λήξη"
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label1.Location = New System.Drawing.Point(115, 15)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(45, 13)
+        Me.Label1.TabIndex = 87
+        Me.Label1.Text = "Έναρξη"
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label3.Location = New System.Drawing.Point(12, 38)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(69, 13)
+        Me.Label3.TabIndex = 91
+        Me.Label3.Text = "1η Εκτέλεση"
+        '
+        'Label4
+        '
+        Me.Label4.AutoSize = True
+        Me.Label4.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label4.Location = New System.Drawing.Point(12, 64)
+        Me.Label4.Name = "Label4"
+        Me.Label4.Size = New System.Drawing.Size(69, 13)
+        Me.Label4.TabIndex = 94
+        Me.Label4.Text = "2η Εκτέλεση"
+        '
+        'dtpEndDate2
+        '
+        Me.dtpEndDate2.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.dtpEndDate2.Location = New System.Drawing.Point(194, 61)
+        Me.dtpEndDate2.Name = "dtpEndDate2"
+        Me.dtpEndDate2.Size = New System.Drawing.Size(100, 20)
+        Me.dtpEndDate2.TabIndex = 93
+        '
+        'dtpInitDate2
+        '
+        Me.dtpInitDate2.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.dtpInitDate2.Location = New System.Drawing.Point(87, 61)
+        Me.dtpInitDate2.Name = "dtpInitDate2"
+        Me.dtpInitDate2.Size = New System.Drawing.Size(100, 20)
+        Me.dtpInitDate2.TabIndex = 92
+        '
+        'Label5
+        '
+        Me.Label5.AutoSize = True
+        Me.Label5.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label5.Location = New System.Drawing.Point(12, 90)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(69, 13)
+        Me.Label5.TabIndex = 97
+        Me.Label5.Text = "3η Εκτέλεση"
+        '
+        'dtpEndDate3
+        '
+        Me.dtpEndDate3.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.dtpEndDate3.Location = New System.Drawing.Point(194, 87)
+        Me.dtpEndDate3.Name = "dtpEndDate3"
+        Me.dtpEndDate3.Size = New System.Drawing.Size(100, 20)
+        Me.dtpEndDate3.TabIndex = 96
+        '
+        'dtpInitDate3
+        '
+        Me.dtpInitDate3.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.dtpInitDate3.Location = New System.Drawing.Point(87, 87)
+        Me.dtpInitDate3.Name = "dtpInitDate3"
+        Me.dtpInitDate3.Size = New System.Drawing.Size(100, 20)
+        Me.dtpInitDate3.TabIndex = 95
+        '
+        'Label6
+        '
+        Me.Label6.AutoSize = True
+        Me.Label6.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label6.Location = New System.Drawing.Point(12, 168)
+        Me.Label6.Name = "Label6"
+        Me.Label6.Size = New System.Drawing.Size(69, 13)
+        Me.Label6.TabIndex = 106
+        Me.Label6.Text = "6η Εκτέλεση"
+        '
+        'dtpEndDate6
+        '
+        Me.dtpEndDate6.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.dtpEndDate6.Location = New System.Drawing.Point(194, 165)
+        Me.dtpEndDate6.Name = "dtpEndDate6"
+        Me.dtpEndDate6.Size = New System.Drawing.Size(100, 20)
+        Me.dtpEndDate6.TabIndex = 105
+        '
+        'dtpInitDate6
+        '
+        Me.dtpInitDate6.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.dtpInitDate6.Location = New System.Drawing.Point(87, 165)
+        Me.dtpInitDate6.Name = "dtpInitDate6"
+        Me.dtpInitDate6.Size = New System.Drawing.Size(100, 20)
+        Me.dtpInitDate6.TabIndex = 104
+        '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label7.Location = New System.Drawing.Point(12, 142)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(69, 13)
+        Me.Label7.TabIndex = 103
+        Me.Label7.Text = "5η Εκτέλεση"
+        '
+        'dtpEndDate5
+        '
+        Me.dtpEndDate5.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.dtpEndDate5.Location = New System.Drawing.Point(194, 139)
+        Me.dtpEndDate5.Name = "dtpEndDate5"
+        Me.dtpEndDate5.Size = New System.Drawing.Size(100, 20)
+        Me.dtpEndDate5.TabIndex = 102
+        '
+        'dtpInitDate5
+        '
+        Me.dtpInitDate5.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.dtpInitDate5.Location = New System.Drawing.Point(87, 139)
+        Me.dtpInitDate5.Name = "dtpInitDate5"
+        Me.dtpInitDate5.Size = New System.Drawing.Size(100, 20)
+        Me.dtpInitDate5.TabIndex = 101
+        '
+        'Label8
+        '
+        Me.Label8.AutoSize = True
+        Me.Label8.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label8.Location = New System.Drawing.Point(12, 116)
+        Me.Label8.Name = "Label8"
+        Me.Label8.Size = New System.Drawing.Size(69, 13)
+        Me.Label8.TabIndex = 100
+        Me.Label8.Text = "4η Εκτέλεση"
+        '
+        'dtpEndDate4
+        '
+        Me.dtpEndDate4.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.dtpEndDate4.Location = New System.Drawing.Point(194, 113)
+        Me.dtpEndDate4.Name = "dtpEndDate4"
+        Me.dtpEndDate4.Size = New System.Drawing.Size(100, 20)
+        Me.dtpEndDate4.TabIndex = 99
+        '
+        'dtpInitDate4
+        '
+        Me.dtpInitDate4.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.dtpInitDate4.Location = New System.Drawing.Point(87, 113)
+        Me.dtpInitDate4.Name = "dtpInitDate4"
+        Me.dtpInitDate4.Size = New System.Drawing.Size(100, 20)
+        Me.dtpInitDate4.TabIndex = 98
+        '
+        'Button1
+        '
+        Me.Button1.Location = New System.Drawing.Point(219, 195)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(88, 23)
+        Me.Button1.TabIndex = 107
+        Me.Button1.Text = "Καταχώρηση"
+        Me.Button1.UseVisualStyleBackColor = True
+        '
+        'frmSetPrescriptionExpirationDates_3
+        '
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(319, 226)
+        Me.ControlBox = False
+        Me.Controls.Add(Me.Button1)
+        Me.Controls.Add(Me.Label6)
+        Me.Controls.Add(Me.dtpEndDate6)
+        Me.Controls.Add(Me.dtpInitDate6)
+        Me.Controls.Add(Me.Label7)
+        Me.Controls.Add(Me.dtpEndDate5)
+        Me.Controls.Add(Me.dtpInitDate5)
+        Me.Controls.Add(Me.Label8)
+        Me.Controls.Add(Me.dtpEndDate4)
+        Me.Controls.Add(Me.dtpInitDate4)
+        Me.Controls.Add(Me.Label5)
+        Me.Controls.Add(Me.dtpEndDate3)
+        Me.Controls.Add(Me.dtpInitDate3)
+        Me.Controls.Add(Me.Label4)
+        Me.Controls.Add(Me.dtpEndDate2)
+        Me.Controls.Add(Me.dtpInitDate2)
+        Me.Controls.Add(Me.Label3)
+        Me.Controls.Add(Me.dtpEndDate1)
+        Me.Controls.Add(Me.dtpInitDate1)
+        Me.Controls.Add(Me.Label2)
+        Me.Controls.Add(Me.Label1)
+        Me.Name = "frmSetPrescriptionExpirationDates_3"
+        Me.Text = "Λήξεις πολλαπλών συνταγών"
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
+
+    End Sub
+    Friend WithEvents dtpEndDate1 As System.Windows.Forms.DateTimePicker
+    Friend WithEvents dtpInitDate1 As System.Windows.Forms.DateTimePicker
+    Friend WithEvents Label2 As System.Windows.Forms.Label
+    Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents Label3 As System.Windows.Forms.Label
+    Friend WithEvents Label4 As System.Windows.Forms.Label
+    Friend WithEvents dtpEndDate2 As System.Windows.Forms.DateTimePicker
+    Friend WithEvents dtpInitDate2 As System.Windows.Forms.DateTimePicker
+    Friend WithEvents Label5 As System.Windows.Forms.Label
+    Friend WithEvents dtpEndDate3 As System.Windows.Forms.DateTimePicker
+    Friend WithEvents dtpInitDate3 As System.Windows.Forms.DateTimePicker
+    Friend WithEvents Label6 As System.Windows.Forms.Label
+    Friend WithEvents dtpEndDate6 As System.Windows.Forms.DateTimePicker
+    Friend WithEvents dtpInitDate6 As System.Windows.Forms.DateTimePicker
+    Friend WithEvents Label7 As System.Windows.Forms.Label
+    Friend WithEvents dtpEndDate5 As System.Windows.Forms.DateTimePicker
+    Friend WithEvents dtpInitDate5 As System.Windows.Forms.DateTimePicker
+    Friend WithEvents Label8 As System.Windows.Forms.Label
+    Friend WithEvents dtpEndDate4 As System.Windows.Forms.DateTimePicker
+    Friend WithEvents dtpInitDate4 As System.Windows.Forms.DateTimePicker
+    Friend WithEvents Button1 As System.Windows.Forms.Button
+End Class

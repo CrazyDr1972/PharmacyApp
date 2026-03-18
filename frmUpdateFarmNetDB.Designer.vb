@@ -1,0 +1,238 @@
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+Partial Class frmUpdateFarmNetDB
+    Inherits System.Windows.Forms.Form
+
+    'Form overrides dispose to clean up the component list.
+    <System.Diagnostics.DebuggerNonUserCode()> _
+    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
+        Try
+            If disposing AndAlso components IsNot Nothing Then
+                components.Dispose()
+            End If
+        Finally
+            MyBase.Dispose(disposing)
+        End Try
+    End Sub
+
+    'Required by the Windows Form Designer
+    Private components As System.ComponentModel.IContainer
+
+    'NOTE: The following procedure is required by the Windows Form Designer
+    'It can be modified using the Windows Form Designer.  
+    'Do not modify it using the code editor.
+    <System.Diagnostics.DebuggerStepThrough()> _
+    Private Sub InitializeComponent()
+        Me.CheckBox1 = New System.Windows.Forms.CheckBox()
+        Me.CheckBox2 = New System.Windows.Forms.CheckBox()
+        Me.btnOpenSQLServMng = New System.Windows.Forms.Button()
+        Me.CheckBox3 = New System.Windows.Forms.CheckBox()
+        Me.lstMessage = New System.Windows.Forms.ListBox()
+        Me.txtLastFarmNetDB = New System.Windows.Forms.TextBox()
+        Me.CheckBox4 = New System.Windows.Forms.CheckBox()
+        Me.btnOpenFarmNetDB = New System.Windows.Forms.Button()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.btnStartCopying = New System.Windows.Forms.Button()
+        Me.ListBoxInstalledServices = New System.Windows.Forms.ListBox()
+        Me.btnStartService = New System.Windows.Forms.Button()
+        Me.btnStopService = New System.Windows.Forms.Button()
+        Me.txtService = New System.Windows.Forms.TextBox()
+        Me.lblServiceExist = New System.Windows.Forms.Label()
+        Me.SuspendLayout()
+        '
+        'CheckBox1
+        '
+        Me.CheckBox1.AutoSize = True
+        Me.CheckBox1.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.CheckBox1.Location = New System.Drawing.Point(31, 69)
+        Me.CheckBox1.Name = "CheckBox1"
+        Me.CheckBox1.Size = New System.Drawing.Size(363, 24)
+        Me.CheckBox1.TabIndex = 3
+        Me.CheckBox1.Text = "Κλείστε το CSA Pharmakon και από τα δυο pc."
+        Me.CheckBox1.UseVisualStyleBackColor = True
+        '
+        'CheckBox2
+        '
+        Me.CheckBox2.AutoSize = True
+        Me.CheckBox2.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.CheckBox2.Location = New System.Drawing.Point(31, 103)
+        Me.CheckBox2.Name = "CheckBox2"
+        Me.CheckBox2.Size = New System.Drawing.Size(310, 24)
+        Me.CheckBox2.TabIndex = 4
+        Me.CheckBox2.Text = "Απενεργοποιήστε τον CSA SQL server: "
+        Me.CheckBox2.UseVisualStyleBackColor = True
+        Me.CheckBox2.Visible = False
+        '
+        'btnOpenSQLServMng
+        '
+        Me.btnOpenSQLServMng.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.btnOpenSQLServMng.Location = New System.Drawing.Point(343, 101)
+        Me.btnOpenSQLServMng.Name = "btnOpenSQLServMng"
+        Me.btnOpenSQLServMng.Size = New System.Drawing.Size(204, 30)
+        Me.btnOpenSQLServMng.TabIndex = 65
+        Me.btnOpenSQLServMng.Text = "SQL Server Management"
+        Me.btnOpenSQLServMng.UseVisualStyleBackColor = True
+        Me.btnOpenSQLServMng.Visible = False
+        '
+        'CheckBox3
+        '
+        Me.CheckBox3.AutoSize = True
+        Me.CheckBox3.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.CheckBox3.Location = New System.Drawing.Point(31, 141)
+        Me.CheckBox3.Name = "CheckBox3"
+        Me.CheckBox3.Size = New System.Drawing.Size(412, 24)
+        Me.CheckBox3.TabIndex = 66
+        Me.CheckBox3.Text = "Aνανεώστε τα τοπικά αρχεία από το CSA Pharmakon: "
+        Me.CheckBox3.UseVisualStyleBackColor = True
+        Me.CheckBox3.Visible = False
+        '
+        'lstMessage
+        '
+        Me.lstMessage.Enabled = False
+        Me.lstMessage.FormattingEnabled = True
+        Me.lstMessage.Location = New System.Drawing.Point(556, 69)
+        Me.lstMessage.Name = "lstMessage"
+        Me.lstMessage.Size = New System.Drawing.Size(269, 160)
+        Me.lstMessage.TabIndex = 69
+        '
+        'txtLastFarmNetDB
+        '
+        Me.txtLastFarmNetDB.BackColor = System.Drawing.SystemColors.Control
+        Me.txtLastFarmNetDB.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.txtLastFarmNetDB.Location = New System.Drawing.Point(66, 164)
+        Me.txtLastFarmNetDB.Name = "txtLastFarmNetDB"
+        Me.txtLastFarmNetDB.Size = New System.Drawing.Size(95, 22)
+        Me.txtLastFarmNetDB.TabIndex = 70
+        Me.txtLastFarmNetDB.Text = "Farnet_2018"
+        Me.txtLastFarmNetDB.Visible = False
+        '
+        'CheckBox4
+        '
+        Me.CheckBox4.AutoSize = True
+        Me.CheckBox4.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.CheckBox4.Location = New System.Drawing.Point(31, 194)
+        Me.CheckBox4.Name = "CheckBox4"
+        Me.CheckBox4.Size = New System.Drawing.Size(342, 24)
+        Me.CheckBox4.TabIndex = 71
+        Me.CheckBox4.Text = "Ενεργοποιήστε εκ νέου τον CSASQL server."
+        Me.CheckBox4.UseVisualStyleBackColor = True
+        Me.CheckBox4.Visible = False
+        '
+        'btnOpenFarmNetDB
+        '
+        Me.btnOpenFarmNetDB.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.btnOpenFarmNetDB.Location = New System.Drawing.Point(167, 162)
+        Me.btnOpenFarmNetDB.Name = "btnOpenFarmNetDB"
+        Me.btnOpenFarmNetDB.Size = New System.Drawing.Size(69, 26)
+        Me.btnOpenFarmNetDB.TabIndex = 72
+        Me.btnOpenFarmNetDB.Text = "Έλεγχος"
+        Me.btnOpenFarmNetDB.UseVisualStyleBackColor = True
+        Me.btnOpenFarmNetDB.Visible = False
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label2.Location = New System.Drawing.Point(12, 20)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(639, 20)
+        Me.Label2.TabIndex = 73
+        Me.Label2.Text = "Με την ολοκλήρωση του κάθε βήματος κλικάρετε το αντίστοιχο τετραγωνίδιο:"
+        '
+        'btnStartCopying
+        '
+        Me.btnStartCopying.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.btnStartCopying.Location = New System.Drawing.Point(445, 137)
+        Me.btnStartCopying.Name = "btnStartCopying"
+        Me.btnStartCopying.Size = New System.Drawing.Size(74, 30)
+        Me.btnStartCopying.TabIndex = 74
+        Me.btnStartCopying.Text = "Έναρξη"
+        Me.btnStartCopying.UseVisualStyleBackColor = True
+        Me.btnStartCopying.Visible = False
+        '
+        'ListBoxInstalledServices
+        '
+        Me.ListBoxInstalledServices.FormattingEnabled = True
+        Me.ListBoxInstalledServices.Location = New System.Drawing.Point(31, 248)
+        Me.ListBoxInstalledServices.Name = "ListBoxInstalledServices"
+        Me.ListBoxInstalledServices.Size = New System.Drawing.Size(363, 225)
+        Me.ListBoxInstalledServices.TabIndex = 75
+        '
+        'btnStartService
+        '
+        Me.btnStartService.Location = New System.Drawing.Point(427, 296)
+        Me.btnStartService.Name = "btnStartService"
+        Me.btnStartService.Size = New System.Drawing.Size(120, 23)
+        Me.btnStartService.TabIndex = 76
+        Me.btnStartService.Text = "Button1"
+        Me.btnStartService.UseVisualStyleBackColor = True
+        '
+        'btnStopService
+        '
+        Me.btnStopService.Location = New System.Drawing.Point(427, 325)
+        Me.btnStopService.Name = "btnStopService"
+        Me.btnStopService.Size = New System.Drawing.Size(120, 23)
+        Me.btnStopService.TabIndex = 77
+        Me.btnStopService.Text = "Button2"
+        Me.btnStopService.UseVisualStyleBackColor = True
+        '
+        'txtService
+        '
+        Me.txtService.Location = New System.Drawing.Point(423, 272)
+        Me.txtService.Name = "txtService"
+        Me.txtService.Size = New System.Drawing.Size(100, 20)
+        Me.txtService.TabIndex = 78
+        '
+        'lblServiceExist
+        '
+        Me.lblServiceExist.AutoSize = True
+        Me.lblServiceExist.Location = New System.Drawing.Point(335, 503)
+        Me.lblServiceExist.Name = "lblServiceExist"
+        Me.lblServiceExist.Size = New System.Drawing.Size(39, 13)
+        Me.lblServiceExist.TabIndex = 79
+        Me.lblServiceExist.Text = "Label1"
+        '
+        'frmUpdateFarmNetDB
+        '
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(888, 523)
+        Me.Controls.Add(Me.lblServiceExist)
+        Me.Controls.Add(Me.txtService)
+        Me.Controls.Add(Me.btnStopService)
+        Me.Controls.Add(Me.btnStartService)
+        Me.Controls.Add(Me.ListBoxInstalledServices)
+        Me.Controls.Add(Me.btnStartCopying)
+        Me.Controls.Add(Me.Label2)
+        Me.Controls.Add(Me.btnOpenFarmNetDB)
+        Me.Controls.Add(Me.CheckBox4)
+        Me.Controls.Add(Me.txtLastFarmNetDB)
+        Me.Controls.Add(Me.lstMessage)
+        Me.Controls.Add(Me.CheckBox3)
+        Me.Controls.Add(Me.btnOpenSQLServMng)
+        Me.Controls.Add(Me.CheckBox2)
+        Me.Controls.Add(Me.CheckBox1)
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
+        Me.Name = "frmUpdateFarmNetDB"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
+        Me.Text = "Ανανέωση του Database από το CSA Pharmakon"
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
+
+    End Sub
+    Friend WithEvents CheckBox1 As CheckBox
+    Friend WithEvents CheckBox2 As CheckBox
+    Friend WithEvents btnOpenSQLServMng As Button
+    Friend WithEvents CheckBox3 As CheckBox
+    Friend WithEvents lstMessage As ListBox
+    Friend WithEvents txtLastFarmNetDB As TextBox
+    Friend WithEvents CheckBox4 As CheckBox
+    Friend WithEvents btnOpenFarmNetDB As Button
+    Friend WithEvents Label2 As Label
+    Friend WithEvents btnStartCopying As Button
+    Friend WithEvents ListBoxInstalledServices As ListBox
+    Friend WithEvents btnStartService As Button
+    Friend WithEvents btnStopService As Button
+    Friend WithEvents txtService As TextBox
+    Friend WithEvents lblServiceExist As Label
+End Class

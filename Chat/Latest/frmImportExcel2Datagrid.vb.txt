@@ -1,0 +1,396 @@
+﻿' Exported: 2025-10-23 00:24:46 +03:00
+' Project:  Pharmacy.vbproj
+' Source:   frmImportExcel2Datagrid.vb
+'
+Imports Pharmacy.GlobalFunctions
+Imports Pharmacy.GlobalVariables
+Imports System.Data.OleDb
+Imports System.Data.SqlClient
+Imports Excel = Microsoft.Office.Interop.Excel
+
+Public Class frmImportExcel2Datagrid
+
+    Private Sub frmImportExcel2Datagrid_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        'DisplayExcel2Datagrid()
+    End Sub
+
+    Private Function ImportExcel2Apotikh(ByVal filepath As String, company As String, abrevCompany As String) As Integer
+        ' Μεταβλητές
+        Dim APP As New Excel.Application
+        Dim worksheet As Excel.Worksheet
+        Dim workbook As Excel.Workbook
+        Dim code, fullname, barcode, notes As String
+        Dim Xondr, Lian, FPA As Decimal
+        Dim index As Integer = 0
+        Dim AP_Id_Barcode, AP_ID_APOTIKH, new_AP_ID As Integer
+        Dim r2 As Excel.Range
+        Dim lastRow As Integer
+        Dim Clm_Code, Clm_Fullname, Clm_Barcode, Clm_Xondr, Clm_Lian, Clm_FPA, Clm_Notes As Integer
+
+
+        '' Ορίζει το Datatable
+        'Dim dt As New DataTable
+        'dt.Columns.Add("Id")
+        'dt.Columns.Add("Code")
+        'dt.Columns.Add("Fullname")
+        'dt.Columns.Add("Barcode")
+        'dt.Columns.Add("Xondr")
+        'dt.Columns.Add("Lian")
+        'dt.Columns.Add("FPA")
+        'dt.Columns.Add("Notes")
+        'dt.Columns.Add("ImportOK")
+        'dt.Columns(0).AutoIncrement = True
+        'Dim R As DataRow = dt.NewRow
+
+
+
+        Try
+            ' Ορίζει το αρχείο excel
+            workbook = APP.Workbooks.Open(filePath)
+
+            ' Περνάει ένα τα Sheets
+            For Each sheet In workbook.Sheets
+                worksheet = sheet
+                lblInfo3.Text = sheet.name
+
+                ' Μηδενίζει τις μεταβλητές
+                AP_Id_Barcode = 0
+                AP_ID_APOTIKH = 0
+
+                ' Βρίσκει την τελευταία έγγραφή του αρχείου excel
+                r2 = worksheet.Range("A1:A100000")
+                lastRow = r2.SpecialCells(Excel.XlCellType.xlCellTypeLastCell).Row
+
+                ' Βρίσκει ποια πεδία του excel αντιστοιχούν στις μεταβλητές που θα περαστούν στο αρχείο
+                index = 0
+                For t = 1 To 20
+                    If worksheet.Cells(1, t).Value = "CODE" Then
+                        Clm_Code = t
+                        index += 1
+                    End If
+                    If worksheet.Cells(1, t).Value = "FULLNAME" Then
+                        Clm_Fullname = t
+                        index += 1
+                    End If
+                    If worksheet.Cells(1, t).Value = "BARCODE" Then
+                        Clm_Barcode = t
+                        index += 1
+                    End If
+                    If worksheet.Cells(1, t).Value = "XONDR" Then
+                        Clm_Xondr = t
+                        index += 1
+                    End If
+                    If worksheet.Cells(1, t).Value = "LIAN" Then
+                        Clm_Lian = t
+                        index += 1
+                    End If
+                    If worksheet.Cells(1, t).Value = "FPA" Then
+                        Clm_FPA = t
+                        index += 1
+                    End If
+                    If worksheet.Cells(1, t).Value = "NOTES" Then
+                        Clm_Notes = t
+                        index += 1
+                    End If
+                Next
+
+                If index <> 7 Then
+                    MsgBox("Δεν έχετε φτιάξει σωστά τους Headers του αρχείου excel για το φύλλο '" & sheet.name & "'" & vbCrLf & "CODE, FULLNAME, BARCODE, XONDR, LIAN, FPA, NOTES")
+
+                Else
+                    index = 0
+
+                    For t = 1 To lastRow
+                        Try
+
+                            code = worksheet.Cells(t, Clm_Code).Value
+                            fullname = company & " " & worksheet.Cells(t, Clm_Fullname).Value
+                            barcode = worksheet.Cells(t, Clm_Barcode).Value
+                            Xondr = worksheet.Cells(t, Clm_Xondr).Value
+                            Lian = worksheet.Cells(t, Clm_Lian).Value
+                            FPA = worksheet.Cells(t, Clm_FPA).Value
+                            notes = worksheet.Cells(t, Clm_Notes).Value
+
+                            If IsNumeric(code.Substring(0, 3)) = True And worksheet.Cells(t, 2).Value <> "" Then
+
+                                code &= abrevCompany
+
+                                'R("Code") = code
+                                'R("Fullname") = fullname
+                                'R("Barcode") = barcode
+                                'R("Xondr") = Xondr
+                                'R("Lian") = Lian
+                                'R("FPA") = FPA
+                                'R("Notes") = notes
+
+                                'Θεωρούμε ότι κάθε barcode αντιστοιχεί σε ένα προιόν, 
+                                'ένω ένα προιόν μπορεί να έχει περισσότερα barcode 
+                                'Αν έχει διαφορετικό κωδικό (code) θεωρείται διαφορετικό προίον
+
+                                ' Ελέγχει αν το barcode υπάρχει ήδη και, αν ναι, σε ποιο AP_ID αντιστοιχεί
+                                AP_Id_Barcode = CheckIfBarcodeExists(barcode)
+                                ' ελέγχει αν υπάρχει ήδη ο κωδικός του προιόντος και, αν ναι, σε ποιο AP_ID αντιστοιχεί
+                                AP_ID_APOTIKH = CheckIfParadrugCodeExists(code)
+
+                                ' Εάν δεν υπάρχει το barcode..
+                                If AP_Id_Barcode = 0 Then
+                                    ' ξέρει ήδη αν υπάρχει ή όχι ο κωδικός του προιόντος (AP_ID_APOTIKH)
+
+                                    ' Αν δεν υπάρχει τον προσθέτει και αν υπάρχει τον ανανεώνει με τα νέα στοιχεία
+                                    new_AP_ID = UpdateApotikiWithParadrugs(AP_ID_APOTIKH, code, fullname, Lian, Xondr, notes, FPA)
+                                    ' Προσθέτει το νέο barcode 
+                                    UpdateBarcodesWithParadrugs(new_AP_ID, barcode, "Insert")
+                                    'R("ImportOK") = "ADDED"
+                                Else ' Εάν το barcode υπάρχει ήδη..
+                                    ' Ανανεώνει τα στοιχεία στο αρχείο των κωδικών με τα νέα
+                                    UpdateApotikiWithParadrugs(AP_Id_Barcode, code, fullname, Lian, Xondr, notes, FPA)
+                                    'R("ImportOK") = "UPDATED"
+                                End If
+
+
+                                'dt.Rows.Add(R)
+                                'R = dt.NewRow
+                                index += 1
+                                lblInfo.Text = index.ToString
+                                lblInfo.Refresh()
+
+                                'dgvExcel2Datagrid.DataSource = dt
+                            End If
+
+
+
+                        Catch ex As Exception
+                        End Try
+
+                    Next
+                End If
+
+
+            Next
+        Catch ex As Exception
+            MsgBox(ex.ToString)
+        End Try
+
+        'dgvExcel2Datagrid.DataSource = dt
+
+    End Function
+
+
+    Private Sub btnImportExcel_Click(sender As Object, e As EventArgs) Handles btnImportExcel.Click
+        ImportExcel2Apotikh("D:\PharmacyBackup\Excel Lists\korres.xlsx", "KORRES", "KOR")
+    End Sub
+
+    Private Function CheckIfParadrugCodeExists(ByVal code As String) As Integer
+        Dim insertData As String = ""
+        Dim AP_ID As Integer = 0
+
+        Using con As SqlConnection = New System.Data.SqlClient.SqlConnection(connectionstring)
+            con.Open()
+
+            insertData = "SELECT AP_ID " & _
+                        "FROM [Pharmacy2013C].[dbo].[APOTIKH] " & _
+                        "WHERE AP_CODE = @Code"
+
+            Dim cmd As New SqlCommand(insertData, con)
+
+            cmd.Parameters.AddWithValue("@Code", code)
+
+            Dim myReader As SqlClient.SqlDataReader = cmd.ExecuteReader()
+
+            If myReader.HasRows Then
+                Do While myReader.Read()
+                    AP_ID = myReader(0)
+                Loop
+
+            End If
+
+            Return AP_ID
+
+        End Using
+
+    End Function
+
+
+
+    Private Function CheckIfBarcodeExists(ByVal barcode As String) As Integer
+        Dim insertData As String = ""
+        Dim AP_ID As Integer = 0
+
+        Using con As SqlConnection = New System.Data.SqlClient.SqlConnection(connectionstring)
+            con.Open()
+
+            insertData = "SELECT * " & _
+                        "FROM [Pharmacy2013C].[dbo].[APOTIKH_BARCODES] " & _
+                        "WHERE BRAP_AP_BARCODE = @Barcode"
+
+            Dim cmd As New SqlCommand(insertData, con)
+
+            cmd.Parameters.AddWithValue("@Barcode", barcode)
+
+            Dim myReader As SqlClient.SqlDataReader = cmd.ExecuteReader()
+
+            If myReader.HasRows Then
+                Do While myReader.Read()
+                    AP_ID = myReader(1)
+                Loop
+
+            End If
+
+            Return AP_ID
+
+        End Using
+
+    End Function
+
+
+    Private Function GetIdFromApotiki(ByVal name As String) As Integer
+        Dim insertData As String = ""
+        Dim AP_ID As Integer = 0
+
+        Using con As SqlConnection = New System.Data.SqlClient.SqlConnection(connectionstring)
+            con.Open()
+
+            insertData = "SELECT [AP_ID] " & _
+                        "FROM [Pharmacy2013C].[dbo].[APOTIKH] " & _
+                        "WHERE [AP_DESCRIPTION] = @name"
+
+            Dim cmd As New SqlCommand(insertData, con)
+
+            cmd.Parameters.AddWithValue("@name", name)
+
+            Dim myReader As SqlClient.SqlDataReader = cmd.ExecuteReader()
+
+            If myReader.HasRows Then
+                Do While myReader.Read()
+                    AP_ID = myReader(0)
+                Loop
+
+            End If
+
+            Return AP_ID
+
+        End Using
+
+    End Function
+
+
+    Private Sub UpdateBarcodesWithParadrugs(ByVal AP_ID As Integer, barcode As String, mode As String)
+        Dim insertData As String = ""
+        Dim DrugFPA As Integer = 0
+
+        Using con As SqlConnection = New System.Data.SqlClient.SqlConnection(connectionstring)
+            con.Open()
+            If mode = "UpdateByID" Then
+                insertData = "UPDATE Pharmacy2013C.dbo.APOTIKH_BARCODES " & _
+                            "SET [BRAP_AP_BARCODE] = @barcode " & _
+                            "WHERE AP_ID = @Id"
+            ElseIf mode = "UpdateByBarcode" Then
+                insertData = "UPDATE Pharmacy2013C.dbo.APOTIKH_BARCODES " & _
+                            "SET [BRAP_AP_ID] =  @AP_ID  " & _
+                            "WHERE BRAP_AP_BARCODE = @barcode"
+            Else
+                insertData = "INSERT INTO Pharmacy2013C.dbo.APOTIKH_BARCODES " & _
+                                                     "([BRAP_AP_BARCODE] ,[BRAP_AP_ID]) " & _
+                                                     "VALUES (@barcode, @AP_Id)"
+            End If
+
+
+            Dim cmd As New SqlCommand(insertData, con)
+
+            ' Περνάει τις παραμέτρους του SQL 
+            If mode = "UpdateByID" Then
+                cmd.Parameters.AddWithValue("@AP_Id", AP_ID)
+            ElseIf mode = "UpdateByBarcode" Then
+                cmd.Parameters.AddWithValue("@barcode", barcode)
+            Else
+                cmd.Parameters.AddWithValue("@AP_Id", AP_ID)
+                cmd.Parameters.AddWithValue("@barcode", barcode)
+            End If
+
+
+            ' Σώζει τις αλλαγές
+            Try
+                cmd.ExecuteNonQuery()
+            Catch ex As Exception
+                'MsgBox("ERROR (Barcode)!!!" & vbCrLf & ex.Message)
+            End Try
+
+        End Using
+
+    End Sub
+
+
+    Private Function UpdateApotikiWithParadrugs(ByVal AP_Id As Integer, code As String, fullname As String, lian As Decimal, xondr As Decimal, notes As String, fpa As Decimal) As Integer
+        Dim insertData As String = ""
+        Dim DrugFPA As Integer = 0
+        Dim new_AP_ID As Integer = 0
+        Dim ApotikiLastRecord As Integer = 0
+
+        Using con As SqlConnection = New System.Data.SqlClient.SqlConnection(connectionstring)
+            con.Open()
+
+            If AP_Id > 0 Then
+                insertData = "UPDATE Pharmacy2013C.dbo.APOTIKH " & _
+                             "SET [AP_FAR_ID] = @AP_FAR_ID, [AP_DESCRIPTION] = @AP_DESCRIPTION, [AP_KA_ID] =  @AP_KA_ID, [AP_YPK_ID] =  @AP_YPK_ID, [AP_MEMO_PWL_CUSTOM] = @Notes, " & _
+                             "[AP_FP_ID] = @AP_FP_ID, [AP_TIMH_XON] =  @AP_TIMH_XON,[AP_TIMH_LIAN] = @AP_TIMH_LIAN, [AP_CHANGE_DATE] =  @AP_CHANGE_DATE,  [AP_ACCEPT_TIMH] =  @AP_ACCEPT_TIMH  " & _
+                             "WHERE AP_ID = @Id"
+            ElseIf AP_Id = 0 Then
+                insertData = "INSERT INTO Pharmacy2013C.dbo.APOTIKH " & _
+                            "([AP_ID], [AP_FAR_ID] ,[AP_CODE] ,[AP_DESCRIPTION] ,[AP_KA_ID] ,[AP_YPK_ID], [AP_MEMO_PWL_CUSTOM], [AP_FP_ID], [AP_TIMH_XON], [AP_TIMH_LIAN], [AP_CREATE_DATE], [AP_ACCEPT_TIMH]) " & _
+                            "VALUES (@AP_Id, @AP_FAR_ID, @AP_CODE, @AP_DESCRIPTION, @AP_KA_ID, @AP_YPK_ID, @Notes, @AP_FP_ID, @AP_TIMH_XON, @AP_TIMH_LIAN, @AP_CREATE_DATE, @AP_ACCEPT_TIMH)"
+            End If
+
+            Dim cmd As New SqlCommand(insertData, con)
+
+            ' Περνάει τις παραμέτρους του SQL 
+            Select Case fpa
+                Case Is = 0.24
+                    DrugFPA = 2
+                Case Is = 0.13
+                    DrugFPA = 3
+                Case Is = 0.06
+                    DrugFPA = 1
+            End Select
+
+            cmd.Parameters.AddWithValue("@AP_FAR_ID", 1)
+            cmd.Parameters.AddWithValue("@Id", AP_Id)
+            cmd.Parameters.AddWithValue("@AP_DESCRIPTION", fullname)
+            cmd.Parameters.AddWithValue("@AP_CODE", code)
+            cmd.Parameters.AddWithValue("@AP_KA_ID", 13)
+            cmd.Parameters.AddWithValue("@AP_OM_ID", 2)
+            cmd.Parameters.AddWithValue("@AP_YPK_ID", 35)
+            cmd.Parameters.AddWithValue("@AP_FP_ID", DrugFPA)
+            cmd.Parameters.AddWithValue("@AP_TIMH_XON", xondr)
+            cmd.Parameters.AddWithValue("@AP_TIMH_LIAN", lian)
+            cmd.Parameters.AddWithValue("@AP_ACCEPT_TIMH", 0)
+            cmd.Parameters.AddWithValue("@Notes", If(notes Is Nothing, DBNull.Value, notes))
+
+            If AP_Id > 0 Then
+                cmd.Parameters.AddWithValue("@AP_CHANGE_DATE", Now())
+                new_AP_ID = AP_Id
+            ElseIf AP_Id = 0 Then
+                ApotikiLastRecord = ExecuteSQLTransact("Select max([AP_Id]) FROM [Pharmacy2013C].[dbo].[APOTIKH]")
+                new_AP_ID = ApotikiLastRecord + 1
+                cmd.Parameters.AddWithValue("@AP_Id", new_AP_ID)
+                cmd.Parameters.AddWithValue("@AP_CREATE_DATE", Now())
+
+            End If
+
+            ' Σώζει τις αλλαγές
+            Try
+                cmd.ExecuteNonQuery()
+            Catch ex As Exception
+                If ex.Message.Contains("String or binary data would be truncated.") Then
+                    errorTruncated += 1
+                    lblInfo2.Text = "Entries truncated: " & errorTruncated
+                Else
+                    MsgBox("ERROR (APOTIKI) !!!" & vbCrLf & ex.Message)
+                End If
+
+            End Try
+
+        End Using
+        Return new_AP_ID
+    End Function
+
+End Class

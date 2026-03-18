@@ -1,0 +1,83 @@
+﻿Imports Pharmacy.GlobalFunctions
+Imports Pharmacy.GlobalVariables
+Public Class frmSelectBatch
+
+    Public Property Candidates As List(Of String)
+
+    ' Κρατά την τελική επιλογή/διόρθωση ανεξάρτητα από την κατάσταση των controls
+    Private _chosenBatch As String = ""
+
+    ' Διαβάζεται από τον caller ΜΕΤΑ το ShowDialog
+    Public ReadOnly Property SelectedBatch As String
+        Get
+            Return If(_chosenBatch, String.Empty)
+        End Get
+    End Property
+
+    Private Sub frmSelectBatch_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        If Candidates IsNot Nothing AndAlso Candidates.Count > 0 Then
+            lstCandidates.Items.Clear()
+            ' Normalize όλα πριν τα δείξουμε
+            Dim norm As New List(Of String)
+            For Each c In Candidates
+                norm.Add(NormalizeLotToLatin(If(c, String.Empty)))
+            Next
+            lstCandidates.Items.AddRange(norm.ToArray())
+            If lstCandidates.Items.Count > 0 Then lstCandidates.SelectedIndex = 0
+        End If
+        txtEditBatch.Visible = False
+        _chosenBatch = "" ' reset
+    End Sub
+
+
+    Private Sub btnOK_Click(sender As Object, e As EventArgs) Handles btnOK.Click
+        ' Αν είναι σε edit mode, ΠΑΡΕ ΠΑΝΤΑ το textbox — ανεξάρτητα τι έχει η λίστα
+        ' btnOK_Click
+        If txtEditBatch.Visible Then
+            _chosenBatch = NormalizeLotToLatin(If(txtEditBatch.Text, String.Empty).Trim())
+        Else
+            If lstCandidates.SelectedItem IsNot Nothing Then
+                _chosenBatch = NormalizeLotToLatin(lstCandidates.SelectedItem.ToString())
+            Else
+                _chosenBatch = ""
+            End If
+        End If
+
+        ' Καμία επιπλέον επιβεβαίωση: OK & κλείσιμο
+        Me.DialogResult = DialogResult.OK
+        Me.Close()
+    End Sub
+
+    Private Sub lstCandidates_DoubleClick(sender As Object, e As EventArgs) Handles lstCandidates.DoubleClick
+        If lstCandidates.SelectedItem IsNot Nothing Then
+            ' Double-click στη λίστα: παίρνουμε την τρέχουσα επιλογή της λίστας
+            _chosenBatch = lstCandidates.SelectedItem.ToString()
+            Me.DialogResult = DialogResult.OK
+            Me.Close()
+        End If
+    End Sub
+
+    Private Sub btnEditBatch_Click(sender As Object, e As EventArgs) Handles btnEditBatch.Click
+        Dim baseText As String = ""
+        If lstCandidates.SelectedItem IsNot Nothing Then
+            baseText = lstCandidates.SelectedItem.ToString()
+        End If
+        txtEditBatch.Text = baseText
+        txtEditBatch.Visible = True
+        txtEditBatch.Focus()
+        txtEditBatch.SelectAll()
+    End Sub
+
+    ' Enter στο textbox => παίρνουμε ΠΑΝΤΑ το textbox (όχι τη λίστα) και κλείνουμε
+    Private Sub txtEditBatch_KeyDown(sender As Object, e As KeyEventArgs) Handles txtEditBatch.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            e.SuppressKeyPress = True
+            e.Handled = True
+            _chosenBatch = NormalizeLotToLatin(If(txtEditBatch.Text, String.Empty).Trim())
+            Me.DialogResult = DialogResult.OK
+            Me.Close()
+
+        End If
+    End Sub
+
+End Class

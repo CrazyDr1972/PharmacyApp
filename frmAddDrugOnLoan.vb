@@ -1,0 +1,470 @@
+﻿Imports Pharmacy.GlobalFunctions
+Imports Pharmacy.GlobalVariables
+Imports System.Data.SqlClient
+Imports System.Windows.Forms.Timer
+
+Public Class frmAddDrugOnLoan
+
+    ' --- ADD: ανεξάρτητα previous για τα δύο timers + flag για manual typing ---
+    Private prevDrugText As String = ""
+    Private prevBoxText As String = ""
+    Private manualTypingBox As Boolean = False
+    ' --- ΑΠΟΘΗΚΕΥΣΗ/ΦΟΡΤΩΣΗ ΤΕΛΕΥΤΑΙΑΣ ΘΕΣΗΣ ΦΟΡΜΑΣ ---
+    Private Const REG_ROOT As String = "Software\Pharmacy\Forms"
+    Private Const REG_KEY As String = "AddDrug2Loan_Location"
+
+    Private Sub SaveLastLocation()
+        Try
+            Dim p As New Point(Me.Location.X, Me.Location.Y)
+            Dim s As String = p.X & "," & p.Y
+            My.Computer.Registry.CurrentUser.CreateSubKey(REG_ROOT).SetValue(REG_KEY, s)
+        Catch
+        End Try
+    End Sub
+
+    Private Function LoadLastLocation() As Point?
+        Try
+            Dim v = My.Computer.Registry.CurrentUser.OpenSubKey(REG_ROOT)?.GetValue(REG_KEY, Nothing)
+            If v Is Nothing Then Return Nothing
+            Dim parts = v.ToString().Split(","c)
+            If parts.Length <> 2 Then Return Nothing
+            Dim x As Integer, y As Integer
+            If Integer.TryParse(parts(0), x) AndAlso Integer.TryParse(parts(1), y) Then
+                Dim p As New Point(x, y)
+                ' έλεγχος ότι «κάθεται» σε κάποιο screen
+                For Each scr In Screen.AllScreens
+                    Dim r = scr.WorkingArea
+                    If r.Contains(p) OrElse r.Contains(New Rectangle(p, Me.Size)) Then
+                        Return p
+                    End If
+                Next
+            End If
+        Catch
+        End Try
+        Return Nothing
+    End Function
+
+
+
+
+    ' --- ADD: Helper για απλή αναγνώριση QR-like payload ---
+    Private Function LooksLikeQrPayload(ByVal s As String) As Boolean
+        If String.IsNullOrWhiteSpace(s) Then Return False
+
+        ' Heuristics: γράμματα ή «ιδιαίτεροι» διαχωριστές ή μεγάλο μήκος
+        Dim hasLetters As Boolean = False
+        For Each ch As Char In s
+            If Char.IsLetter(ch) Then
+                hasLetters = True
+                Exit For
+            End If
+        Next
+
+        Dim hasSeparators As Boolean = s.Contains("|") OrElse s.Contains(";") OrElse s.Contains("^") _
+                                   OrElse s.Contains("=") OrElse s.Contains(ChrW(29))
+
+        Return hasLetters OrElse hasSeparators OrElse s.Length > 20
+    End Function
+
+    Private Sub frmAddDrugOnLoan_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        SaveLastLocation()   ' <<< ΝΕΟ
+        frmCustomers.Enabled = True
+    End Sub
+
+
+    ' =========================================================
+    ' = tmrDrugOnLoan_Tick : debounce για txtDrugBarcode (Drug)
+    ' =========================================================
+    Private Sub tmrDrugOnLoan_Tick(sender As Object, e As EventArgs) Handles tmrDrugBarcode.Tick
+        Dim textCurrent As String = txtDrugBarcode.Text
+
+        ' Debounce με ανεξάρτητο previous για το πεδίο Drug
+        If textCurrent <> "" AndAlso textCurrent = prevDrugText Then
+            tmrDrugBarcode.Enabled = False
+
+            ' --- QR fast-path: αν στο txtDrugBarcode σκαναρίστηκε QR, βρες προϊόν & ΠΑΡΤΙΔΑ ---
+            ' Τώρα: ΜΟΛΙΣ βρεθεί παρτίδα (με επιλογή/διόρθωση από τον χρήστη), γίνεται commit ΑΜΕΣΑ στη ΒΔ.
+            Dim qrInfo As String() = GetDrugNameFromCode(textCurrent, "qrcode")
+            If UsingBarcodeForm = "AddDrugOnLoan" AndAlso
+           qrInfo IsNot Nothing AndAlso qrInfo.Length >= 2 AndAlso
+           qrInfo(0) <> "" AndAlso qrInfo(1) <> "" Then
+
+                ' 1) Πάρε παρτίδα (από υποψήφιες μέσω dialog ή από edit)
+                Dim lot As String = ExtractBatchFromQR(textCurrent)
+                lot = NormalizeLotToLatin(lot)
+                If lot <> "" Then
+                    ' 2) Γράψε την παρτίδα στο box ΧΩΡΙΣ να οπλίσει ο timer (manual guard)
+                    chkManualEdit.Checked = True
+                    txtBoxBarcode.Text = lot
+                    chkManualEdit.Checked = False
+
+                    ' 3) ΚΑΤΕΥΘΕΙΑΝ COMMIT στη ΒΔ, χωρίς άλλα μηνύματα/Enter
+                    Dim drugName As String = qrInfo(0)
+                    Dim drugPrice As Decimal
+                    Decimal.TryParse(qrInfo(1), drugPrice)
+
+                    'frmCustomers.dgvDrugsOnLoan.SelectedRows(0).Cells(1).Value = drugName
+                    'frmCustomers.dgvDrugsOnLoan.SelectedRows(0).Cells(2).Value = drugPrice
+                    'frmCustomers.dgvDrugsOnLoan.SelectedRows(0).Cells(3).Value = txtDrugBarcode.Text ' QR payload
+                    'frmCustomers.dgvDrugsOnLoan.SelectedRows(0).Cells(4).Value = txtBoxBarcode.Text  ' Παρτίδα (επιλογή/διόρθωση)
+                    'frmCustomers.dgvDrugsOnLoan.SelectedRows(0).Cells(7).Value = frmCustomers.dgvCustomers.SelectedRows(0).Cells(1).Value ' CustomerId
+
+                    ' ... αφού έχεις βρει DrugName, DrugPrice, και έχεις τα δύο barcodes ...
+                    frmCustomers.InsertDrugOnLoanDirect(
+    drugName:=drugName,
+    price:=drugPrice,
+    barcode1:=txtDrugBarcode.Text,
+    barcode2:=txtBoxBarcode.Text,
+    dateIn:=Date.Today,
+    dateOut:=Nothing)
+
+                    ClearAddDrug2Loan()
+                    Exit Sub
+                Else
+                    ' Δεν επελέγη παρτίδα: μείνε στη ροή barcode (ζητάμε/περιμένουμε εισαγωγή παρτίδας)
+                End If
+            End If
+
+            ' --- Αν ΔΕΝ είναι QR ή δεν βρέθηκε προϊόν από QR:
+            ' Ροή BARCODE: ζητά 2ο σκανάρισμα/πληκτρολόγηση παρτίδας στο txtBoxBarcode (commit με Enter)
+            manualTypingBox = False
+            txtBoxBarcode.Focus()
+            txtBoxBarcode.SelectionStart = 0
+            txtBoxBarcode.SelectionLength = txtBoxBarcode.TextLength
+
+        Else
+            ' Ενημέρωση previous για debounce
+            prevDrugText = textCurrent
+        End If
+    End Sub
+
+
+    ' --- ΝΕΟ: ευέλικτος εντοπισμός ΟΛΩΝ των LOT (AI 10) μέσα σε GS1 QR ---
+    Private Function ExtractBatchCandidatesFromQR(ByVal qr As String) As List(Of String)
+        Dim results As New List(Of String)
+        Dim seen As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+        If String.IsNullOrEmpty(qr) Then Return results
+
+        ' 1) Αν εντοπίσουμε 01 + 14 ψηφία (PC), ξεκινάμε μετά από αυτό – αλλιώς δεν κόβουμε τίποτα
+        Dim startIdx As Integer = 0
+        Dim m As System.Text.RegularExpressions.Match =
+        System.Text.RegularExpressions.Regex.Match(qr, "01(\d{14})", System.Text.RegularExpressions.RegexOptions.CultureInvariant)
+        If m.Success Then
+            startIdx = m.Index + m.Length
+        End If
+
+        Dim s As String = qr.Substring(startIdx)
+
+        ' 2) Λίστα έγκυρων επόμενων AI για φαρμακευτικούς κωδικούς
+        Dim nextAIs As String() = {"17", "21", "30", "37", "90", "91", "92", "93", "94", "95", "96", "97", "98", "99"}
+
+        ' 3) Σάρωση για ΚΑΘΕ "10"
+        Dim i As Integer = 0
+        While i >= 0 AndAlso i < s.Length
+            i = s.IndexOf("10", i, StringComparison.Ordinal)
+            If i < 0 Then Exit While
+
+            Dim valueStart As Integer = i + 2 ' μετά το "10"
+            If valueStart >= s.Length Then Exit While
+
+            ' Υπολογισμός τέλους: ελάχιστο από FNC1 ή επόμενο AI
+            Dim endIdx As Integer = s.Length
+
+            ' 3a) FNC1 (ASCII 29)
+            Dim fnc1 As Integer = s.IndexOf(ChrW(29), valueStart)
+            If fnc1 >= 0 Then endIdx = Math.Min(endIdx, fnc1)
+
+            ' 3b) Επόμενα AI (λευκή λίστα)
+            For Each ai In nextAIs
+                Dim k As Integer = s.IndexOf(ai, valueStart, StringComparison.Ordinal)
+                If k >= 0 Then endIdx = Math.Min(endIdx, k)
+            Next
+
+            ' 3c) Υποψήφια LOT
+            Dim raw As String = s.Substring(valueStart, Math.Max(0, endIdx - valueStart))
+
+            ' Καθαρισμός: κρατάμε γράμματα/ψηφία/παύλα, κάνουμε normalise (Ελληνικά→Λατινικά)
+            raw = New String(raw.Where(Function(ch) Char.IsLetterOrDigit(ch) OrElse ch = "-"c).ToArray())
+            Dim lot As String = NormalizeLotToLatin(raw)
+
+            ' Μήκος 5–10
+            If lot.Length >= 5 AndAlso lot.Length <= 10 AndAlso Not seen.Contains(lot) Then
+                seen.Add(lot)
+                results.Add(lot)
+            End If
+
+            ' Συνεχίζουμε να ψάχνουμε μετά από αυτό το "10"
+            i = valueStart
+        End While
+
+        Return results
+    End Function
+
+
+
+
+    ' --- ADD: Επιβεβαίωση με Enter στο box για να γίνει η καταχώρηση ---
+    Private Sub txtBoxBarcode_KeyDown(sender As Object, e As KeyEventArgs) Handles txtBoxBarcode.KeyDown
+        ' --- NEW: οποιοδήποτε πλήκτρο εκτός από Enter => θεωρούμε manual typing, σταματάμε timer ---
+        If e.KeyCode <> Keys.Enter Then
+            manualTypingBox = True
+            tmrBoxBarcode.Enabled = False
+            Return
+        End If
+
+        ' Enter => καταχώρηση
+        If e.KeyCode = Keys.Enter Then
+            e.SuppressKeyPress = True
+            e.Handled = True
+            manualTypingBox = False
+
+            txtBoxBarcode.Text = NormalizeLotToLatin(If(txtBoxBarcode.Text, String.Empty))
+
+            Try : tmrBoxBarcode.Enabled = False : Catch : End Try
+
+            ' === ΔΙΟΡΘΩΣΗ: κάνε το debounce να περάσει ===
+            prevBoxText = txtBoxBarcode.Text         ' <-- ΝΕΟ
+            tmrBoxBarcode_Tick(Nothing, EventArgs.Empty)
+        End If
+
+    End Sub
+
+
+    Private Sub txtDrugBarcode_LostFocus(sender As Object, e As EventArgs) Handles txtDrugBarcode.LostFocus
+        chkManualEdit.Checked = False
+        prevDrugText = ""
+    End Sub
+
+    Private Sub txtBoxBarcode_LostFocus(sender As Object, e As EventArgs) Handles txtBoxBarcode.LostFocus
+        manualTypingBox = False
+        prevBoxText = ""
+    End Sub
+
+    Private Sub txtDrugBarcode_TextChanged(sender As Object, e As EventArgs) Handles txtDrugBarcode.TextChanged
+        If txtDrugBarcode.Text <> "" And chkManualEdit.Checked = False Then
+            tmrDrugBarcode.Enabled = True
+        Else
+            tmrDrugBarcode.Enabled = False
+        End If
+    End Sub
+
+    ' =========================================================
+    ' = tmrBoxBarcode_Tick : debounce για txtBoxBarcode (Batch)
+    ' =========================================================
+    Private Sub tmrBoxBarcode_Tick(sender As Object, e As EventArgs) Handles tmrBoxBarcode.Tick
+        Dim textCurrent As String = txtBoxBarcode.Text
+        Dim DrugInfo As String()
+        Dim DrugName As String = ""
+        Dim DrugPrice As Decimal = 0D
+
+        ' Αν ο χρήστης πληκτρολογεί, ο timer δεν πρέπει να δουλεύει
+        If manualTypingBox Then
+            tmrBoxBarcode.Enabled = False
+            Return
+        End If
+
+        ' Debounce με ανεξάρτητο previous για το πεδίο Box
+        If textCurrent <> "" AndAlso textCurrent = prevBoxText Then
+            tmrBoxBarcode.Enabled = False
+
+            ' 1) ΠΡΟΤΕΡΑΙΟΤΗΤΑ QR (όπως στο frmDebtEntry) — αν στο txtDrugBarcode υπάρχει QR
+            If UsingBarcodeForm = "AddDrugOnLoan" Then
+                Dim qrInfo As String() = GetDrugNameFromCode(txtDrugBarcode.Text, "qrcode")
+                If qrInfo IsNot Nothing AndAlso qrInfo.Length >= 2 AndAlso qrInfo(0) <> "" AndAlso qrInfo(1) <> "" Then
+                    DrugName = qrInfo(0)
+                    Decimal.TryParse(qrInfo(1), DrugPrice)
+
+                    ' Commit: γέμισε το dgv και κλείσε
+                    'frmCustomers.dgvDrugsOnLoan.SelectedRows(0).Cells(1).Value = DrugName                       ' Όνομα
+                    'frmCustomers.dgvDrugsOnLoan.SelectedRows(0).Cells(2).Value = DrugPrice                      ' Τιμή
+                    'frmCustomers.dgvDrugsOnLoan.SelectedRows(0).Cells(3).Value = txtDrugBarcode.Text            ' Drug (QR payload)
+                    'frmCustomers.dgvDrugsOnLoan.SelectedRows(0).Cells(4).Value = txtBoxBarcode.Text             ' Παρτίδα από ExtractBatchFromQR ή manual
+                    'frmCustomers.dgvDrugsOnLoan.SelectedRows(0).Cells(7).Value = frmCustomers.dgvCustomers.SelectedRows(0).Cells(1).Value ' CustomerId
+
+                    ' ... αφού έχεις βρει DrugName, DrugPrice, και έχεις τα δύο barcodes ...
+                    frmCustomers.InsertDrugOnLoanDirect(
+    drugName:=DrugName,
+    price:=DrugPrice,
+    barcode1:=txtDrugBarcode.Text,
+    barcode2:=txtBoxBarcode.Text,
+    dateIn:=Date.Today,
+    dateOut:=Nothing
+)
+                    ClearAddDrug2Loan()
+                    'Me.Close()
+                    Exit Sub
+                End If
+            End If
+
+            ' 2) Αλλιώς BARCODE ροή: πρώτα ψάχνουμε barcode → μετά (αν όχι) qrcode
+            DrugInfo = GetDrugNameFromCode(txtDrugBarcode.Text, "barcode")
+            If (DrugInfo Is Nothing) OrElse DrugInfo.Length < 2 OrElse DrugInfo(0) = "" OrElse DrugInfo(1) = "" Then
+                DrugInfo = GetDrugNameFromCode(txtDrugBarcode.Text, "qrcode")
+            End If
+
+            ' 3) Αν πάλι δεν βρέθηκε τίποτα → μήνυμα & κλείσιμο
+            If (DrugInfo Is Nothing) OrElse DrugInfo.Length < 2 OrElse DrugInfo(0) = "" OrElse DrugInfo(1) = "" Then
+                MsgBox("Δεν αντιστοιχούν σωστά στοιχεία στο συγκεκριμένο barcode/QR!" & vbCrLf &
+                   "Δοκιμάστε να τα καταχωρήσετε χειροκίνητα.")
+                'me.Close()
+                Exit Sub
+            End If
+
+            ' 4) Έχουμε προϊόν: commit στο grid και Close
+            DrugName = DrugInfo(0)
+            Decimal.TryParse(DrugInfo(1), DrugPrice)
+
+            'frmCustomers.dgvDrugsOnLoan.SelectedRows(0).Cells(1).Value = DrugName
+            'frmCustomers.dgvDrugsOnLoan.SelectedRows(0).Cells(2).Value = DrugPrice
+            'frmCustomers.dgvDrugsOnLoan.SelectedRows(0).Cells(3).Value = txtDrugBarcode.Text    ' Drug barcode ή QR payload
+            'frmCustomers.dgvDrugsOnLoan.SelectedRows(0).Cells(4).Value = txtBoxBarcode.Text     ' Παρτίδα (δεύτερο σκάνερ ή από QR)
+            'frmCustomers.dgvDrugsOnLoan.SelectedRows(0).Cells(7).Value = frmCustomers.dgvCustomers.SelectedRows(0).Cells(1).Value
+
+            ' ... αφού έχεις βρει DrugName, DrugPrice, και έχεις τα δύο barcodes ...
+            frmCustomers.InsertDrugOnLoanDirect(
+    drugName:=DrugName,
+    price:=DrugPrice,
+    barcode1:=txtDrugBarcode.Text,
+    barcode2:=txtBoxBarcode.Text,
+    dateIn:=Date.Today,
+    dateOut:=Nothing
+)
+            ClearAddDrug2Loan()
+            'Me.Close()
+            Exit Sub
+
+        Else
+            ' Ενημέρωση previous για debounce
+            prevBoxText = textCurrent
+        End If
+    End Sub
+
+
+    Private Sub ClearAddDrug2Loan()
+        txtBoxBarcode.Text = ""
+        txtDrugBarcode.Text = ""
+        txtDrugBarcode.Focus()
+    End Sub
+
+
+    Private Function GetDrugNameFromCode(ByVal barcode As String, Optional ByVal mode As String = "barcode") As String()
+
+        Dim sqlString, qr As String
+
+        If mode = "barcode" Then
+            sqlString = "SELECT [AP_DESCRIPTION], [AP_Morfi], [AP_TIMH_LIAN] " &
+                                "FROM APOTIKH left JOIN APOTIKH_BARCODES ON APOTIKH.AP_ID = APOTIKH_BARCODES.BRAP_AP_ID " &
+                                "WHERE BRAP_AP_BARCODE like '%" & barcode & "%' "
+        ElseIf mode = "qrcode" Then
+            qr = GetQRFromScannedCode(barcode)
+            If qr IsNot Nothing Then
+                txtDrugBarcode.Text = qr
+            Else
+                Exit Function
+            End If
+
+            sqlString = "SELECT [AP_DESCRIPTION], [AP_Morfi], [AP_TIMH_LIAN] " &
+                                "FROM APOTIKH left JOIN APOTIKH_QRCODES ON APOTIKH.AP_ID = APOTIKH_QRCODES.APQ_AP_ID " &
+                                "WHERE APQ_PRODUCT_CODE like '%" & qr & "%' "
+        End If
+
+        Dim DrugInfo() As String = {"", ""}
+        'Initialization νεας σύνδεσης με το connectionString που παίρνει από τις GlobalVariables
+        Using con As New SqlClient.SqlConnection(connectionstring)
+
+            'Initialization νέου CommandAdapter με την Stringα αναζήτησης και την σύνδεση
+            Using cmd As New SqlClient.SqlCommand(sqlString, con)
+
+                ' Ανοίγει την σύνδεση
+                con.Open()
+
+                'Ορισμός ExecuteReader 
+                Dim myReader As SqlClient.SqlDataReader = cmd.ExecuteReader()
+
+                If myReader.HasRows Then
+                    Do While myReader.Read()
+
+                        If IsDBNull(myReader(0)) = False Then
+                            DrugInfo(0) = myReader(0) & " " & myReader(1)
+                        End If
+
+                        If IsDBNull(myReader(2)) = True Then
+                            DrugInfo(1) = "0"
+                        Else
+                            DrugInfo(1) = myReader(2)
+                        End If
+
+                    Loop
+                Else
+                End If
+
+                Return DrugInfo
+            End Using
+        End Using
+
+    End Function
+
+    Private Sub txtBoxBarcode_TextChanged(sender As Object, e As EventArgs) Handles txtBoxBarcode.TextChanged
+        If txtBoxBarcode.Text <> "" AndAlso chkManualEdit.Checked = False AndAlso manualTypingBox = False Then
+            tmrBoxBarcode.Enabled = True
+        Else
+            tmrBoxBarcode.Enabled = False
+        End If
+    End Sub
+
+
+
+
+    ' Εξαγωγή παρτίδας με επιλογή/διόρθωση από χρήστη (επιστρέφει ΕΝΑ String)
+    Private Function ExtractBatchFromQR(ByVal qr As String) As String
+        Dim candidates As List(Of String) = ExtractBatchCandidatesFromQR(qr)
+        If candidates Is Nothing OrElse candidates.Count = 0 Then
+            Return ""
+        End If
+
+        ' ΠΑΝΤΑ δείξε το dialog όταν υπάρχει τουλάχιστον 1 candidate
+        Using dlg As New frmSelectBatch()
+            dlg.Candidates = candidates
+            Dim dr As DialogResult = dlg.ShowDialog(Me)
+            If dr = DialogResult.OK Then
+                ' Το frmSelectBatch ήδη επιστρέφει το edited ή το επιλεγμένο, κανονικοποιημένο
+                Return dlg.SelectedBatch
+            End If
+        End Using
+
+        ' Αν ακυρώσει ο χρήστης
+        Return ""
+    End Function
+
+
+
+
+
+
+
+    Private Sub frmAddDrugOnLoan_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+        Me.StartPosition = FormStartPosition.Manual
+
+        Dim p = LoadLastLocation()
+        If p.HasValue Then
+            Me.Location = p.Value
+        Else
+            ' παλιό σου placement, ως fallback
+            Me.Location = New Point(frmCustomers.Location.X + 339, frmCustomers.Location.Y + 288)
+        End If
+
+        If UsingBarcodeForm = "AddDrugOnLoan" Then
+            lblUsingBarcodeForm.Text = "Καταχώρηση κουπονιών πελάτη"
+        ElseIf UsingBarcodeForm = "MyBarcodesIn" Then
+            Me.Text = "Προσθήκη"
+            lblUsingBarcodeForm.Text = "Τα δικά μας κουπόνια.."
+        ElseIf UsingBarcodeForm = "MyBarcodesOut" Then
+            Me.Text = "Χρησιμοποίηση"
+            lblUsingBarcodeForm.Text = "Τα δικά μας κουπόνια.."
+        End If
+    End Sub
+
+
+
+End Class

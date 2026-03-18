@@ -1,0 +1,64 @@
+﻿' Exported: 2025-10-23 00:24:46 +03:00
+' Project:  Pharmacy.vbproj
+' Source:   frmPayDebt.vb
+'
+' frmPayDebt.vb
+Imports System.Globalization
+
+Public Class frmPayDebt
+    Public ReadOnly Property PaidAmount As Decimal
+
+    Private ReadOnly _totalDue As Decimal
+
+    Public Sub New(totalDue As Decimal)
+        InitializeComponent()
+        _totalDue = totalDue
+    End Sub
+
+    Private Sub frmPayDebt_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Me.Text = "Αποπληρωμή"
+        lblTotal.Text = "Οφειλή: " & _totalDue.ToString("N2") ' χωρίς σύμβολο €
+        txtAmount.Text = _totalDue.ToString("N2")
+        txtAmount.SelectAll()
+        Me.AcceptButton = btnOK
+        Me.CancelButton = btnCancel
+    End Sub
+
+    Private Sub btnOK_Click(sender As Object, e As EventArgs) Handles btnOK.Click
+        Dim val As Decimal
+        If Not Decimal.TryParse(txtAmount.Text, NumberStyles.Any, CultureInfo.CurrentCulture, val) Then
+            MessageBox.Show("Δώσε έγκυρο ποσό.", "Πληρωμή", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            txtAmount.Focus()
+            txtAmount.SelectAll()
+            Exit Sub
+        End If
+        If val <= 0D Then
+            MessageBox.Show("Το ποσό πρέπει να είναι μεγαλύτερο του μηδενός.", "Πληρωμή", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            txtAmount.Focus() : txtAmount.SelectAll() : Exit Sub
+        End If
+        If val > _totalDue Then
+            MessageBox.Show("Το ποσό δεν μπορεί να είναι μεγαλύτερο από την οφειλή.", "Πληρωμή", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            txtAmount.Focus() : txtAmount.SelectAll() : Exit Sub
+        End If
+
+        ' OK
+        _PaidAmount = val
+        Me.DialogResult = DialogResult.OK
+        Me.Close()
+    End Sub
+
+
+
+
+    ' Optional: μόνο αριθμοί / διαχωριστικό δεκαδικών
+    Private Sub txtAmount_KeyPress(sender As Object, e As KeyPressEventArgs) Handles txtAmount.KeyPress
+        Dim sep = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator
+        If Not Char.IsControl(e.KeyChar) AndAlso Not Char.IsDigit(e.KeyChar) AndAlso e.KeyChar.ToString() <> sep Then
+            e.Handled = True
+        End If
+        ' μία φορά το δεκαδικό
+        If e.KeyChar.ToString() = sep AndAlso DirectCast(sender, TextBox).Text.Contains(sep) Then
+            e.Handled = True
+        End If
+    End Sub
+End Class

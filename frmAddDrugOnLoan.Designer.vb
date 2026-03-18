@@ -1,0 +1,126 @@
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+Partial Class frmAddDrugOnLoan
+    Inherits System.Windows.Forms.Form
+
+    'Form overrides dispose to clean up the component list.
+    <System.Diagnostics.DebuggerNonUserCode()> _
+    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
+        Try
+            If disposing AndAlso components IsNot Nothing Then
+                components.Dispose()
+            End If
+        Finally
+            MyBase.Dispose(disposing)
+        End Try
+    End Sub
+
+    'Required by the Windows Form Designer
+    Private components As System.ComponentModel.IContainer
+
+    'NOTE: The following procedure is required by the Windows Form Designer
+    'It can be modified using the Windows Form Designer.  
+    'Do not modify it using the code editor.
+    <System.Diagnostics.DebuggerStepThrough()> _
+    Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
+        Me.txtDrugBarcode = New System.Windows.Forms.TextBox()
+        Me.Label7 = New System.Windows.Forms.Label()
+        Me.txtBoxBarcode = New System.Windows.Forms.TextBox()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.tmrDrugBarcode = New System.Windows.Forms.Timer(Me.components)
+        Me.tmrBoxBarcode = New System.Windows.Forms.Timer(Me.components)
+        Me.chkManualEdit = New System.Windows.Forms.CheckBox()
+        Me.lblUsingBarcodeForm = New System.Windows.Forms.Label()
+        Me.SuspendLayout()
+        '
+        'txtDrugBarcode
+        '
+        Me.txtDrugBarcode.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.txtDrugBarcode.Location = New System.Drawing.Point(80, 28)
+        Me.txtDrugBarcode.Name = "txtDrugBarcode"
+        Me.txtDrugBarcode.Size = New System.Drawing.Size(190, 20)
+        Me.txtDrugBarcode.TabIndex = 38
+        '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label7.Location = New System.Drawing.Point(10, 31)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(54, 13)
+        Me.Label7.TabIndex = 39
+        Me.Label7.Text = "Φάρμακο"
+        '
+        'txtBoxBarcode
+        '
+        Me.txtBoxBarcode.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.txtBoxBarcode.Location = New System.Drawing.Point(80, 54)
+        Me.txtBoxBarcode.Name = "txtBoxBarcode"
+        Me.txtBoxBarcode.Size = New System.Drawing.Size(190, 20)
+        Me.txtBoxBarcode.TabIndex = 40
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label1.Location = New System.Drawing.Point(10, 57)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(68, 13)
+        Me.Label1.TabIndex = 41
+        Me.Label1.Text = "Συσκευασία"
+        '
+        'tmrDrugBarcode
+        '
+        '
+        'tmrBoxBarcode
+        '
+        '
+        'chkManualEdit
+        '
+        Me.chkManualEdit.AutoSize = True
+        Me.chkManualEdit.Location = New System.Drawing.Point(127, 80)
+        Me.chkManualEdit.Name = "chkManualEdit"
+        Me.chkManualEdit.Size = New System.Drawing.Size(68, 17)
+        Me.chkManualEdit.TabIndex = 42
+        Me.chkManualEdit.Text = "Manually"
+        Me.chkManualEdit.UseVisualStyleBackColor = True
+        '
+        'lblUsingBarcodeForm
+        '
+        Me.lblUsingBarcodeForm.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblUsingBarcodeForm.ForeColor = System.Drawing.SystemColors.HotTrack
+        Me.lblUsingBarcodeForm.Location = New System.Drawing.Point(2, 6)
+        Me.lblUsingBarcodeForm.Name = "lblUsingBarcodeForm"
+        Me.lblUsingBarcodeForm.Size = New System.Drawing.Size(268, 13)
+        Me.lblUsingBarcodeForm.TabIndex = 43
+        Me.lblUsingBarcodeForm.Text = "Φάρμακο"
+        Me.lblUsingBarcodeForm.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'frmAddDrugOnLoan
+        '
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(284, 113)
+        Me.Controls.Add(Me.lblUsingBarcodeForm)
+        Me.Controls.Add(Me.chkManualEdit)
+        Me.Controls.Add(Me.txtBoxBarcode)
+        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.txtDrugBarcode)
+        Me.Controls.Add(Me.Label7)
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
+        Me.Name = "frmAddDrugOnLoan"
+        Me.Text = "Εισαγωγή Barcode"
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
+
+    End Sub
+    Friend WithEvents txtDrugBarcode As System.Windows.Forms.TextBox
+    Friend WithEvents Label7 As System.Windows.Forms.Label
+    Friend WithEvents txtBoxBarcode As System.Windows.Forms.TextBox
+    Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents tmrDrugBarcode As System.Windows.Forms.Timer
+    Friend WithEvents tmrBoxBarcode As System.Windows.Forms.Timer
+    Friend WithEvents chkManualEdit As System.Windows.Forms.CheckBox
+    Friend WithEvents lblUsingBarcodeForm As System.Windows.Forms.Label
+End Class

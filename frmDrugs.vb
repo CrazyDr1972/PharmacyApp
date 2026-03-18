@@ -1,0 +1,403 @@
+﻿Imports Pharmacy.GlobalFunctions
+Imports Pharmacy.GlobalVariables
+Imports System.Data.SqlClient
+
+Public Class frmDrugs
+
+
+    Private Sub frmDrugs_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+        ' Βρίσκει τα προιόντα που αντιστοιχούν στις επιλογές μας και τους γράφει στο ListBox
+        GetDrugs()
+
+        ' Αναγράφει τιμές και λήξεις για το επιλεγμένο προιόν
+        DisplayPricesAndExpirations()
+
+    End Sub
+
+
+
+    ' ****************************************************************************************************************************
+    ' **********    ΔΙΑΧΕΙΡΗΣΗ ΑΡΧΕΙΟΥ ΦΑΡΜΑΚΩΝ    *******************************************************************************
+    ' ****************************************************************************************************************************
+
+
+    Private Sub GetDrugs()
+
+        ' Με βάση το μέρος ονόματος του πελάτη (textbox) και τις επιλογές μας στα RadioButton,
+        ' βρίσκει όλους τους πελάτες..
+        If rbAll.Checked = True Then
+            stringDTG = "SELECT distinct Name From Drugs " & _
+                        "WHERE Drugs.Name like '%" & txtSearchDrugs.Text.ToString & "%' " & _
+                        "ORDER BY Name"
+
+            ' ή μονο τους πελάτες με χρέη..
+        ElseIf rbParaDrugs.Checked = True Then
+            stringDTG = "SELECT distinct Name From Drugs " & _
+                       "WHERE Drugs.Name like '%" & txtSearchDrugs.Text.ToString & "%' AND " & _
+                                "Drugs.Category = 'ΠΑΡΑΦΑΡΜΑΚΑ' " & _
+                        "ORDER BY Name"
+
+        End If
+
+        ' Γεμίζει το lstCustomers με τους πελάτες που αντιστοιχούν στις επιλογές μας και 
+        ' κρατάει στην μεταβλητή sumCustomers τον συνολικό αριθμό πελατών
+        Dim sumDrugs As Integer = FillDatagrid(dgvDrugs, bsDrugs, {"Όνομα"}, {400}, {"0"})
+
+        ' Γράφει μια ενημερωση στο Label κάτω από το ListBox
+        ' ανάλογα με τον αριθμό των πελατών που βρέθηκαν
+        Select Case sumDrugs
+            Case 0
+                If rbAll.Checked = True Then
+                    rtxtMessage.Text = "Δεν βρέθηκαν προιόντα"
+                ElseIf rbParaDrugs.Checked = True Then
+                    rtxtMessage.Text = "Δεν βρέθηκαν παραφάρμακα"
+                End If
+
+            Case 1
+                If rbAll.Checked = True Then
+                    rtxtMessage.Text = "Βρέθηκε 1 προιόντα"
+                ElseIf rbParaDrugs.Checked = True Then
+                    rtxtMessage.Text = "Βρέθηκε 1 παραφάρμακο"
+                End If
+
+                ' Αλλάζει με κόκκινο χρώμα τον αριθμό των πελατών
+                HightlightInRichTextBox(rtxtMessage, {"1"})
+
+            Case Is > 1
+                If rbAll.Checked = True Then
+                    rtxtMessage.Text = "Βρέθηκαν " & sumDrugs.ToString & " προιόντα"
+                ElseIf rbParaDrugs.Checked = True Then
+                    rtxtMessage.Text = "Βρέθηκαν " & sumDrugs.ToString & " παραφάρμακα"
+                End If
+
+                ' Αλλάζει με κόκκινο χρώμα τον αριθμό των πελατών
+                HightlightInRichTextBox(rtxtMessage, {sumDrugs.ToString})
+
+        End Select
+
+    End Sub
+
+
+
+
+    Private Sub txtSearchDrugs_TextChanged(sender As Object, e As EventArgs)
+
+        ' Βρίσκει τα προιόντα που αντιστοιχούν στις επιλογές μας και τους γράφει στο ListBox
+        GetDrugs()
+
+        ' Αναγράφει τιμές και λήξεις για το επιλεγμένο προιόν
+        DisplayPricesAndExpirations()
+
+    End Sub
+
+
+
+
+    Private Sub rbParaDrugs_CheckedChanged(sender As Object, e As EventArgs)
+
+        ' Βρίσκει τα προιόντα που αντιστοιχούν στις επιλογές μας και τους γράφει στο ListBox
+        GetDrugs()
+
+        ' Αναγράφει τιμές και λήξεις για το επιλεγμένο προιόν
+        DisplayPricesAndExpirations()
+
+    End Sub
+
+
+
+
+    Private Sub DisplayPricesAndExpirations()
+
+        ' Βρίσκει το Name της επιλογής μας από το dgvDrugs
+        Dim drugName As String = dgvDrugs.CurrentCell.Value.ToString
+
+        ' Εμφανίζει το όνομα του πελάτη στο μεγάλο κεντρικό Label
+        lblSelectedDrugName.Text = drugName
+
+
+        'Ελέγχει ότι το Datagrid με τα φάρμακα με τους πελάτες έχει ήδη κάποιο φάρμακο επιλεγμένο και ...
+        If drugName <> "" Then
+
+            ' Γεμίζει το DatagridView dgvDebts με τα χρωστούμενα του επιλεγμένου πελάτη
+            stringDTG = "Select Price2, Price1, Notes2, Id From Drugs WHERE Name = '" & drugName & "' AND Price2 > 0 "
+            FillDatagrid(dgvPrices, bsPrices, {"Λιανική", "Χονδρική", "Παρατηρήσεις"}, {80, 80, 297}, {"c", "c", "0"}, {"Id"})
+
+            ' Γεμίζει το DatagridView dgvExpirations με τα ημερομηνίες λήξης του επιλεγμένου φαρμάκου
+            stringDTG = "Select ExpDate, Id From Expirations WHERE Name = '" & drugName & "' ORDER BY ExpDate"
+            FillDatagrid(dgvExpirations, bsExpirations, {"Ημερομηνία"}, {197}, {"dd-MM-yyyy"}, {"Id"})
+            
+
+            ' Alignment των στοιχείων των Column
+            dgvPrices.Columns(0).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            dgvPrices.Columns(1).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            dgvExpirations.Columns(0).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+
+            ' Alignment των HeaderText των Column
+            dgvPrices.Columns(0).HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+            dgvPrices.Columns(1).HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+            dgvExpirations.Columns(0).HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+
+        End If
+    End Sub
+
+
+
+
+    Private Sub dgvDrugs_CellClick(sender As Object, e As DataGridViewCellEventArgs)
+        ' Βρίσκει τα προιόντα που αντιστοιχούν στις επιλογές μας και τους γράφει στο ListBox
+        GetDrugs()
+
+        ' Αναγράφει τιμές και λήξεις για το επιλεγμένο προιόν
+        DisplayPricesAndExpirations()
+    End Sub
+
+
+
+
+
+    Private Sub dgvDrugs_KeyDown(sender As Object, e As KeyEventArgs)
+        ' Βρίσκει τα προιόντα που αντιστοιχούν στις επιλογές μας και τους γράφει στο ListBox
+        GetDrugs()
+
+        ' Αναγράφει τιμές και λήξεις για το επιλεγμένο προιόν
+        DisplayPricesAndExpirations()
+    End Sub
+
+
+
+
+    ' ****************************************************************************************************************************
+    ' **********    ΔΙΑΧΕΙΡΗΣΗ ΤΙΜΩΝ   *******************************************************************************************
+    ' ****************************************************************************************************************************
+
+
+
+    Private Sub ChangeControlsPrices(ByVal selector As Boolean)
+        ' Selector: True -> Edit
+        '           False -> Cancel, Save
+
+        ' Βρίσκει το Name της επιλογής μας από το dgvDrugs
+        Dim drugName As String = dgvDrugs.CurrentCell.Value.ToString
+
+        ' Γεμίζει το DatagridView dgvDebts με τα χρωστούμενα του επιλεγμένου πελάτη
+        stringDTG = "Select Price2, Price1, Notes2, Id, Name From Drugs WHERE Name = '" & drugName & "'"
+        FillDatagrid(dgvPrices, bsPrices, {"Λιανική", "Χονδρική", "Παρατηρήσεις"}, {80, 80, 297}, {"c", "c", "0"}, {"Id", "Name"})
+
+        'Τροποποίηση των άλλων GroupBox
+        grpDrugName.Enabled = Not selector
+        grpExpirations.Enabled = Not selector
+
+        ' Τροποποίηση κουμπιών κλπ ΕΝΤΟΣ του GroupBox που περιέχει το DataGrid μας
+        EditDatagrid({btnSavePrices, btnEditPrices, btnDeletePrices}, dgvPrices, selector)
+
+        ' Ενεργοποίηση ενημερωτικού flashing label
+        timerLabel.Visible = selector
+        tmrFlashLabel.Enabled = selector
+
+    End Sub
+
+
+
+
+    Private Sub btnEditPrices_Click(sender As Object, e As EventArgs)
+
+        ' Καθορίζει το ενημερωτικό flashing label
+        timerLabel = lblPricesMessage
+
+        'Αν το πληκτρο Edit δεν έχει πατηθεί ακόμα (->EDIT)... 
+        If btnEditPrices.Text = "Edit" Then
+
+            ChangeControlsPrices(True)
+
+            'Αν το πληκτρο Edit έχει ήδη πατηθεί ακόμα (-> CANCEL)... 
+        ElseIf btnEditPrices.Text = "Cancel" Then
+
+            ChangeControlsPrices(False)
+
+        End If
+
+    End Sub
+
+
+
+
+    Private Sub btnSavePrices_Click(sender As Object, e As EventArgs)
+
+        ' Ξεκινάει την διαδικασία Updating των δεδομένων του DataGrid 
+        ' μαζί με των κουμπιών που περιέχονται στο GroupBox του DataGrid
+        UpdateDatagrid_ByName({btnSavePrices, btnEditPrices, btnDeletePrices}, dgvPrices, dgvDrugs.CurrentCell.Value.ToString, "Name")
+
+        ChangeControlsPrices(False)
+    End Sub
+
+
+
+
+    Private Sub btnDeletePrices_Click(sender As Object, e As EventArgs)
+
+        'ΣΗΜΑΝΤΙΚΟ: Τα datagrid Drugs & Prices μοιράζονται το ίδιο Table (Drugs) και
+        ' αν ένα φαρμακο έχει μόνο μια εγγραφή τιμών τότε σβήνοντας την εγγραφή
+        ' σβήνεται και το φάρμακο !!!!
+
+        ' Γιαυτό τον λόγο αν υπάρχουν πάνω από 1 εγγραφές τιμών θα σβήνεται όλη η σειρά
+        If dtDTG.Rows.Count > 1 Then
+            ' Ξεκινάει την διαδικασία Delete των δεδομένων του DataGrid 
+            DeleteDatagrid(dgvPrices)
+
+            ' αλλιώς απλά θα μηδενίζονται τα πεδία
+        ElseIf dtDTG.Rows.Count = 1 Then
+            'dgvPrices.Item(0, dgvPrices.CurrentCell.RowIndex).Value = nothing
+            dtDTG.Rows(0)("Price1") = DBNull.Value
+            dtDTG.Rows(0)("Price2") = DBNull.Value
+            dtDTG.Rows(0)("Notes2") = DBNull.Value
+            UpdateDatagrid_ByName({btnSavePrices, btnEditPrices, btnDeletePrices}, dgvPrices, dgvDrugs.CurrentCell.Value.ToString, "Name")
+        End If
+
+        ' Tροποποίηση των κουμπιών που περιέχονται στο GroupBox του DataGrid
+        ChangeControlsPrices(False)
+
+    End Sub
+
+
+    ' Ελέγχει αν έχουν καταχωρηθεί τιμές αριθμητικές στα πεδία τιμών
+    Private Sub dgvPrices_CellValidating(sender As Object, e As DataGridViewCellValidatingEventArgs)
+
+
+        Dim headerText As String = dgvPrices.Columns(e.ColumnIndex).HeaderText
+
+        ' Ελέγχει αν βρισκόμαστε σε χρηματικό πεδίο
+        If headerText.Equals("Λιανική") Or headerText.Equals("Χονδρική") Then
+
+            Dim dc As Decimal
+
+            ' Αν το πεδίο αποκτήσει τιμή που ΔΕΝ είναι δεκαδική
+            If e.FormattedValue.ToString <> String.Empty AndAlso Decimal.TryParse(e.FormattedValue.ToString, dc) = False Then
+                MessageBox.Show("Δεν καταχωρήσατε σωστή χρηματική τιμή", "Επιβεβαίωση στοιχείων", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                e.Cancel = True
+
+            End If
+
+        End If
+    End Sub
+
+
+
+    Private Sub dgvPrices_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs)
+        Try
+            ' Clear the row error in case the user presses ESC.   
+            dgvPrices.Rows(e.RowIndex).ErrorText = String.Empty
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+
+    ' ****************************************************************************************************************************
+    ' **********    ΔΙΑΧΕΙΡΗΣΗ ΗΜΕΡΟΜΗΝΙΩΝ ΛΗΞΗΣ ΦΑΡΜΑΚΩΝ   **********************************************************************
+    ' ****************************************************************************************************************************
+
+
+
+    Private Sub ChangeControlsExpDate(ByVal selector As Boolean)
+        ' Selector: True -> Edit
+        '           False -> Cancel, Save
+
+        ' Βρίσκει το Name της επιλογής μας από το dgvDrugs
+        Dim drugName As String = dgvDrugs.CurrentCell.Value.ToString
+
+        ' Γεμίζει το DatagridView dgvExpirations με τα ημερομηνίες λήξης του επιλεγμένου φαρμάκου
+        stringDTG = "Select ExpDate, Id, Name From Expirations WHERE Name = '" & drugName & "' ORDER BY ExpDate"
+        FillDatagrid(dgvExpirations, bsExpirations, {"Ημερομηνία"}, {197}, {"dd-MM-yyyy"}, {"Id", "Name"})
+
+        'Τροποποίηση των άλλων GroupBox
+        grpDrugName.Enabled = Not selector
+        GrpPrices.Enabled = Not selector
+
+        ' Τροποποίηση κουμπιών κλπ ΕΝΤΟΣ του GroupBox που περιέχει το DataGrid μας
+        EditDatagrid({btnSaveExp, btnEditExp, btnDeleteExp}, dgvExpirations, selector)
+
+        ' Ενεργοποίηση ενημερωτικού flashing label
+        timerLabel.Visible = selector
+        tmrFlashLabel.Enabled = selector
+
+    End Sub
+
+
+
+
+    Private Sub btnEditExp_Click(sender As Object, e As EventArgs)
+        ' Καθορίζει το ενημερωτικό flashing label
+        timerLabel = lblExpirationsMessage
+
+        'Αν το πληκτρο Edit δεν έχει πατηθεί ακόμα (->EDIT)... 
+        If btnEditExp.Text = "Edit" Then
+
+            ChangeControlsExpDate(True)
+
+            'Αν το πληκτρο Edit έχει ήδη πατηθεί ακόμα (-> CANCEL)... 
+        ElseIf btnEditExp.Text = "Cancel" Then
+
+            ChangeControlsExpDate(False)
+
+        End If
+    End Sub
+
+
+
+
+    Private Sub btnSaveExp_Click(sender As Object, e As EventArgs)
+
+        ' Ξεκινάει την διαδικασία Updating των δεδομένων του DataGrid 
+        ' μαζί με των κουμπιών που περιέχονται στο GroupBox του DataGrid
+        UpdateDatagrid_ByName({btnSaveExp, btnEditExp, btnDeleteExp}, dgvExpirations, dgvDrugs.CurrentCell.Value.ToString, "Name")
+
+        ChangeControlsExpDate(False)
+
+    End Sub
+
+    
+
+    Private Sub btnDeleteExp_Click(sender As Object, e As EventArgs)
+
+        ' Ξεκινάει την διαδικασία Delete των δεδομένων του DataGrid 
+        ' μαζί με τροποποίηση των κουμπιών που περιέχονται στο GroupBox του DataGrid
+        DeleteDatagrid(dgvExpirations)
+
+        ChangeControlsExpDate(False)
+
+    End Sub
+
+
+
+    ' Ελέγχει αν η ημερομηνία είοναι σωστή και αν δεν υπάρχει βάζει τη σημερινή
+    Private Sub dgvExpirations_CellValidating(sender As Object, e As DataGridViewCellValidatingEventArgs)
+
+        Dim headerText As String = dgvExpirations.Columns(e.ColumnIndex).HeaderText
+
+        ' Ελέγχει αν βρισκόμαστε στο πεδίο Ημερομηνία
+        If headerText.Equals("Ημερομηνία") Then
+            Dim dt As DateTime
+
+            ' Αν το πεδίο αποκτήσει τιμή που ΔΕΝ είναι ημερομηνία
+            If e.FormattedValue.ToString <> String.Empty AndAlso Not DateTime.TryParse(e.FormattedValue.ToString, dt) Then
+                MessageBox.Show("Λάθος καταχώρηση ημερομηνίας", "Επιβεβαίωση στοιχείων", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                e.Cancel = True
+
+            End If
+
+        End If
+    End Sub
+
+
+
+    Private Sub dgvExpirations_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs)
+        Try
+            ' Clear the row error in case the user presses ESC.   
+            dgvExpirations.Rows(e.RowIndex).ErrorText = String.Empty
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+End Class

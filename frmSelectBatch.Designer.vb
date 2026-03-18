@@ -1,0 +1,100 @@
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+Partial Class frmSelectBatch
+    Inherits System.Windows.Forms.Form
+
+    'Form overrides dispose to clean up the component list.
+    <System.Diagnostics.DebuggerNonUserCode()>
+    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
+        Try
+            If disposing AndAlso components IsNot Nothing Then
+                components.Dispose()
+            End If
+        Finally
+            MyBase.Dispose(disposing)
+        End Try
+    End Sub
+
+    'Required by the Windows Form Designer
+    Private components As System.ComponentModel.IContainer
+
+    'NOTE: The following procedure is required by the Windows Form Designer
+    <System.Diagnostics.DebuggerStepThrough()>
+    Private Sub InitializeComponent()
+        Me.lblPrompt = New System.Windows.Forms.Label()
+        Me.lstCandidates = New System.Windows.Forms.ListBox()
+        Me.btnOK = New System.Windows.Forms.Button()
+        Me.txtEditBatch = New System.Windows.Forms.TextBox()
+        Me.btnEditBatch = New System.Windows.Forms.Button()
+        Me.SuspendLayout()
+        '
+        'lblPrompt
+        '
+        Me.lblPrompt.AutoSize = True
+        Me.lblPrompt.Location = New System.Drawing.Point(10, 8)
+        Me.lblPrompt.Name = "lblPrompt"
+        Me.lblPrompt.Size = New System.Drawing.Size(153, 13)
+        Me.lblPrompt.TabIndex = 0
+        Me.lblPrompt.Text = "Επιλέξτε παρτίδα από το QR:"
+        '
+        'lstCandidates
+        '
+        Me.lstCandidates.FormattingEnabled = True
+        Me.lstCandidates.Location = New System.Drawing.Point(10, 26)
+        Me.lstCandidates.Name = "lstCandidates"
+        Me.lstCandidates.Size = New System.Drawing.Size(201, 69)
+        Me.lstCandidates.TabIndex = 1
+        '
+        'btnOK
+        '
+        Me.btnOK.Location = New System.Drawing.Point(146, 124)
+        Me.btnOK.Name = "btnOK"
+        Me.btnOK.Size = New System.Drawing.Size(64, 24)
+        Me.btnOK.TabIndex = 2
+        Me.btnOK.Text = "OK"
+        Me.btnOK.UseVisualStyleBackColor = True
+        '
+        'txtEditBatch
+        '
+        Me.txtEditBatch.Location = New System.Drawing.Point(49, 98)
+        Me.txtEditBatch.Name = "txtEditBatch"
+        Me.txtEditBatch.Size = New System.Drawing.Size(114, 20)
+        Me.txtEditBatch.TabIndex = 4
+        '
+        'btnEditBatch
+        '
+        Me.btnEditBatch.Location = New System.Drawing.Point(10, 98)
+        Me.btnEditBatch.Name = "btnEditBatch"
+        Me.btnEditBatch.Size = New System.Drawing.Size(36, 24)
+        Me.btnEditBatch.TabIndex = 5
+        Me.btnEditBatch.Text = "Edit"
+        Me.btnEditBatch.UseVisualStyleBackColor = True
+        '
+        'frmSelectBatch
+        '
+        Me.AcceptButton = Me.btnOK
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(222, 157)
+        Me.Controls.Add(Me.btnEditBatch)
+        Me.Controls.Add(Me.txtEditBatch)
+        Me.Controls.Add(Me.btnOK)
+        Me.Controls.Add(Me.lstCandidates)
+        Me.Controls.Add(Me.lblPrompt)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
+        Me.Name = "frmSelectBatch"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
+        Me.Text = "Επιλογή Παρτίδας"
+        Me.TopMost = True
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
+
+    End Sub
+
+    Friend WithEvents lblPrompt As Label
+    Friend WithEvents lstCandidates As ListBox
+    Friend WithEvents btnOK As Button
+    Friend WithEvents txtEditBatch As TextBox
+    Friend WithEvents btnEditBatch As Button
+End Class

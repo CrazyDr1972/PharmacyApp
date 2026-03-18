@@ -1,0 +1,80 @@
+﻿' Exported: 2025-10-23 00:24:45 +03:00
+' Project:  Pharmacy.vbproj
+' Source:   frmAddAgoresToList.vb
+'
+Imports Pharmacy.GlobalFunctions
+Imports Pharmacy.GlobalVariables
+Imports System.Data.SqlClient
+Imports System.Windows.Forms.Timer
+Imports System.Threading.Timer
+Imports System.Globalization
+Imports System.Threading
+
+Public Class frmAddAgoresToList
+
+    Private Sub GetSuppliersList()
+
+        Dim myTot As Integer
+
+        stringDTG = "SELECT distinct [Description] " & _
+                       "FROM PharmacyCustomFiles.dbo.FarmAgores " & _
+                       "WHERE Description like '%" & txtSearchSuplier.Text & "%' " & _
+                       "ORDER BY [Description]"
+
+        myTot = FillDatagrid(dgvSupliers, bsSuppliers, {"Προμηθευτής"}, {320}, {"0"}, {})
+
+        ' Ενημερωτικό μύνημα
+        Select Case myTot
+            Case 0
+
+                rtxtSuppliersMessage.Text = "Δεν βρέθηκαν προμηθευτές"
+
+            Case 1
+
+                rtxtSuppliersMessage.Text = "Βρέθηκε 1 προμηθευτής"
+
+                ' Αλλάζει με κόκκινο χρώμα τον αριθμό
+                HightlightInRichTextBox(rtxtSuppliersMessage, {"1"})
+
+            Case Is > 1
+
+                rtxtSuppliersMessage.Text = "Βρέθηκαν " & myTot.ToString & " προμηθευτές"
+
+                ' Αλλάζει με κόκκινο χρώμα τον αριθμό
+                HightlightInRichTextBox(rtxtSuppliersMessage, {myTot.ToString})
+
+        End Select
+
+
+
+    End Sub
+
+
+    Private Sub txtSearchSuplier_TextChanged(sender As Object, e As EventArgs) Handles txtSearchSuplier.TextChanged
+        GetSuppliersList()
+    End Sub
+
+    Private Sub frmAddAgoresToList_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
+        frmCustomers.Enabled = True
+    End Sub
+
+    Private Sub frmAddAgoresToList_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        GetSuppliersList()
+        Me.ActiveControl = txtSearchSuplier
+    End Sub
+
+    Private Sub dgvSupliers_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvSupliers.CellClick
+        'Εμφανίζει στο DatagridView
+        frmCustomers.dgvAgoresSold.Rows(rowIndex).Cells(3).Value = dgvSupliers.SelectedRows(0).Cells(0).Value
+        Me.Close()
+    End Sub
+
+    Private Sub dgvSupliers_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvSupliers.CellContentClick
+
+    End Sub
+
+    Private Sub btnEnterValue_Click(sender As Object, e As EventArgs) Handles btnEnterValue.Click
+        frmCustomers.dgvAgoresSold.Rows(rowIndex).Cells(3).Value = txtSearchSuplier.Text
+        Me.Close()
+    End Sub
+End Class

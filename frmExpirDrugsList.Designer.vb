@@ -1,0 +1,146 @@
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+Partial Class frmExpirDrugsList
+    Inherits System.Windows.Forms.Form
+
+    'Form overrides dispose to clean up the component list.
+    <System.Diagnostics.DebuggerNonUserCode()> _
+    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
+        Try
+            If disposing AndAlso components IsNot Nothing Then
+                components.Dispose()
+            End If
+        Finally
+            MyBase.Dispose(disposing)
+        End Try
+    End Sub
+
+    'Required by the Windows Form Designer
+    Private components As System.ComponentModel.IContainer
+
+    'NOTE: The following procedure is required by the Windows Form Designer
+    'It can be modified using the Windows Form Designer.  
+    'Do not modify it using the code editor.
+    <System.Diagnostics.DebuggerStepThrough()> _
+    Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
+        Me.grbCustomerEdit = New System.Windows.Forms.GroupBox()
+        Me.btnExit = New System.Windows.Forms.Button()
+        Me.lblCustomerEditMessage = New System.Windows.Forms.Label()
+        Me.btnDelete = New System.Windows.Forms.Button()
+        Me.btnEdit = New System.Windows.Forms.Button()
+        Me.btnSave = New System.Windows.Forms.Button()
+        Me.dgvCustomers = New System.Windows.Forms.DataGridView()
+        Me.tmrFlashLabel = New System.Windows.Forms.Timer(Me.components)
+        Me.grbCustomerEdit.SuspendLayout()
+        CType(Me.dgvCustomers, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.SuspendLayout()
+        '
+        'grbCustomerEdit
+        '
+        Me.grbCustomerEdit.Controls.Add(Me.btnExit)
+        Me.grbCustomerEdit.Controls.Add(Me.lblCustomerEditMessage)
+        Me.grbCustomerEdit.Controls.Add(Me.btnDelete)
+        Me.grbCustomerEdit.Controls.Add(Me.btnEdit)
+        Me.grbCustomerEdit.Controls.Add(Me.btnSave)
+        Me.grbCustomerEdit.Controls.Add(Me.dgvCustomers)
+        Me.grbCustomerEdit.Location = New System.Drawing.Point(12, 12)
+        Me.grbCustomerEdit.Name = "grbCustomerEdit"
+        Me.grbCustomerEdit.Size = New System.Drawing.Size(313, 441)
+        Me.grbCustomerEdit.TabIndex = 1
+        Me.grbCustomerEdit.TabStop = False
+        '
+        'btnExit
+        '
+        Me.btnExit.Location = New System.Drawing.Point(244, 399)
+        Me.btnExit.Name = "btnExit"
+        Me.btnExit.Size = New System.Drawing.Size(52, 23)
+        Me.btnExit.TabIndex = 13
+        Me.btnExit.Text = "Exit"
+        Me.btnExit.UseVisualStyleBackColor = True
+        '
+        'lblCustomerEditMessage
+        '
+        Me.lblCustomerEditMessage.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblCustomerEditMessage.ForeColor = System.Drawing.Color.Red
+        Me.lblCustomerEditMessage.Location = New System.Drawing.Point(13, 16)
+        Me.lblCustomerEditMessage.Name = "lblCustomerEditMessage"
+        Me.lblCustomerEditMessage.Size = New System.Drawing.Size(283, 13)
+        Me.lblCustomerEditMessage.TabIndex = 12
+        Me.lblCustomerEditMessage.Text = "!!!   Τροποποίηση δεδομένων  !!!"
+        Me.lblCustomerEditMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.lblCustomerEditMessage.Visible = False
+        '
+        'btnDelete
+        '
+        Me.btnDelete.Enabled = False
+        Me.btnDelete.Location = New System.Drawing.Point(74, 399)
+        Me.btnDelete.Name = "btnDelete"
+        Me.btnDelete.Size = New System.Drawing.Size(52, 23)
+        Me.btnDelete.TabIndex = 11
+        Me.btnDelete.Text = "Delete"
+        Me.btnDelete.UseVisualStyleBackColor = True
+        '
+        'btnEdit
+        '
+        Me.btnEdit.Location = New System.Drawing.Point(16, 399)
+        Me.btnEdit.Name = "btnEdit"
+        Me.btnEdit.Size = New System.Drawing.Size(52, 23)
+        Me.btnEdit.TabIndex = 10
+        Me.btnEdit.Text = "Edit"
+        Me.btnEdit.UseVisualStyleBackColor = True
+        '
+        'btnSave
+        '
+        Me.btnSave.Enabled = False
+        Me.btnSave.Location = New System.Drawing.Point(132, 399)
+        Me.btnSave.Name = "btnSave"
+        Me.btnSave.Size = New System.Drawing.Size(52, 23)
+        Me.btnSave.TabIndex = 9
+        Me.btnSave.Text = "Save"
+        Me.btnSave.UseVisualStyleBackColor = True
+        Me.btnSave.Visible = False
+        '
+        'dgvCustomers
+        '
+        Me.dgvCustomers.AllowUserToAddRows = False
+        Me.dgvCustomers.AllowUserToDeleteRows = False
+        Me.dgvCustomers.AllowUserToResizeColumns = False
+        Me.dgvCustomers.AllowUserToResizeRows = False
+        Me.dgvCustomers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvCustomers.Location = New System.Drawing.Point(16, 34)
+        Me.dgvCustomers.Name = "dgvCustomers"
+        Me.dgvCustomers.ReadOnly = True
+        Me.dgvCustomers.RowHeadersVisible = False
+        Me.dgvCustomers.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
+        Me.dgvCustomers.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.dgvCustomers.ShowEditingIcon = False
+        Me.dgvCustomers.Size = New System.Drawing.Size(280, 353)
+        Me.dgvCustomers.TabIndex = 8
+        '
+        'tmrFlashLabel
+        '
+        '
+        'frmExpirDrugsList
+        '
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(338, 465)
+        Me.ControlBox = False
+        Me.Controls.Add(Me.grbCustomerEdit)
+        Me.Name = "frmExpirDrugsList"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
+        Me.Text = "Φάρμακα"
+        Me.grbCustomerEdit.ResumeLayout(False)
+        CType(Me.dgvCustomers, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.ResumeLayout(False)
+
+    End Sub
+    Friend WithEvents grbCustomerEdit As System.Windows.Forms.GroupBox
+    Friend WithEvents btnExit As System.Windows.Forms.Button
+    Friend WithEvents lblCustomerEditMessage As System.Windows.Forms.Label
+    Friend WithEvents btnDelete As System.Windows.Forms.Button
+    Friend WithEvents btnEdit As System.Windows.Forms.Button
+    Friend WithEvents btnSave As System.Windows.Forms.Button
+    Friend WithEvents dgvCustomers As System.Windows.Forms.DataGridView
+    Friend WithEvents tmrFlashLabel As System.Windows.Forms.Timer
+End Class

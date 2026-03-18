@@ -1,0 +1,161 @@
+﻿' Exported: 2025-10-23 00:24:46 +03:00
+' Project:  Pharmacy.vbproj
+' Source:   frmPrescriptionsExpiring.vb
+'
+Imports Pharmacy.GlobalFunctions
+Imports Pharmacy.GlobalVariables
+Imports System.Data.SqlClient
+Imports System.Windows.Forms.Timer
+Imports System.Threading.Timer
+Imports System.Globalization
+Imports System.Threading
+Imports System.IO
+
+Public Class frmPrescriptionsExpiring
+
+    Public Shared Sub GetExpiredPrescriptionsList()
+
+        Dim totPrescriptions As Integer = 0
+
+        With frmPrescriptionsExpiring
+
+
+            'If dtpInitDate.Value > dtpEndDate.Value Then
+            '    MsgBox("Η ημερομηνία έναρξης είναι πριν την ημερομηνία λήξης της περιόδου!")
+            '    Exit Sub
+            'Else
+            If .chkSelectAll.Checked = False Then
+                stringDTG = "USE [PharmacyCustomFiles] " & _
+                                    "SELECT dbo.Customers.Name, dbo.Prescriptions.Ektelesis, dbo.Prescriptions.InitDate, dbo.Prescriptions.EndDate, " & _
+                                        "dbo.Prescriptions.ProcessedDate, dbo.Prescriptions.Id " & _
+                                    "FROM PharmacyCustomFiles.dbo.Prescriptions INNER JOIN Customers ON dbo.Prescriptions.CustomerId = dbo.Customers.Id " & _
+                                    "WHERE dbo.Prescriptions.InitDate <= '" & CType(.dtpInitDate.Value, Date).ToString("yyyy-MM-dd") & "'  AND ProcessedDate IS NULL " & _
+                                    "ORDER BY Prescriptions.InitDate, Prescriptions.Ektelesis, Prescriptions.Id"
+            Else
+                stringDTG = "USE [PharmacyCustomFiles] " & _
+                                   "SELECT dbo.Customers.Name, dbo.Prescriptions.Ektelesis, dbo.Prescriptions.InitDate, dbo.Prescriptions.EndDate, " & _
+                                       "dbo.Prescriptions.ProcessedDate, dbo.Prescriptions.Id " & _
+                                   "FROM PharmacyCustomFiles.dbo.Prescriptions INNER JOIN Customers ON dbo.Prescriptions.CustomerId = dbo.Customers.Id " & _
+                                   "WHERE dbo.Prescriptions.InitDate <= '" & CType(.dtpInitDate.Value, Date).ToString("yyyy-MM-dd") & "' " & _
+                                   "ORDER BY Prescriptions.InitDate, Prescriptions.Ektelesis, Prescriptions.Id"
+            End If
+
+
+            totPrescriptions = FillDatagrid(.dgvPrescriptionsExpired, bsPrescriptionsExpired, {"Όνοματεπώνυμο", "Εκτ", "Έναρξη", "Λήξη", "Εκτέλεση", "Id"}, {200, 40, 70, 70, 70, 50}, {"", "", "dd-MM-yyyy", "dd-MM-yyyy", "dd-MM-yyyy", ""}, {}, "", True)
+
+            Try
+
+                If totPrescriptions = 0 Then
+                    .grpPrescriptionsExpired.Text = "Καμιά συνταγή"
+                ElseIf totPrescriptions = 1 Then
+                    .grpPrescriptionsExpired.Text = "1 συνταγή"
+                ElseIf totPrescriptions > 1 Then
+                    .grpPrescriptionsExpired.Text = totPrescriptions & " συνταγές"
+                End If
+
+            Catch ex As Exception
+                .grpPrescriptionsExpired.Text = ""
+            End Try
+
+            Try
+                ' Alignment των στοιχείων των Column
+                .dgvPrescriptionsExpired.Columns(1).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+                .dgvPrescriptionsExpired.Columns(0).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+                .dgvPrescriptionsExpired.Columns(2).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+                .dgvPrescriptionsExpired.Columns(3).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+
+                ' Alignment των HeaderText των Column
+                .dgvPrescriptionsExpired.Columns(0).HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft
+                .dgvPrescriptionsExpired.Columns(1).HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+                .dgvPrescriptionsExpired.Columns(2).HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+                .dgvPrescriptionsExpired.Columns(3).HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+            Catch ex As Exception
+            End Try
+
+        End With
+        'End If
+    End Sub
+
+
+    
+    Private Sub frmPrescriptionsExpiring_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+
+        frmCustomers.Enabled = True
+    End Sub
+
+    Private Sub frmPrescriptionsExpiring_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Me.Location = New Point(frmCustomers.Location.X + 193, frmCustomers.Location.Y + 163)
+        GetExpiredPrescriptionsList()
+    End Sub
+
+    Private Sub dtpInitDate_ValueChanged(sender As Object, e As EventArgs) Handles dtpInitDate.ValueChanged
+        GetExpiredPrescriptionsList()
+    End Sub
+
+    Private Sub dtpEndDate_ValueChanged(sender As Object, e As EventArgs)
+        GetExpiredPrescriptionsList()
+    End Sub
+
+    Private Sub dgvPrescriptionsExpired_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvPrescriptionsExpired.CellClick
+        Try
+            dtpProcessDate.Value = dgvPrescriptionsExpired.SelectedRows(0).Cells(4).Value
+        Catch ex As Exception
+            dtpProcessDate.Value = Today()
+        End Try
+    End Sub
+
+    Private Sub dgvPrescriptionsExpired_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvPrescriptionsExpired.CellContentClick
+        'frmPrescriptionInfo.Show()
+        'PrescriptionInfoMode = "process"
+        'Me.Enabled = False
+    End Sub
+
+
+    Private Sub UpdateProcessedDate()
+        Dim insertData As String = ""
+        Dim ChangedOrExists As String = ""
+        Dim id As Integer = dgvPrescriptionsExpired.SelectedRows(0).Cells(5).Value
+
+        Using con As SqlConnection = New System.Data.SqlClient.SqlConnection(connectionstring)
+            con.Open()
+
+            insertData = "UPDATE PharmacyCustomFiles.dbo.Prescriptions " & _
+                          "SET [ProcessedDate]= @ProcessedDate " & _
+                          "WHERE Id = @Id"
+
+
+
+            For t = 0 To dgvPrescriptionsExpired.SelectedRows.Count - 1
+                Dim cmd As New SqlCommand(insertData, con)
+
+                With dgvPrescriptionsExpired
+                    If chkDefaultDateProcessed.Checked = False Then
+                        cmd.Parameters.AddWithValue("@ProcessedDate", dtpProcessDate.Value)
+                    Else
+                        cmd.Parameters.AddWithValue("@ProcessedDate", CType(dgvPrescriptionsExpired.SelectedRows(t).Cells(2).Value, Date))
+                    End If
+
+                    cmd.Parameters.AddWithValue("@Id", .SelectedRows(t).Cells(5).Value)
+                End With
+
+                cmd.ExecuteNonQuery()
+            Next
+
+
+
+                ''Ανανεώνει το Last Update
+            frmCustomers.DisplayLastUpdate()
+
+        End Using
+
+    End Sub
+
+    Private Sub btnProcessPrescr_Click(sender As Object, e As EventArgs) Handles btnProcessPrescr.Click
+        UpdateProcessedDate()
+        GetExpiredPrescriptionsList()
+    End Sub
+
+    Private Sub chkSelectAll_CheckedChanged(sender As Object, e As EventArgs) Handles chkSelectAll.CheckedChanged
+        GetExpiredPrescriptionsList()
+    End Sub
+End Class

@@ -1,0 +1,1017 @@
+﻿Imports Pharmacy.GlobalFunctions
+Imports Pharmacy.GlobalVariables
+Imports Pharmacy.frmCustomers
+Imports System.Data.SqlClient
+Imports System.Globalization
+Imports System.Threading
+Imports System.IO
+
+Public Class frmPrescriptionInfo
+
+    Private Sub frmPrescriptionInfo_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        frmCustomers.Enabled = True
+        GetPrescriptionsList()
+        MultiplePrescriptionCurrentIndex = 2
+
+        frmPrescriptionsExpiring.Enabled = True
+        frmPrescriptionsExpiring.GetExpiredPrescriptionsList()
+
+    End Sub
+
+    Private Sub frmPrescriptionInfo_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+        If frmPrescriptionsExpiring.Enabled = False Then
+            Me.Location = New Point(frmCustomers.Location.X + 248, frmCustomers.Location.Y + 119)
+
+            FillPrescriptionCombo()
+
+            UpdatePrescriptionInfoFromDatagrid()
+        Else
+            Me.Location = New Point(frmCustomers.Location.X + 248, frmCustomers.Location.Y + 119)
+
+            FillPrescriptionCombo()
+
+            UpdatePrescriptionInfoFromDatagrid()
+
+        End If
+
+
+    End Sub
+
+
+    Private Sub FillPrescriptionCombo()
+        Dim strSQL As String
+        If chkAnalosima.Checked = False Then
+            strSQL = "SELECT [DR_CODE], [DR_ID], [DR_DESCRIPTION] FROM [Pharmacy2013C].[dbo].[DROYSIA]"
+            'FillComboBox(strSQL, cboDrug1, "DR_DESCRIPTION", "DR_ID")
+            'FillComboBox(strSQL, cboDrug2, "DR_DESCRIPTION", "DR_ID")
+            'FillComboBox(strSQL, cboDrug3, "DR_DESCRIPTION", "DR_ID")
+
+            'FillMultipleComboBox(strSQL, {cboDrug1, cboDrug2, cboDrug3, cboDrug4, cboDrug5, cboDrug6, cboDrug7, cboDrug8, cboDrug9, cboDrug10}, _
+            '                     {"DR_DESCRIPTION", "DR_DESCRIPTION", "DR_DESCRIPTION", "DR_DESCRIPTION", "DR_DESCRIPTION", "DR_DESCRIPTION", "DR_DESCRIPTION", "DR_DESCRIPTION", "DR_DESCRIPTION", "DR_DESCRIPTION"}, _
+            '                     {"DR_ID", "DR_ID", "DR_ID", "DR_ID", "DR_ID", "DR_ID", "DR_ID", "DR_ID", "DR_ID", "DR_ID"})
+            'FillMultipleComboBox(strSQL, {cboDrug11, cboDrug12, cboDrug13, cboDrug14, cboDrug15, cboDrug16, cboDrug17, cboDrug18, cboDrug19, cboDrug20}, _
+            '                     {"DR_DESCRIPTION", "DR_DESCRIPTION", "DR_DESCRIPTION", "DR_DESCRIPTION", "DR_DESCRIPTION", "DR_DESCRIPTION", "DR_DESCRIPTION", "DR_DESCRIPTION", "DR_DESCRIPTION", "DR_DESCRIPTION"}, _
+            '                     {"DR_ID", "DR_ID", "DR_ID", "DR_ID", "DR_ID", "DR_ID", "DR_ID", "DR_ID", "DR_ID", "DR_ID"})
+        Else
+            strSQL = "SELECT [Drug1] AS Drug FROM [PharmacyCustomFiles].[dbo].[Prescriptions] WHERE [Analosima] = 1 " & _
+                        "UNION SELECT [Drug2] FROM [PharmacyCustomFiles].[dbo].[Prescriptions] WHERE [Analosima] = 1 " & _
+                        "UNION SELECT [Drug3] FROM [PharmacyCustomFiles].[dbo].[Prescriptions] WHERE [Analosima] = 1 " & _
+                        "UNION SELECT [Drug4] FROM [PharmacyCustomFiles].[dbo].[Prescriptions] WHERE [Analosima] = 1 " & _
+                        "UNION SELECT [Drug5] FROM [PharmacyCustomFiles].[dbo].[Prescriptions] WHERE [Analosima] = 1 " & _
+                        "UNION SELECT [Drug6] FROM [PharmacyCustomFiles].[dbo].[Prescriptions] WHERE [Analosima] = 1 " & _
+                        "UNION SELECT [Drug7] FROM [PharmacyCustomFiles].[dbo].[Prescriptions] WHERE [Analosima] = 1 " & _
+                        "UNION SELECT [Drug8] FROM [PharmacyCustomFiles].[dbo].[Prescriptions] WHERE [Analosima] = 1 " & _
+                        "UNION SELECT [Drug9] FROM [PharmacyCustomFiles].[dbo].[Prescriptions] WHERE [Analosima] = 1 " & _
+                        "UNION SELECT [Drug10] FROM [PharmacyCustomFiles].[dbo].[Prescriptions] WHERE [Analosima] = 1 " & _
+                        "UNION SELECT [Drug11] FROM [PharmacyCustomFiles].[dbo].[Prescriptions] WHERE [Analosima] = 1 " & _
+                        "UNION SELECT [Drug12] FROM [PharmacyCustomFiles].[dbo].[Prescriptions] WHERE [Analosima] = 1 " & _
+                        "UNION SELECT [Drug13] FROM [PharmacyCustomFiles].[dbo].[Prescriptions] WHERE [Analosima] = 1 " & _
+                         "UNION SELECT [Drug14] FROM [PharmacyCustomFiles].[dbo].[Prescriptions] WHERE [Analosima] = 1 " & _
+                        "UNION SELECT [Drug15] FROM [PharmacyCustomFiles].[dbo].[Prescriptions] WHERE [Analosima] = 1 " & _
+                        "UNION SELECT [Drug16] FROM [PharmacyCustomFiles].[dbo].[Prescriptions] WHERE [Analosima] = 1 " & _
+                        "UNION SELECT [Drug17] FROM [PharmacyCustomFiles].[dbo].[Prescriptions] WHERE [Analosima] = 1 " & _
+                         "UNION SELECT [Drug18] FROM [PharmacyCustomFiles].[dbo].[Prescriptions] WHERE [Analosima] = 1 " & _
+                        "UNION SELECT [Drug19] FROM [PharmacyCustomFiles].[dbo].[Prescriptions] WHERE [Analosima] = 1 " & _
+                        "UNION SELECT [Drug20] FROM [PharmacyCustomFiles].[dbo].[Prescriptions] WHERE [Analosima] = 1 " & _
+                                             "ORDER BY Drug"
+
+            FillMultipleComboBox(strSQL, {cboDrug1, cboDrug2, cboDrug3, cboDrug4, cboDrug5, cboDrug6, cboDrug7, cboDrug8, cboDrug9, cboDrug10}, _
+                                 {"Drug", "Drug", "Drug", "Drug", "Drug", "Drug", "Drug", "Drug", "Drug", "Drug"}, _
+                                 {"", "", "", "", "", "", "", "", "", ""})
+            FillMultipleComboBox(strSQL, {cboDrug11, cboDrug12, cboDrug13, cboDrug14, cboDrug15, cboDrug16, cboDrug17, cboDrug18, cboDrug19, cboDrug20}, _
+                                 {"Drug", "Drug", "Drug", "Drug", "Drug", "Drug", "Drug", "Drug", "Drug", "Drug"}, _
+                                 {"", "", "", "", "", "", "", "", "", ""})
+            'FillComboBox(strSQL, cboDrug1, "Drug")
+            'FillComboBox(strSQL, cboDrug2, "Drug")
+            'FillComboBox(strSQL, cboDrug3, "Drug")
+        End If
+
+
+    End Sub
+
+
+    'Private Sub DisplayAnalosima()
+    '    Dim totAnalosima As Integer = 0
+    '    Dim analosima As String = txtDrastiki.Text
+
+    '    Try
+    '        stringDTG = "SELECT distinct [AP_DESCRIPTION] " & _
+    '                    "FROM [Pharmacy2013C].[dbo].[APOTIKH] " & _
+    '                    "WHERE (dbo.APOTIKH.AP_DESCRIPTION LIKE '%" & analosima & "%') " & _
+    '                    "ORDER BY AP_DESCRIPTION"
+
+    '        totAnalosima = FillDatagrid(dgvEmporikes, bsEmporikes, {"Προιόντα"}, {152}, {}, {}, "", False)
+
+    '    Catch ex As Exception
+    '    End Try
+
+    '    Select Case totAnalosima
+    '        Case 0
+    '            lblEmporikesMessage.Text = "Δεν βρέθηκαν προιόντα"
+    '        Case 1
+    '            lblEmporikesMessage.Text = "Βρέθηκε 1 προιόν"
+    '        Case Is > 1
+    '            lblEmporikesMessage.Text = "Βρέθηκαν " & totAnalosima & " προιόντα"
+    '    End Select
+
+
+    'End Sub
+
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        dtpProcessedDate.Value = Today()
+    End Sub
+
+    Private Sub DisplayEmporikesFromDrastiki(ByVal combobox As ComboBox)
+        Dim totEmporikes As Integer = 0
+        Dim drastiki As String = combobox.Text
+        txtDrastiki.Text = drastiki
+        If drastiki = "XΩΡΙΣ" Then
+            Try
+                dgvEmporikes.Rows.RemoveAt(0)
+            Catch ex As Exception
+            End Try
+
+        Else
+            Try
+                stringDTG = "SELECT DISTINCT dbo.APOTIKH.AP_DESCRIPTION " & _
+                                "FROM dbo.APOTIKH INNER JOIN dbo.DROYSIA ON dbo.APOTIKH.AP_DR_ID = dbo.DROYSIA.DR_ID " & _
+                                "WHERE (dbo.DROYSIA.DR_DESCRIPTION = '" & drastiki & "') " & _
+                                "ORDER BY AP_DESCRIPTION"
+
+                totEmporikes = FillDatagrid(dgvEmporikes, bsEmporikes, {"Εμπορική ονομασία"}, {204}, {""}, {""}, "", False)
+                'totEmporikes = DisplayCustomDatagrid_Emporikes(strSQL, bsEmporikes, dgvEmporikes)
+            Catch ex As Exception
+            End Try
+
+        End If
+
+        Select Case totEmporikes
+            Case 0
+                lblEmporikesMessage.Text = "Δεν βρέθηκαν σκευάσματα"
+            Case 1
+                lblEmporikesMessage.Text = "Βρέθηκε 1 σκεύασμα"
+            Case Is > 1
+                lblEmporikesMessage.Text = "Βρέθηκαν " & totEmporikes & " σκευάσματα"
+        End Select
+
+
+    End Sub
+
+    Private Sub cboDrug1_Click(sender As Object, e As EventArgs) Handles cboDrug1.Click
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug1)
+        End If
+    End Sub
+
+    Private Sub cboDrug2_Click(sender As Object, e As EventArgs) Handles cboDrug2.Click
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug2)
+        End If
+    End Sub
+
+    Private Sub cboDrug3_Click(sender As Object, e As EventArgs) Handles cboDrug3.Click
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug3)
+        End If
+    End Sub
+
+    Private Sub cboDrug1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDrug1.SelectedIndexChanged
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug1)
+        End If
+    End Sub
+
+
+    Private Sub cboDrug2_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDrug2.SelectedIndexChanged
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug2)
+        End If
+    End Sub
+
+
+
+    Private Sub cboDrug3_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDrug3.SelectedIndexChanged
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug3)
+        End If
+    End Sub
+
+    'Private Function DisplayCustomDatagrid_Emporikes(ByVal strSQL As String, ByVal oBinding As BindingSource, ByVal oDatagrid As DataGridView) As Integer
+
+
+    '    'Initialization νεας σύνδεσης με το connectionString που παίρνει από τις GlobalVariables
+    '    con = New SqlConnection(connectionstring)
+
+    '    'που την ανοίγει εδώ
+    '    con.Open()
+
+    '    'Initialization νέου CommandAdapter με την SqlString που παίρνει σαν εξωτερική παράμετρο
+    '    cmdDTG = New SqlCommand(strSQL, con)
+    '    daDTG = New SqlDataAdapter(cmdDTG)  'Ορισμός νέου SqlDataAdapter και νέου DataSet
+    '    cbDTG = New SqlCommandBuilder(daDTG)
+    '    dsDTG = New DataSet
+
+    '    ' και ο SqlDataAdapter γεμίζει το Dataset
+    '    daDTG.Fill(dsDTG, "DTG")
+    '    ' το οποίο γεμίζει το datatable
+    '    dtDTG = dsDTG.Tables("DTG")
+
+    '    'Καθορίζει το source του BindingSource ως το Datatable
+    '    oBinding.DataSource = dtDTG
+
+    '    'Κλείνει την σύνδεση
+    '    con.Close()
+
+
+    '    With oDatagrid
+
+    '        'Αδειάζει το datagridView
+    '        .Columns.Clear()
+
+    '        'Εμποδίσει το Datagrid να εμφανίσει αυτόματα τα Columns
+    '        .AutoGenerateColumns = False
+
+    '        'Καθορίζει το  source του DataGrid ως το BindingSource
+    '        .DataSource = oBinding
+
+    '    End With
+
+    '    'Όρίζει το 1ο πεδίο του Datagrid σαν textbox
+    '    Dim Description As New DataGridViewTextBoxColumn
+    '    With Description
+    '        ' και του δίνει τη τιμή του αντίστοιχου πεδίου
+    '        .DataPropertyName = "dbo.APOTIKH.AP_DESCRIPTION"
+    '        ' Formatting..
+    '        .HeaderText = "Εμπορική ονομασία"
+    '        .Width = 189
+    '        .DefaultCellStyle.Format = ""
+    '    End With
+
+    '    With oDatagrid
+
+    '        'Εμφανίζει τα columns του Datagrid
+    '        .Columns.Add(Description)
+
+    '        ' Εναλλαγή του χρωματισμού των rows
+    '        .RowsDefaultCellStyle.BackColor = Color.Bisque
+    '        .AlternatingRowsDefaultCellStyle.BackColor = Color.Beige
+
+    '        'Εξαφανίζει τα πεδία
+    '        '.Columns(3).Visible = False
+    '        '.Columns(4).Visible = False
+    '    End With
+
+    '    'Επιστρέφει τον συνολικό αριθμό εγγραφών του Datagrid
+    '    Return dsDTG.Tables(0).Rows.Count
+
+    'End Function
+
+    Private Sub btnEnterPrescription_Click(sender As Object, e As EventArgs) Handles btnEnterPrescription.Click
+        'Μεταβλητές
+        Dim RowIndex As Integer = frmCustomers.dgvPrescriptions.SelectedCells.Item(0).RowIndex
+
+        If btnEnterPrescription.Text = "Τροποποίηση" Then
+            Dim id As Integer = frmCustomers.dgvPrescriptions.SelectedRows(0).Cells(6).Value
+            'RowIndex = frmCustomers.dgvPrescriptions.SelectedCells.Item(0).RowIndex
+            If MessageBox.Show("Θέλετε να τροποποιήσετε τη συνταγή # " & id & " ?", "Τροποποίηση", MessageBoxButtons.YesNo) = DialogResult.Yes Then
+
+                ' Περνάει τα στοιχεία στο datagrid
+                PassPrescriptionDataToDatagrid(RowIndex)
+                'Εαν όλα είναι καλά
+                If IsPrescriptionReadyToSave = True Then
+                    ' Σώνει τα νέα στοιχεία στο database
+                    UpdatePrescriptions(RowIndex)
+
+                    GetPrescriptionsList()
+                End If
+                Exit Sub
+            Else
+                Exit Sub
+            End If
+        End If
+
+        lblMultimonthPrescriptionInfo.Text = "Καταχώρηση πολυμηνιαίας συνταγής:  #" & MultiplePrescriptionCurrentIndex
+
+        Select Case cbMultiplePrescription.Text
+            Case Is = "Δίμηνη"
+                MultiplePrescriptionIndex = 2
+                btnEnterPrescription.Text = "Εγγραφή δίμηνης"
+                cboEktelesis.ForeColor = Color.Black
+            Case Is = "Τρίμηνη"
+                MultiplePrescriptionIndex = 3
+                btnEnterPrescription.Text = "Εγγραφή τρίμηνης"
+                cboEktelesis.ForeColor = Color.Red
+            Case Is = "Εξάμηνη"
+                MultiplePrescriptionIndex = 6
+                btnEnterPrescription.Text = "Εγγραφή εξάμηνης"
+                cboEktelesis.ForeColor = Color.Red
+        End Select
+
+        ' Περνάει τα στοιχεία στο datagrid
+        RowIndex = RowIndex + MultiplePrescriptionCurrentIndex - 2
+        PassPrescriptionDataToDatagrid(RowIndex)
+        'Εαν όλα είναι καλά
+        If IsPrescriptionReadyToSave = True Then
+            ' Σώνει τα νέα στοιχεία στο database
+            UpdatePrescriptions(RowIndex)
+
+            GetPrescriptionsList()
+
+            If MultiplePrescriptionCurrentIndex < MultiplePrescriptionIndex Then
+                MultiplePrescriptionCurrentIndex += 1
+            Else
+                MultiplePrescriptionCurrentIndex = 2
+                Me.Close()
+            End If
+
+            ' Περνάει τον αριθμό εκτέλεσης στην φόρμα μηδενίζοντας τα πεδία
+            cboEktelesis.Text = MultiplePrescriptionCurrentIndex & "η"
+            txtBarcode.Text = ""
+            txtBarcode.Focus()
+            dtpInitDate.Value = dtpEndDate.Value
+
+        End If
+
+
+
+
+
+    End Sub
+
+    Private Sub PassPrescriptionDataToDatagrid(ByVal rowIndex As Integer, Optional ByVal MultPrescIndex As Integer = 1)
+
+        'Εαν είμαστε στην 2η και πάνω εκτέλεση προσθέτει νεο row στο datagrid
+        If MultiplePrescriptionCurrentIndex > 2 Then
+            'bsPrescriptions.AddNew()
+        End If
+
+        'Ektelesis
+        frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(0).Value = cboEktelesis.Text
+
+        'InitDate
+        frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(1).Value = dtpInitDate.Value
+        dtInitDate = dtpInitDate.Value
+
+        'EndDate
+        If dtpInitDate.Value = dtpEndDate.Value Then
+            MsgBox("Η ημερομηνία λήξης είναι ίδια με την ημερομηνία έναρξης!")
+            IsPrescriptionReadyToSave = False
+            Exit Sub
+        ElseIf dtpInitDate.Value > dtpEndDate.Value Then
+            MsgBox("Η ημερομηνία λήξης είναι πριν την ημερομηνία έναρξης!")
+            IsPrescriptionReadyToSave = False
+            Exit Sub
+        Else
+            frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(2).Value = dtpEndDate.Value
+            dtEndDate = dtpEndDate.Value
+        End If
+
+        'ProcessedDate
+        If dtpProcessedDate.Checked = True Then
+            frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(4).Value = dtpProcessedDate.Value
+        Else
+            frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(4).Value = DBNull.Value
+        End If
+
+        ' Barcode
+        If txtBarcode.Text = "" Then
+            MsgBox("Δεν καταχωρήσατε το barcode συνταγής!")
+            IsPrescriptionReadyToSave = False
+            Exit Sub
+        Else
+            frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(3).Value = txtBarcode.Text
+        End If
+
+        'CustomerId
+        frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(5).Value = frmCustomers.dgvCustomers.SelectedRows(0).Cells(1).Value
+
+        ' Drug1
+        frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(7).Value = cboDrug1.Text
+        frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(8).Value = cboDrug2.Text
+        frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(9).Value = cboDrug3.Text
+        frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(10).Value = cboDrug4.Text
+        frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(11).Value = cboDrug5.Text
+        frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(12).Value = cboDrug6.Text
+        frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(13).Value = cboDrug7.Text
+        frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(14).Value = cboDrug8.Text
+        frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(15).Value = cboDrug9.Text
+        frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(16).Value = cboDrug10.Text
+        frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(17).Value = cboDrug11.Text
+        frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(18).Value = cboDrug12.Text
+        frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(19).Value = cboDrug13.Text
+        frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(20).Value = cboDrug14.Text
+        frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(21).Value = cboDrug15.Text
+        frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(22).Value = cboDrug16.Text
+        frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(23).Value = cboDrug17.Text
+        frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(24).Value = cboDrug18.Text
+        frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(25).Value = cboDrug19.Text
+        frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(26).Value = cboDrug20.Text
+
+        'Analosima
+        frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(27).Value = chkAnalosima.Checked
+
+        'Notes
+        frmCustomers.dgvPrescriptions.Rows(rowIndex).Cells(28).Value = txtNotes.Text
+
+
+        IsPrescriptionReadyToSave = True
+
+        
+    End Sub
+
+    Private Sub UpdatePrescriptions(ByVal i As Integer)
+        Dim insertData As String = ""
+        Dim ChangedOrExists As String = ""
+        ' Dim i As Integer = frmCustomers.dgvPrescriptions.CurrentCell.RowIndex
+        'Dim dgvLastRow As Integer = frmCustomers.dgvPrescriptions.Rows.Count - 2
+
+        Using con As SqlConnection = New System.Data.SqlClient.SqlConnection(connectionstring)
+            con.Open()
+            If frmCustomers.dgvPrescriptions.Rows(i).IsNewRow = True Then
+                'MsgBox("new")
+                ChangedOrExists = "NewRow"
+            Else
+                ChangedOrExists = "Changed"
+            End If
+
+
+            If ChangedOrExists = "Changed" Then
+
+                insertData = "UPDATE PharmacyCustomFiles.dbo.Prescriptions " & _
+                              "SET [Ektelesis] = @Ektelesis, [InitDate] = @InitDate, [EndDate] = @EndDate, [Barcode] =@Barcode, " & _
+                                    "[ProcessedDate]= @ProcessedDate, [CustomerId] = @CustomerId, [Drug1] = @Drug1, [Drug2] = @Drug2, [Drug3] = @Drug3, [Drug4] = @Drug4, [Drug5] = @Drug5, [Drug6] = @Drug6, [Drug7] = @Drug7, [Drug8] = @Drug8, [Drug9] = @Drug9, [Drug10] = @Drug10, " & _
+                                    "[Drug11] = @Drug11, [Drug12] = @Drug12, [Drug13] = @Drug13, [Drug14] = @Drug14, [Drug15] = @Drug15, [Drug16] = @Drug16, [Drug17] = @Drug17, [Drug18] = @Drug18, [Drug19] = @Drug19, [Drug20] = @Drug20, [Analosima] = @Analosima, [Notes] = @Notes " & _
+                              "WHERE Id = @Id"
+
+            ElseIf ChangedOrExists = "NewRow" Then
+
+                insertData = "INSERT INTO PharmacyCustomFiles.dbo.Prescriptions " & _
+                            "([Ektelesis],[InitDate], [EndDate], [Barcode], [ProcessedDate], [CustomerId], [Drug1], [Drug2], [Drug3],[Drug4], [Drug5], [Drug6], [Drug7], [Drug8], [Drug9],[Drug10], " & _
+                            "[Drug11], [Drug12], [Drug13],[Drug14], [Drug15], [Drug16], [Drug17], [Drug18], [Drug19],[Drug20], [Analosima], [Notes]) " & _
+                            "VALUES (@Ektelesis, @InitDate, @EndDate, @Barcode, @ProcessedDate, @CustomerId, @Drug1, @Drug2, @Drug3, @Drug4, @Drug5, @Drug6,  @Drug7, @Drug8, @Drug9, @Drug10, " & _
+                            "@Drug11, @Drug12, @Drug13, @Drug14, @Drug15, @Drug16,  @Drug17, @Drug18, @Drug19, @Drug20, @Analosima, @Notes)"
+
+            End If
+
+            Dim cmd As New SqlCommand(insertData, con)
+
+            If ChangedOrExists = "Changed" Or ChangedOrExists = "NewRow" Then
+                With frmCustomers.dgvPrescriptions
+                    cmd.Parameters.AddWithValue("@Ektelesis", If(.Rows(i).Cells(0).Value, DBNull.Value))
+                    cmd.Parameters.AddWithValue("@InitDate", If(.Rows(i).Cells(1).Value, DBNull.Value))
+                    cmd.Parameters.AddWithValue("@EndDate", If(.Rows(i).Cells(2).Value, DBNull.Value))
+                    cmd.Parameters.AddWithValue("@Barcode", If(.Rows(i).Cells(3).Value, DBNull.Value))
+                    cmd.Parameters.AddWithValue("@ProcessedDate", If(.Rows(i).Cells(4).Value, DBNull.Value))
+                    cmd.Parameters.AddWithValue("@CustomerId", If(.Rows(i).Cells(5).Value, DBNull.Value))
+                    cmd.Parameters.AddWithValue("@Drug1", If(.Rows(i).Cells(7).Value, DBNull.Value))
+                    cmd.Parameters.AddWithValue("@Drug2", If(.Rows(i).Cells(8).Value, DBNull.Value))
+                    cmd.Parameters.AddWithValue("@Drug3", If(.Rows(i).Cells(9).Value, DBNull.Value))
+                    cmd.Parameters.AddWithValue("@Drug4", If(.Rows(i).Cells(10).Value, DBNull.Value))
+                    cmd.Parameters.AddWithValue("@Drug5", If(.Rows(i).Cells(11).Value, DBNull.Value))
+                    cmd.Parameters.AddWithValue("@Drug6", If(.Rows(i).Cells(12).Value, DBNull.Value))
+                    cmd.Parameters.AddWithValue("@Drug7", If(.Rows(i).Cells(13).Value, DBNull.Value))
+                    cmd.Parameters.AddWithValue("@Drug8", If(.Rows(i).Cells(14).Value, DBNull.Value))
+                    cmd.Parameters.AddWithValue("@Drug9", If(.Rows(i).Cells(15).Value, DBNull.Value))
+                    cmd.Parameters.AddWithValue("@Drug10", If(.Rows(i).Cells(16).Value, DBNull.Value))
+                    cmd.Parameters.AddWithValue("@Drug11", If(.Rows(i).Cells(17).Value, DBNull.Value))
+                    cmd.Parameters.AddWithValue("@Drug12", If(.Rows(i).Cells(18).Value, DBNull.Value))
+                    cmd.Parameters.AddWithValue("@Drug13", If(.Rows(i).Cells(19).Value, DBNull.Value))
+                    cmd.Parameters.AddWithValue("@Drug14", If(.Rows(i).Cells(20).Value, DBNull.Value))
+                    cmd.Parameters.AddWithValue("@Drug15", If(.Rows(i).Cells(21).Value, DBNull.Value))
+                    cmd.Parameters.AddWithValue("@Drug16", If(.Rows(i).Cells(22).Value, DBNull.Value))
+                    cmd.Parameters.AddWithValue("@Drug17", If(.Rows(i).Cells(23).Value, DBNull.Value))
+                    cmd.Parameters.AddWithValue("@Drug18", If(.Rows(i).Cells(24).Value, DBNull.Value))
+                    cmd.Parameters.AddWithValue("@Drug19", If(.Rows(i).Cells(25).Value, DBNull.Value))
+                    cmd.Parameters.AddWithValue("@Drug20", If(.Rows(i).Cells(26).Value, DBNull.Value))
+                    cmd.Parameters.AddWithValue("@Analosima", If(.Rows(i).Cells(27).Value, DBNull.Value))
+                    cmd.Parameters.AddWithValue("@Notes", If(.Rows(i).Cells(28).Value, DBNull.Value))
+
+                    If ChangedOrExists = "Changed" Then cmd.Parameters.AddWithValue("@Id", If(.Rows(i).Cells(6).Value, DBNull.Value))
+
+                End With
+
+                'MsgBox(If(frmCustomers.dgvPrescriptions.Rows(i).Cells(0).Value, DBNull.Value))
+
+                cmd.ExecuteNonQuery()
+
+                ''Ανανεώνει το Last Update
+                DisplayLastUpdate()
+
+                '' Ανανεώνει τη λίστα των πελατων, ξαναεπιλέγοντας τον τελευταίο πελάτη
+                'Dim SelectedCustomer As String = dgvCustomers.SelectedRows(0).Cells(0).Value
+                'GetCustomersList()
+                'Dim rowIndex As Integer = SearchDatagrid(dgvCustomers, SelectedCustomer)
+                'dgvCustomers.CurrentCell = dgvCustomers.Rows(rowIndex).Cells(0)
+
+            ElseIf ChangedOrExists = "Error" Then
+
+            End If
+
+        End Using
+
+    End Sub
+
+
+    Private Sub chkAnalosima_CheckedChanged(sender As Object, e As EventArgs) Handles chkAnalosima.CheckedChanged
+        If chkAnalosima.Checked = True Then
+            DisplayForAnalosima(True)
+        Else
+            DisplayForAnalosima(False)
+        End If
+
+        FillPrescriptionCombo()
+    End Sub
+
+
+    Private Sub DisplayForAnalosima(ByVal mode As Boolean)
+        txtDrastiki.Visible = Not mode
+        dgvEmporikes.Visible = Not mode
+        lblEmporikesMessage.Visible = Not mode
+
+        If mode = True Then
+            cboDrug1.Width = 365
+            cboDrug2.Width = 365
+            cboDrug3.Width = 365
+            cboDrug4.Width = 365
+            cboDrug5.Width = 365
+            cboDrug6.Width = 365
+            cboDrug7.Width = 365
+            cboDrug8.Width = 365
+            cboDrug9.Width = 365
+            cboDrug10.Width = 365
+            cboDrug11.Visible = False
+            cboDrug12.Visible = False
+            cboDrug13.Visible = False
+            cboDrug14.Visible = False
+            cboDrug15.Visible = False
+            cboDrug16.Visible = False
+            cboDrug17.Visible = False
+            cboDrug18.Visible = False
+            cboDrug19.Visible = False
+            cboDrug20.Visible = False
+        Else
+            cboDrug1.Width = 210
+            cboDrug2.Width = 210
+            cboDrug3.Width = 210
+            cboDrug4.Width = 210
+            cboDrug5.Width = 210
+            cboDrug6.Width = 210
+            cboDrug7.Width = 210
+            cboDrug8.Width = 210
+            cboDrug9.Width = 210
+            cboDrug10.Width = 210
+            cboDrug11.Visible = True
+            cboDrug12.Visible = True
+            cboDrug13.Visible = True
+            cboDrug14.Visible = True
+            cboDrug15.Visible = True
+            cboDrug16.Visible = True
+            cboDrug17.Visible = True
+            cboDrug18.Visible = True
+            cboDrug19.Visible = True
+            cboDrug20.Visible = True
+        End If
+    End Sub
+
+
+    Private Sub cboEktelesis_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboEktelesis.SelectedIndexChanged
+        txtBarcode.Focus()
+    End Sub
+
+    Private Sub tmrPrescription_Tick(sender As Object, e As EventArgs) Handles tmrPrescription.Tick
+        If txtBarcode.Focus Then
+            dtpInitDate.Focus()
+            tmrPrescription.Enabled = False
+        End If
+    End Sub
+
+    Private Sub txtInitDate_TextChanged(sender As Object, e As EventArgs)
+
+    End Sub
+
+    Private Sub txtBarcode_TextChanged(sender As Object, e As EventArgs) Handles txtBarcode.TextChanged
+        If chkManualllyInsertBarcode.Checked = False Then
+            tmrPrescription.Enabled = True
+        Else
+            tmrPrescription.Enabled = False
+        End If
+    End Sub
+
+    Private Sub btnNext_Click(sender As Object, e As EventArgs) Handles btnNext.Click
+        MoveBetweenRecords("next")
+    End Sub
+
+
+    Private Sub MoveBetweenRecords(ByVal direction As String)
+        Dim prescRowId As Integer = frmCustomers.dgvPrescriptions.CurrentCell.RowIndex
+        Dim prescTotRows As Integer = frmCustomers.dgvPrescriptions.Rows.Count - 1
+
+        grpCustomerName.Text = (prescRowId + 1) & "/" & prescTotRows
+
+        If dtpProcessedDate.Checked = True Then
+            lblPrescriptionProcessed.ForeColor = Color.Red
+        Else
+            lblPrescriptionProcessed.ForeColor = Color.Black
+        End If
+
+            Select Case direction
+            Case "next"
+                If prescRowId < prescTotRows Then
+                    frmCustomers.dgvPrescriptions.CurrentCell = frmCustomers.dgvPrescriptions.Rows(prescRowId + 1).Cells(0)
+                    grpCustomerName.Text = (prescRowId + 2) & "/" & prescTotRows
+                End If
+                Case "previous"
+                    If prescRowId > 0 Then
+                    frmCustomers.dgvPrescriptions.CurrentCell = frmCustomers.dgvPrescriptions.Rows(prescRowId - 1).Cells(0)
+                    grpCustomerName.Text = (prescRowId) & "/" & prescTotRows
+                    End If
+        End Select
+
+        UpdatePrescriptionInfoFromDatagrid()
+
+        'If prescRowId = 0 Then
+        '    btnPrevious.Enabled = False
+        'Else
+        '    btnPrevious.Enabled = True
+        'End If
+
+        'If prescRowId = prescTotRows + 1 Then
+        '    btnNext.Enabled = False
+        'Else
+        '    btnNext.Enabled = True
+        'End If
+
+    End Sub
+
+    Private Sub btnPrevious_Click(sender As Object, e As EventArgs) Handles btnPrevious.Click
+        MoveBetweenRecords("previous")
+    End Sub
+
+    Private Sub dtpInitDate_ValueChanged(sender As Object, e As EventArgs) Handles dtpInitDate.ValueChanged
+
+    End Sub
+
+    Private Sub cbMultiplePrescription_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbMultiplePrescription.SelectedIndexChanged
+        If cbMultiplePrescription.Text = "Δίμηνη" Then
+            btnEnterPrescription.Text = "Εγγραφή δίμηνης"
+        ElseIf cbMultiplePrescription.Text = "Τρίμηνη" Then
+            btnEnterPrescription.Text = "Εγγραφή τρίμηνης"
+        ElseIf cbMultiplePrescription.Text = "Εξάμηνη" Then
+            btnEnterPrescription.Text = "Εγγραφή εξάμηνης"
+        End If
+    End Sub
+
+   
+
+    Private Sub btnEnterPrescription_TextChanged(sender As Object, e As EventArgs) Handles btnEnterPrescription.TextChanged
+        If btnEnterPrescription.Text = "Τροποποίηση" Then
+            lblMultimonthPrescriptionInfo.Visible = False
+            cbMultiplePrescription.Enabled = False
+            btnPrevious.Enabled = True
+            btnNext.Enabled = True
+        Else
+            lblMultimonthPrescriptionInfo.Visible = True
+            cbMultiplePrescription.Enabled = True
+            btnPrevious.Enabled = False
+            btnNext.Enabled = False
+        End If
+
+    End Sub
+
+    
+
+    'Private Sub cboDrug11_SelectedIndexChanged_1(sender As Object, e As EventArgs) Handles cboDrug11.GotFocus
+    '    Dim strSQL As String = "SELECT [DR_CODE], [DR_ID], [DR_DESCRIPTION] FROM [Pharmacy2013C].[dbo].[DROYSIA]"
+    '    FillMultipleComboBox(strSQL, {cboDrug11}, {"DR_DESCRIPTION"}, {"DR_ID"})
+    'End Sub
+
+    'Private Sub cboDrug1_SelectedIndexChanged_1(sender As Object, e As EventArgs) Handles cboDrug1.GotFocus
+    '    Dim strSQL As String = "SELECT [DR_CODE], [DR_ID], [DR_DESCRIPTION] FROM [Pharmacy2013C].[dbo].[DROYSIA]"
+    '    FillMultipleComboBox(strSQL, {cboDrug1}, {"DR_DESCRIPTION"}, {"DR_ID"})
+    'End Sub
+    'Private Sub cboDrug2_SelectedIndexChanged_1(sender As Object, e As EventArgs) Handles cboDrug2.GotFocus
+    '    Dim strSQL As String = "SELECT [DR_CODE], [DR_ID], [DR_DESCRIPTION] FROM [Pharmacy2013C].[dbo].[DROYSIA]"
+    '    FillMultipleComboBox(strSQL, {cboDrug2}, {"DR_DESCRIPTION"}, {"DR_ID"})
+    'End Sub
+    'Private Sub cboDrug3_SelectedIndexChanged_1(sender As Object, e As EventArgs) Handles cboDrug3.GotFocus
+    '    Dim strSQL As String = "SELECT [DR_CODE], [DR_ID], [DR_DESCRIPTION] FROM [Pharmacy2013C].[dbo].[DROYSIA]"
+    '    FillMultipleComboBox(strSQL, {cboDrug3}, {"DR_DESCRIPTION"}, {"DR_ID"})
+    'End Sub
+
+    Private Sub Label4_Click(sender As Object, e As EventArgs) Handles lblDrug1.Click
+        Dim strSQL As String = "SELECT [DR_CODE], [DR_ID], [DR_DESCRIPTION] FROM [Pharmacy2013C].[dbo].[DROYSIA]"
+        FillMultipleComboBox(strSQL, {cboDrug1}, {"DR_DESCRIPTION"}, {"DR_ID"})
+        cboDrug1.Enabled = True
+    End Sub
+
+    Private Sub lblDrug2_Click(sender As Object, e As EventArgs) Handles lblDrug2.Click
+        Dim strSQL As String = "SELECT [DR_CODE], [DR_ID], [DR_DESCRIPTION] FROM [Pharmacy2013C].[dbo].[DROYSIA]"
+        FillMultipleComboBox(strSQL, {cboDrug2}, {"DR_DESCRIPTION"}, {"DR_ID"})
+        cboDrug2.Enabled = True
+    End Sub
+
+    Private Sub lblDrug3_Click(sender As Object, e As EventArgs) Handles lblDrug3.Click
+        Dim strSQL As String = "SELECT [DR_CODE], [DR_ID], [DR_DESCRIPTION] FROM [Pharmacy2013C].[dbo].[DROYSIA]"
+        FillMultipleComboBox(strSQL, {cboDrug3}, {"DR_DESCRIPTION"}, {"DR_ID"})
+        cboDrug3.Enabled = True
+    End Sub
+
+    Private Sub lblDrug4_Click(sender As Object, e As EventArgs) Handles lblDrug4.Click
+        Dim strSQL As String = "SELECT [DR_CODE], [DR_ID], [DR_DESCRIPTION] FROM [Pharmacy2013C].[dbo].[DROYSIA]"
+        FillMultipleComboBox(strSQL, {cboDrug4}, {"DR_DESCRIPTION"}, {"DR_ID"})
+        cboDrug4.Enabled = True
+    End Sub
+
+    Private Sub lblDrug5_Click(sender As Object, e As EventArgs) Handles lblDrug5.Click
+        Dim strSQL As String = "SELECT [DR_CODE], [DR_ID], [DR_DESCRIPTION] FROM [Pharmacy2013C].[dbo].[DROYSIA]"
+        FillMultipleComboBox(strSQL, {cboDrug5}, {"DR_DESCRIPTION"}, {"DR_ID"})
+        cboDrug5.Enabled = True
+    End Sub
+
+    Private Sub lblDrug6_Click(sender As Object, e As EventArgs) Handles lblDrug6.Click
+        Dim strSQL As String = "SELECT [DR_CODE], [DR_ID], [DR_DESCRIPTION] FROM [Pharmacy2013C].[dbo].[DROYSIA]"
+        FillMultipleComboBox(strSQL, {cboDrug6}, {"DR_DESCRIPTION"}, {"DR_ID"})
+        cboDrug6.Enabled = True
+    End Sub
+
+    Private Sub lblDrug7_Click(sender As Object, e As EventArgs) Handles lblDrug7.Click
+        Dim strSQL As String = "SELECT [DR_CODE], [DR_ID], [DR_DESCRIPTION] FROM [Pharmacy2013C].[dbo].[DROYSIA]"
+        FillMultipleComboBox(strSQL, {cboDrug7}, {"DR_DESCRIPTION"}, {"DR_ID"})
+        cboDrug7.Enabled = True
+    End Sub
+
+    Private Sub lblDrug8_Click(sender As Object, e As EventArgs) Handles lblDrug8.Click
+        Dim strSQL As String = "SELECT [DR_CODE], [DR_ID], [DR_DESCRIPTION] FROM [Pharmacy2013C].[dbo].[DROYSIA]"
+        FillMultipleComboBox(strSQL, {cboDrug8}, {"DR_DESCRIPTION"}, {"DR_ID"})
+        cboDrug8.Enabled = True
+    End Sub
+
+    Private Sub lblDrug9_Click(sender As Object, e As EventArgs) Handles lblDrug9.Click
+        Dim strSQL As String = "SELECT [DR_CODE], [DR_ID], [DR_DESCRIPTION] FROM [Pharmacy2013C].[dbo].[DROYSIA]"
+        FillMultipleComboBox(strSQL, {cboDrug9}, {"DR_DESCRIPTION"}, {"DR_ID"})
+        cboDrug9.Enabled = True
+    End Sub
+
+    Private Sub lblDrug10_Click(sender As Object, e As EventArgs) Handles lblDrug10.Click
+        Dim strSQL As String = "SELECT [DR_CODE], [DR_ID], [DR_DESCRIPTION] FROM [Pharmacy2013C].[dbo].[DROYSIA]"
+        FillMultipleComboBox(strSQL, {cboDrug10}, {"DR_DESCRIPTION"}, {"DR_ID"})
+        cboDrug10.Enabled = True
+    End Sub
+
+    Private Sub cboDrug4_Click(sender As Object, e As EventArgs) Handles cboDrug4.Click
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug4)
+        End If
+    End Sub
+
+    Private Sub cboDrug5_Click(sender As Object, e As EventArgs) Handles cboDrug5.Click
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug5)
+        End If
+    End Sub
+
+    Private Sub cboDrug6_Click(sender As Object, e As EventArgs) Handles cboDrug6.Click
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug6)
+        End If
+    End Sub
+
+    Private Sub cboDrug7_Click(sender As Object, e As EventArgs) Handles cboDrug7.Click
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug7)
+        End If
+    End Sub
+
+    Private Sub cboDrug8_Click(sender As Object, e As EventArgs) Handles cboDrug8.Click
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug8)
+        End If
+    End Sub
+
+    Private Sub cboDrug9_Click(sender As Object, e As EventArgs) Handles cboDrug9.Click
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug9)
+        End If
+    End Sub
+
+    Private Sub cboDrug10_Click(sender As Object, e As EventArgs) Handles cboDrug10.Click
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug10)
+        End If
+    End Sub
+
+    Private Sub cboDrug11_Click(sender As Object, e As EventArgs) Handles cboDrug11.Click
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug11)
+        End If
+    End Sub
+
+    Private Sub cboDrug12_Click(sender As Object, e As EventArgs) Handles cboDrug12.Click
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug12)
+        End If
+    End Sub
+
+    Private Sub cboDrug13_Click(sender As Object, e As EventArgs) Handles cboDrug13.Click
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug13)
+        End If
+    End Sub
+
+    Private Sub cboDrug14_Click(sender As Object, e As EventArgs) Handles cboDrug14.Click
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug14)
+        End If
+    End Sub
+
+    Private Sub cboDrug15_Click(sender As Object, e As EventArgs) Handles cboDrug15.Click
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug15)
+        End If
+    End Sub
+
+    Private Sub cboDrug16_Click(sender As Object, e As EventArgs) Handles cboDrug16.Click
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug16)
+        End If
+    End Sub
+
+    Private Sub cboDrug17_Click(sender As Object, e As EventArgs) Handles cboDrug17.Click
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug17)
+        End If
+    End Sub
+
+    Private Sub cboDrug18_Click(sender As Object, e As EventArgs) Handles cboDrug18.Click
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug18)
+        End If
+    End Sub
+
+    Private Sub cboDrug19_Click(sender As Object, e As EventArgs) Handles cboDrug19.Click
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug19)
+        End If
+    End Sub
+
+    Private Sub cboDrug20_Click(sender As Object, e As EventArgs) Handles cboDrug20.Click
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug20)
+        End If
+    End Sub
+
+    Private Sub cboDrug4_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDrug4.SelectedIndexChanged
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug4)
+        End If
+    End Sub
+
+    Private Sub cboDrug5_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDrug5.SelectedIndexChanged
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug5)
+        End If
+    End Sub
+
+    Private Sub cboDrug6_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDrug6.SelectedIndexChanged
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug6)
+        End If
+    End Sub
+
+    Private Sub cboDrug7_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDrug7.SelectedIndexChanged
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug7)
+        End If
+    End Sub
+
+    Private Sub cboDrug8_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDrug8.SelectedIndexChanged
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug8)
+        End If
+    End Sub
+
+    Private Sub cboDrug9_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDrug9.SelectedIndexChanged
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug9)
+        End If
+    End Sub
+
+    Private Sub cboDrug10_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDrug10.SelectedIndexChanged
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug10)
+        End If
+    End Sub
+
+    Private Sub lblDrug11_Click(sender As Object, e As EventArgs) Handles lblDrug11.Click
+        Dim strSQL As String = "SELECT [DR_CODE], [DR_ID], [DR_DESCRIPTION] FROM [Pharmacy2013C].[dbo].[DROYSIA]"
+        FillMultipleComboBox(strSQL, {cboDrug11}, {"DR_DESCRIPTION"}, {"DR_ID"})
+        cboDrug11.Enabled = True
+    End Sub
+    Private Sub lblDrug12_Click(sender As Object, e As EventArgs) Handles lblDrug12.Click
+        Dim strSQL As String = "SELECT [DR_CODE], [DR_ID], [DR_DESCRIPTION] FROM [Pharmacy2013C].[dbo].[DROYSIA]"
+        FillMultipleComboBox(strSQL, {cboDrug12}, {"DR_DESCRIPTION"}, {"DR_ID"})
+        cboDrug12.Enabled = True
+    End Sub
+    Private Sub lblDrug13_Click(sender As Object, e As EventArgs) Handles lblDrug13.Click
+        Dim strSQL As String = "SELECT [DR_CODE], [DR_ID], [DR_DESCRIPTION] FROM [Pharmacy2013C].[dbo].[DROYSIA]"
+        FillMultipleComboBox(strSQL, {cboDrug13}, {"DR_DESCRIPTION"}, {"DR_ID"})
+        cboDrug13.Enabled = True
+    End Sub
+    Private Sub lblDrug14_Click(sender As Object, e As EventArgs) Handles lblDrug14.Click
+        Dim strSQL As String = "SELECT [DR_CODE], [DR_ID], [DR_DESCRIPTION] FROM [Pharmacy2013C].[dbo].[DROYSIA]"
+        FillMultipleComboBox(strSQL, {cboDrug14}, {"DR_DESCRIPTION"}, {"DR_ID"})
+        cboDrug14.Enabled = True
+    End Sub
+    Private Sub lblDrug15_Click(sender As Object, e As EventArgs) Handles lblDrug15.Click
+        Dim strSQL As String = "SELECT [DR_CODE], [DR_ID], [DR_DESCRIPTION] FROM [Pharmacy2013C].[dbo].[DROYSIA]"
+        FillMultipleComboBox(strSQL, {cboDrug15}, {"DR_DESCRIPTION"}, {"DR_ID"})
+        cboDrug15.Enabled = True
+    End Sub
+    Private Sub lblDrug16_Click(sender As Object, e As EventArgs) Handles lblDrug16.Click
+        Dim strSQL As String = "SELECT [DR_CODE], [DR_ID], [DR_DESCRIPTION] FROM [Pharmacy2013C].[dbo].[DROYSIA]"
+        FillMultipleComboBox(strSQL, {cboDrug16}, {"DR_DESCRIPTION"}, {"DR_ID"})
+        cboDrug16.Enabled = True
+    End Sub
+    Private Sub lblDrug17_Click(sender As Object, e As EventArgs) Handles lblDrug17.Click
+        Dim strSQL As String = "SELECT [DR_CODE], [DR_ID], [DR_DESCRIPTION] FROM [Pharmacy2013C].[dbo].[DROYSIA]"
+        FillMultipleComboBox(strSQL, {cboDrug17}, {"DR_DESCRIPTION"}, {"DR_ID"})
+        cboDrug17.Enabled = True
+    End Sub
+    Private Sub lblDrug18_Click(sender As Object, e As EventArgs) Handles lblDrug18.Click
+        Dim strSQL As String = "SELECT [DR_CODE], [DR_ID], [DR_DESCRIPTION] FROM [Pharmacy2013C].[dbo].[DROYSIA]"
+        FillMultipleComboBox(strSQL, {cboDrug18}, {"DR_DESCRIPTION"}, {"DR_ID"})
+        cboDrug18.Enabled = True
+    End Sub
+    Private Sub lblDrug19_Click(sender As Object, e As EventArgs) Handles lblDrug19.Click
+        Dim strSQL As String = "SELECT [DR_CODE], [DR_ID], [DR_DESCRIPTION] FROM [Pharmacy2013C].[dbo].[DROYSIA]"
+        FillMultipleComboBox(strSQL, {cboDrug19}, {"DR_DESCRIPTION"}, {"DR_ID"})
+        cboDrug19.Enabled = True
+    End Sub
+    Private Sub lblDrug20_Click(sender As Object, e As EventArgs) Handles lblDrug20.Click
+        Dim strSQL As String = "SELECT [DR_CODE], [DR_ID], [DR_DESCRIPTION] FROM [Pharmacy2013C].[dbo].[DROYSIA]"
+        FillMultipleComboBox(strSQL, {cboDrug20}, {"DR_DESCRIPTION"}, {"DR_ID"})
+        cboDrug20.Enabled = True
+    End Sub
+
+    Private Sub cboDrug11_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDrug11.SelectedIndexChanged
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug11)
+        End If
+    End Sub
+
+    Private Sub cboDrug12_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDrug12.SelectedIndexChanged
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug12)
+        End If
+    End Sub
+
+    Private Sub cboDrug13_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDrug13.SelectedIndexChanged
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug13)
+        End If
+    End Sub
+
+    Private Sub cboDrug14_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDrug14.SelectedIndexChanged
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug14)
+        End If
+    End Sub
+
+    Private Sub cboDrug15_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDrug15.SelectedIndexChanged
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug15)
+        End If
+    End Sub
+
+    Private Sub cboDrug16_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDrug16.SelectedIndexChanged
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug16)
+        End If
+    End Sub
+
+    Private Sub cboDrug17_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDrug17.SelectedIndexChanged
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug17)
+        End If
+    End Sub
+
+    Private Sub cboDrug18_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDrug18.SelectedIndexChanged
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug18)
+        End If
+    End Sub
+
+    Private Sub cboDrug19_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDrug19.SelectedIndexChanged
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug19)
+        End If
+    End Sub
+
+    Private Sub cboDrug20_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDrug20.SelectedIndexChanged
+        If chkAnalosima.Checked = False Then
+            DisplayEmporikesFromDrastiki(cboDrug20)
+        End If
+    End Sub
+End Class

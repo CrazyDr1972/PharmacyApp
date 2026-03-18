@@ -1,0 +1,433 @@
+﻿' Exported: 2025-10-23 00:24:46 +03:00
+' Project:  Pharmacy.vbproj
+' Source:   frmDrugs.Designer.vb
+'
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+Partial Class frmDrugs
+    Inherits System.Windows.Forms.Form
+
+    'Form overrides dispose to clean up the component list.
+    <System.Diagnostics.DebuggerNonUserCode()> _
+    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
+        Try
+            If disposing AndAlso components IsNot Nothing Then
+                components.Dispose()
+            End If
+        Finally
+            MyBase.Dispose(disposing)
+        End Try
+    End Sub
+
+    'Required by the Windows Form Designer
+    Private components As System.ComponentModel.IContainer
+
+    'NOTE: The following procedure is required by the Windows Form Designer
+    'It can be modified using the Windows Form Designer.  
+    'Do not modify it using the code editor.
+    <System.Diagnostics.DebuggerStepThrough()> _
+    Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
+        Me.tmrFlashLabel = New System.Windows.Forms.Timer(Me.components)
+        Me.GrpPrices = New System.Windows.Forms.GroupBox()
+        Me.lblPricesMessage = New System.Windows.Forms.Label()
+        Me.btnDeletePrices = New System.Windows.Forms.Button()
+        Me.dgvPrices = New System.Windows.Forms.DataGridView()
+        Me.btnSavePrices = New System.Windows.Forms.Button()
+        Me.btnEditPrices = New System.Windows.Forms.Button()
+        Me.grpExpirations = New System.Windows.Forms.GroupBox()
+        Me.lblExpirationsMessage = New System.Windows.Forms.Label()
+        Me.btnDeleteExp = New System.Windows.Forms.Button()
+        Me.btnEditExp = New System.Windows.Forms.Button()
+        Me.btnSaveExp = New System.Windows.Forms.Button()
+        Me.dgvExpirations = New System.Windows.Forms.DataGridView()
+        Me.grpDrugName = New System.Windows.Forms.GroupBox()
+        Me.lblSelectedDrugName = New System.Windows.Forms.Label()
+        Me.grpSearchDrugs = New System.Windows.Forms.GroupBox()
+        Me.rtxtMessage = New System.Windows.Forms.RichTextBox()
+        Me.cboSearchCategory = New System.Windows.Forms.ComboBox()
+        Me.lblSearchDrug = New System.Windows.Forms.Label()
+        Me.txtSearchDrugs = New System.Windows.Forms.TextBox()
+        Me.FlowLayoutPanel2 = New System.Windows.Forms.FlowLayoutPanel()
+        Me.rbAll = New System.Windows.Forms.RadioButton()
+        Me.rbParaDrugs = New System.Windows.Forms.RadioButton()
+        Me.Button2 = New System.Windows.Forms.Button()
+        Me.lblDrugsMessage = New System.Windows.Forms.Label()
+        Me.Button3 = New System.Windows.Forms.Button()
+        Me.Button4 = New System.Windows.Forms.Button()
+        Me.dgvDrugs = New System.Windows.Forms.DataGridView()
+        Me.GrpPrices.SuspendLayout()
+        CType(Me.dgvPrices, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.grpExpirations.SuspendLayout()
+        CType(Me.dgvExpirations, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.grpDrugName.SuspendLayout()
+        Me.grpSearchDrugs.SuspendLayout()
+        Me.FlowLayoutPanel2.SuspendLayout()
+        CType(Me.dgvDrugs, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.SuspendLayout()
+        '
+        'GrpPrices
+        '
+        Me.GrpPrices.Controls.Add(Me.lblPricesMessage)
+        Me.GrpPrices.Controls.Add(Me.btnDeletePrices)
+        Me.GrpPrices.Controls.Add(Me.dgvPrices)
+        Me.GrpPrices.Controls.Add(Me.btnSavePrices)
+        Me.GrpPrices.Controls.Add(Me.btnEditPrices)
+        Me.GrpPrices.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.5!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.GrpPrices.Location = New System.Drawing.Point(313, 91)
+        Me.GrpPrices.Name = "GrpPrices"
+        Me.GrpPrices.Size = New System.Drawing.Size(494, 160)
+        Me.GrpPrices.TabIndex = 33
+        Me.GrpPrices.TabStop = False
+        Me.GrpPrices.Text = "Τιμές και Παρατηρήσεις"
+        '
+        'lblPricesMessage
+        '
+        Me.lblPricesMessage.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblPricesMessage.ForeColor = System.Drawing.Color.Red
+        Me.lblPricesMessage.Location = New System.Drawing.Point(16, 20)
+        Me.lblPricesMessage.Name = "lblPricesMessage"
+        Me.lblPricesMessage.Size = New System.Drawing.Size(461, 13)
+        Me.lblPricesMessage.TabIndex = 15
+        Me.lblPricesMessage.Text = "!!!   Τροποποίηση δεδομένων  !!!"
+        Me.lblPricesMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.lblPricesMessage.Visible = False
+        '
+        'btnDeletePrices
+        '
+        Me.btnDeletePrices.Enabled = False
+        Me.btnDeletePrices.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.btnDeletePrices.Location = New System.Drawing.Point(181, 121)
+        Me.btnDeletePrices.Name = "btnDeletePrices"
+        Me.btnDeletePrices.Size = New System.Drawing.Size(75, 23)
+        Me.btnDeletePrices.TabIndex = 14
+        Me.btnDeletePrices.Text = "Delete"
+        Me.btnDeletePrices.UseVisualStyleBackColor = True
+        '
+        'dgvPrices
+        '
+        Me.dgvPrices.AllowUserToAddRows = False
+        Me.dgvPrices.AllowUserToResizeColumns = False
+        Me.dgvPrices.AllowUserToResizeRows = False
+        Me.dgvPrices.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvPrices.Location = New System.Drawing.Point(17, 38)
+        Me.dgvPrices.Name = "dgvPrices"
+        Me.dgvPrices.ReadOnly = True
+        Me.dgvPrices.RowHeadersVisible = False
+        Me.dgvPrices.Size = New System.Drawing.Size(460, 75)
+        Me.dgvPrices.TabIndex = 11
+        '
+        'btnSavePrices
+        '
+        Me.btnSavePrices.Enabled = False
+        Me.btnSavePrices.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.btnSavePrices.Location = New System.Drawing.Point(19, 121)
+        Me.btnSavePrices.Name = "btnSavePrices"
+        Me.btnSavePrices.Size = New System.Drawing.Size(75, 23)
+        Me.btnSavePrices.TabIndex = 12
+        Me.btnSavePrices.Text = "Save"
+        Me.btnSavePrices.UseVisualStyleBackColor = True
+        '
+        'btnEditPrices
+        '
+        Me.btnEditPrices.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.btnEditPrices.Location = New System.Drawing.Point(100, 121)
+        Me.btnEditPrices.Name = "btnEditPrices"
+        Me.btnEditPrices.Size = New System.Drawing.Size(75, 23)
+        Me.btnEditPrices.TabIndex = 13
+        Me.btnEditPrices.Text = "Edit"
+        Me.btnEditPrices.UseVisualStyleBackColor = True
+        '
+        'grpExpirations
+        '
+        Me.grpExpirations.Controls.Add(Me.lblExpirationsMessage)
+        Me.grpExpirations.Controls.Add(Me.btnDeleteExp)
+        Me.grpExpirations.Controls.Add(Me.btnEditExp)
+        Me.grpExpirations.Controls.Add(Me.btnSaveExp)
+        Me.grpExpirations.Controls.Add(Me.dgvExpirations)
+        Me.grpExpirations.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.5!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.grpExpirations.Location = New System.Drawing.Point(313, 285)
+        Me.grpExpirations.Name = "grpExpirations"
+        Me.grpExpirations.Size = New System.Drawing.Size(312, 191)
+        Me.grpExpirations.TabIndex = 32
+        Me.grpExpirations.TabStop = False
+        Me.grpExpirations.Text = "Λήξεις Φαρμάκων"
+        '
+        'lblExpirationsMessage
+        '
+        Me.lblExpirationsMessage.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblExpirationsMessage.ForeColor = System.Drawing.Color.Red
+        Me.lblExpirationsMessage.Location = New System.Drawing.Point(16, 31)
+        Me.lblExpirationsMessage.Name = "lblExpirationsMessage"
+        Me.lblExpirationsMessage.Size = New System.Drawing.Size(198, 13)
+        Me.lblExpirationsMessage.TabIndex = 15
+        Me.lblExpirationsMessage.Text = "!!!   Τροποποίηση δεδομένων  !!!"
+        Me.lblExpirationsMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.lblExpirationsMessage.Visible = False
+        '
+        'btnDeleteExp
+        '
+        Me.btnDeleteExp.Enabled = False
+        Me.btnDeleteExp.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.btnDeleteExp.Location = New System.Drawing.Point(220, 105)
+        Me.btnDeleteExp.Name = "btnDeleteExp"
+        Me.btnDeleteExp.Size = New System.Drawing.Size(75, 23)
+        Me.btnDeleteExp.TabIndex = 14
+        Me.btnDeleteExp.Text = "Delete"
+        Me.btnDeleteExp.UseVisualStyleBackColor = True
+        '
+        'btnEditExp
+        '
+        Me.btnEditExp.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.btnEditExp.Location = New System.Drawing.Point(220, 76)
+        Me.btnEditExp.Name = "btnEditExp"
+        Me.btnEditExp.Size = New System.Drawing.Size(75, 23)
+        Me.btnEditExp.TabIndex = 13
+        Me.btnEditExp.Text = "Edit"
+        Me.btnEditExp.UseVisualStyleBackColor = True
+        '
+        'btnSaveExp
+        '
+        Me.btnSaveExp.Enabled = False
+        Me.btnSaveExp.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.btnSaveExp.Location = New System.Drawing.Point(220, 47)
+        Me.btnSaveExp.Name = "btnSaveExp"
+        Me.btnSaveExp.Size = New System.Drawing.Size(75, 23)
+        Me.btnSaveExp.TabIndex = 12
+        Me.btnSaveExp.Text = "Save"
+        Me.btnSaveExp.UseVisualStyleBackColor = True
+        '
+        'dgvExpirations
+        '
+        Me.dgvExpirations.AllowUserToAddRows = False
+        Me.dgvExpirations.AllowUserToResizeColumns = False
+        Me.dgvExpirations.AllowUserToResizeRows = False
+        Me.dgvExpirations.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvExpirations.Location = New System.Drawing.Point(17, 47)
+        Me.dgvExpirations.Name = "dgvExpirations"
+        Me.dgvExpirations.ReadOnly = True
+        Me.dgvExpirations.RowHeadersVisible = False
+        Me.dgvExpirations.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
+        Me.dgvExpirations.Size = New System.Drawing.Size(197, 125)
+        Me.dgvExpirations.TabIndex = 11
+        '
+        'grpDrugName
+        '
+        Me.grpDrugName.Controls.Add(Me.lblSelectedDrugName)
+        Me.grpDrugName.Location = New System.Drawing.Point(313, 30)
+        Me.grpDrugName.Name = "grpDrugName"
+        Me.grpDrugName.Size = New System.Drawing.Size(494, 55)
+        Me.grpDrugName.TabIndex = 31
+        Me.grpDrugName.TabStop = False
+        '
+        'lblSelectedDrugName
+        '
+        Me.lblSelectedDrugName.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblSelectedDrugName.Location = New System.Drawing.Point(12, 18)
+        Me.lblSelectedDrugName.Name = "lblSelectedDrugName"
+        Me.lblSelectedDrugName.Size = New System.Drawing.Size(476, 23)
+        Me.lblSelectedDrugName.TabIndex = 17
+        Me.lblSelectedDrugName.Text = "Label1"
+        Me.lblSelectedDrugName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'grpSearchDrugs
+        '
+        Me.grpSearchDrugs.Controls.Add(Me.rtxtMessage)
+        Me.grpSearchDrugs.Controls.Add(Me.cboSearchCategory)
+        Me.grpSearchDrugs.Controls.Add(Me.lblSearchDrug)
+        Me.grpSearchDrugs.Controls.Add(Me.txtSearchDrugs)
+        Me.grpSearchDrugs.Controls.Add(Me.FlowLayoutPanel2)
+        Me.grpSearchDrugs.Controls.Add(Me.Button2)
+        Me.grpSearchDrugs.Controls.Add(Me.lblDrugsMessage)
+        Me.grpSearchDrugs.Controls.Add(Me.Button3)
+        Me.grpSearchDrugs.Controls.Add(Me.Button4)
+        Me.grpSearchDrugs.Controls.Add(Me.dgvDrugs)
+        Me.grpSearchDrugs.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.5!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.grpSearchDrugs.ForeColor = System.Drawing.Color.Black
+        Me.grpSearchDrugs.Location = New System.Drawing.Point(20, 22)
+        Me.grpSearchDrugs.Name = "grpSearchDrugs"
+        Me.grpSearchDrugs.Size = New System.Drawing.Size(274, 507)
+        Me.grpSearchDrugs.TabIndex = 30
+        Me.grpSearchDrugs.TabStop = False
+        Me.grpSearchDrugs.Text = "Λίστα Φαρμάκων"
+        '
+        'rtxtMessage
+        '
+        Me.rtxtMessage.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.rtxtMessage.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.rtxtMessage.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.rtxtMessage.Location = New System.Drawing.Point(14, 421)
+        Me.rtxtMessage.Name = "rtxtMessage"
+        Me.rtxtMessage.Size = New System.Drawing.Size(242, 41)
+        Me.rtxtMessage.TabIndex = 23
+        Me.rtxtMessage.Text = ""
+        '
+        'cboSearchCategory
+        '
+        Me.cboSearchCategory.FormattingEnabled = True
+        Me.cboSearchCategory.Location = New System.Drawing.Point(14, 69)
+        Me.cboSearchCategory.Name = "cboSearchCategory"
+        Me.cboSearchCategory.Size = New System.Drawing.Size(160, 24)
+        Me.cboSearchCategory.TabIndex = 20
+        '
+        'lblSearchDrug
+        '
+        Me.lblSearchDrug.AutoSize = True
+        Me.lblSearchDrug.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblSearchDrug.Location = New System.Drawing.Point(11, 27)
+        Me.lblSearchDrug.Name = "lblSearchDrug"
+        Me.lblSearchDrug.Size = New System.Drawing.Size(166, 13)
+        Me.lblSearchDrug.TabIndex = 19
+        Me.lblSearchDrug.Text = "Αναζήτηση φαρμάκου με όνομα"
+        '
+        'txtSearchDrugs
+        '
+        Me.txtSearchDrugs.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.txtSearchDrugs.Location = New System.Drawing.Point(14, 43)
+        Me.txtSearchDrugs.Name = "txtSearchDrugs"
+        Me.txtSearchDrugs.Size = New System.Drawing.Size(180, 20)
+        Me.txtSearchDrugs.TabIndex = 17
+        '
+        'FlowLayoutPanel2
+        '
+        Me.FlowLayoutPanel2.Controls.Add(Me.rbAll)
+        Me.FlowLayoutPanel2.Controls.Add(Me.rbParaDrugs)
+        Me.FlowLayoutPanel2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.FlowLayoutPanel2.Location = New System.Drawing.Point(14, 99)
+        Me.FlowLayoutPanel2.Name = "FlowLayoutPanel2"
+        Me.FlowLayoutPanel2.Size = New System.Drawing.Size(205, 21)
+        Me.FlowLayoutPanel2.TabIndex = 18
+        '
+        'rbAll
+        '
+        Me.rbAll.AutoSize = True
+        Me.rbAll.Checked = True
+        Me.rbAll.Location = New System.Drawing.Point(3, 3)
+        Me.rbAll.Name = "rbAll"
+        Me.rbAll.Size = New System.Drawing.Size(46, 17)
+        Me.rbAll.TabIndex = 15
+        Me.rbAll.TabStop = True
+        Me.rbAll.Text = "Όλα"
+        Me.rbAll.UseVisualStyleBackColor = True
+        '
+        'rbParaDrugs
+        '
+        Me.rbParaDrugs.AutoSize = True
+        Me.rbParaDrugs.Location = New System.Drawing.Point(55, 3)
+        Me.rbParaDrugs.Name = "rbParaDrugs"
+        Me.rbParaDrugs.Size = New System.Drawing.Size(98, 17)
+        Me.rbParaDrugs.TabIndex = 14
+        Me.rbParaDrugs.Text = "Παραφάρμακα"
+        Me.rbParaDrugs.UseVisualStyleBackColor = True
+        '
+        'Button2
+        '
+        Me.Button2.Enabled = False
+        Me.Button2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Button2.Location = New System.Drawing.Point(181, 468)
+        Me.Button2.Name = "Button2"
+        Me.Button2.Size = New System.Drawing.Size(75, 23)
+        Me.Button2.TabIndex = 3
+        Me.Button2.Text = "Delete"
+        Me.Button2.UseVisualStyleBackColor = True
+        '
+        'lblDrugsMessage
+        '
+        Me.lblDrugsMessage.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblDrugsMessage.ForeColor = System.Drawing.Color.Red
+        Me.lblDrugsMessage.Location = New System.Drawing.Point(11, 124)
+        Me.lblDrugsMessage.Name = "lblDrugsMessage"
+        Me.lblDrugsMessage.Size = New System.Drawing.Size(245, 13)
+        Me.lblDrugsMessage.TabIndex = 10
+        Me.lblDrugsMessage.Text = "!!!   Τροποποίηση δεδομένων  !!!"
+        Me.lblDrugsMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.lblDrugsMessage.Visible = False
+        '
+        'Button3
+        '
+        Me.Button3.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Button3.Location = New System.Drawing.Point(100, 468)
+        Me.Button3.Name = "Button3"
+        Me.Button3.Size = New System.Drawing.Size(75, 23)
+        Me.Button3.TabIndex = 2
+        Me.Button3.Text = "Edit"
+        Me.Button3.UseVisualStyleBackColor = True
+        '
+        'Button4
+        '
+        Me.Button4.Enabled = False
+        Me.Button4.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Button4.Location = New System.Drawing.Point(19, 468)
+        Me.Button4.Name = "Button4"
+        Me.Button4.Size = New System.Drawing.Size(75, 23)
+        Me.Button4.TabIndex = 1
+        Me.Button4.Text = "Save"
+        Me.Button4.UseVisualStyleBackColor = True
+        '
+        'dgvDrugs
+        '
+        Me.dgvDrugs.AllowUserToAddRows = False
+        Me.dgvDrugs.AllowUserToDeleteRows = False
+        Me.dgvDrugs.AllowUserToResizeColumns = False
+        Me.dgvDrugs.AllowUserToResizeRows = False
+        Me.dgvDrugs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvDrugs.Location = New System.Drawing.Point(14, 142)
+        Me.dgvDrugs.Name = "dgvDrugs"
+        Me.dgvDrugs.ReadOnly = True
+        Me.dgvDrugs.RowHeadersVisible = False
+        Me.dgvDrugs.ShowEditingIcon = False
+        Me.dgvDrugs.Size = New System.Drawing.Size(242, 273)
+        Me.dgvDrugs.TabIndex = 7
+        '
+        'frmDrugs
+        '
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(827, 550)
+        Me.Controls.Add(Me.GrpPrices)
+        Me.Controls.Add(Me.grpExpirations)
+        Me.Controls.Add(Me.grpDrugName)
+        Me.Controls.Add(Me.grpSearchDrugs)
+        Me.Name = "frmDrugs"
+        Me.Text = "frmExpirations"
+        Me.GrpPrices.ResumeLayout(False)
+        CType(Me.dgvPrices, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.grpExpirations.ResumeLayout(False)
+        CType(Me.dgvExpirations, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.grpDrugName.ResumeLayout(False)
+        Me.grpSearchDrugs.ResumeLayout(False)
+        Me.grpSearchDrugs.PerformLayout()
+        Me.FlowLayoutPanel2.ResumeLayout(False)
+        Me.FlowLayoutPanel2.PerformLayout()
+        CType(Me.dgvDrugs, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.ResumeLayout(False)
+
+    End Sub
+    Friend WithEvents tmrFlashLabel As System.Windows.Forms.Timer
+    Friend WithEvents GrpPrices As System.Windows.Forms.GroupBox
+    Friend WithEvents lblPricesMessage As System.Windows.Forms.Label
+    Friend WithEvents btnDeletePrices As System.Windows.Forms.Button
+    Friend WithEvents dgvPrices As System.Windows.Forms.DataGridView
+    Friend WithEvents btnSavePrices As System.Windows.Forms.Button
+    Friend WithEvents btnEditPrices As System.Windows.Forms.Button
+    Friend WithEvents grpExpirations As System.Windows.Forms.GroupBox
+    Friend WithEvents lblExpirationsMessage As System.Windows.Forms.Label
+    Friend WithEvents btnDeleteExp As System.Windows.Forms.Button
+    Friend WithEvents btnEditExp As System.Windows.Forms.Button
+    Friend WithEvents btnSaveExp As System.Windows.Forms.Button
+    Friend WithEvents dgvExpirations As System.Windows.Forms.DataGridView
+    Friend WithEvents grpDrugName As System.Windows.Forms.GroupBox
+    Friend WithEvents lblSelectedDrugName As System.Windows.Forms.Label
+    Friend WithEvents grpSearchDrugs As System.Windows.Forms.GroupBox
+    Friend WithEvents rtxtMessage As System.Windows.Forms.RichTextBox
+    Friend WithEvents cboSearchCategory As System.Windows.Forms.ComboBox
+    Friend WithEvents lblSearchDrug As System.Windows.Forms.Label
+    Friend WithEvents txtSearchDrugs As System.Windows.Forms.TextBox
+    Friend WithEvents FlowLayoutPanel2 As System.Windows.Forms.FlowLayoutPanel
+    Friend WithEvents rbAll As System.Windows.Forms.RadioButton
+    Friend WithEvents rbParaDrugs As System.Windows.Forms.RadioButton
+    Friend WithEvents Button2 As System.Windows.Forms.Button
+    Friend WithEvents lblDrugsMessage As System.Windows.Forms.Label
+    Friend WithEvents Button3 As System.Windows.Forms.Button
+    Friend WithEvents Button4 As System.Windows.Forms.Button
+    Friend WithEvents dgvDrugs As System.Windows.Forms.DataGridView
+End Class

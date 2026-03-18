@@ -1,0 +1,236 @@
+﻿Imports Pharmacy.GlobalFunctions
+Imports Pharmacy.GlobalVariables
+Imports System.Data.SqlClient
+
+
+Public Class frmCustomersEdit
+
+    ' ****************************************************************************************************************************
+    ' **********    ΔΙΑΧΕΙΡΗΣΗ ΑΡΧΕΙΟΥ ΠΕΛΑΤΩΝ    ********************************************************************************
+    ' ****************************************************************************************************************************
+
+
+    Private Sub btnEdit_Click(sender As Object, e As EventArgs) Handles btnEdit.Click
+        ' Καθορίζει το ενημερωτικό flashing label
+        timerLabel = lblCustomerEditMessage
+
+        'Αν το πληκτρο Edit δεν έχει πατηθεί ακόμα (->EDIT)... 
+        If btnEdit.Text = "Edit" Then
+
+            ChangeControlsCustomerEdit(True)
+
+            'Αν το πληκτρο Edit έχει ήδη πατηθεί ακόμα (-> CANCEL)... 
+        ElseIf btnEdit.Text = "Cancel" Then
+
+            ChangeControlsCustomerEdit(False)
+
+        End If
+
+    End Sub
+
+
+
+    Private Sub ChangeControlsCustomerEdit(ByVal selector As Boolean)
+        ' Selector: True -> Edit
+        '           False -> Cancel, Save
+
+        ' Γεμίζει το DatagridView dgvDebts με τα χρωστούμενα του επιλεγμένου πελάτη
+        stringDTG = "Select Name, Id From Customers ORDER BY Name"
+        FillDatagrid(dgvCustomers, bsCustomersEdit, {"Όνομα"}, {240}, {"0"}, {"Id"})
+
+        ' Τροποποίηση κουμπιών κλπ ΕΝΤΟΣ του GroupBox που περιέχει το DataGrid μας
+        EditDatagrid({btnSave, btnEdit, btnDelete}, dgvCustomers, selector)
+
+        ' Ενεργοποίηση ενημερωτικού flashing label
+        timerLabel.Visible = selector
+        tmrFlashLabel.Enabled = selector
+
+    End Sub
+
+
+
+    Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
+
+
+
+
+        ' Ξεκινάει την διαδικασία Updating των δεδομένων του DataGrid 
+        ' μαζί με των κουμπιών που περιέχονται στο GroupBox του DataGrid
+        UpdateDatagrid({btnSave, btnEdit, btnDelete}, dgvCustomers)
+
+        ChangeControlsCustomerEdit(False)
+
+    End Sub
+
+
+
+    Private Sub btnDelete_Click(sender As Object, e As EventArgs) Handles btnDelete.Click
+
+        'Ελέγχει αν ο πελάτης έχει χρέη ή βαφές
+        Select Case CheckIfCustomerHasRecords()
+
+            Case True
+                MessageBox.Show("Ο επιλεγμένος πελάτης έχει καταχωρημένες εγγραφές." & _
+                                vbCrLf & "Η διαγραφή του δεν επιτρέπεται.", "Αδυναμία διαγραφής",
+                                MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Case False
+                ' Ξεκινάει την διαδικασία Delete των δεδομένων του DataGrid 
+                ' μαζί με τροποποίηση των κουμπιών που περιέχονται στο GroupBox του DataGrid
+                DeleteDatagrid(dgvCustomers)
+
+        End Select
+
+        ' Τροποποιεί τα Controls της τρέχουσας form
+        ChangeControlsCustomerEdit(False)
+
+    End Sub
+
+
+    Private Function CheckIfCustomerHasRecords() As Boolean
+
+        ' Ορισμός μεταβλητών
+        Dim sqlstring(1) As String
+        Dim myReader As SqlDataReader
+
+        ' Ορίζει την sqlString για τα Χρέη
+        sqlstring(0) = "SELECT distinct Customers.Name, Customers.id " & _
+                    "FROM Customers INNER JOIN Debts ON Customers.Id = Debts.CustomerId " & _
+                    "WHERE Customers.Id = '" & dgvCustomers.Item("Id", dgvCustomers.CurrentRow.Index).Value & _
+                    "' AND Debts.Ammount > 0"
+
+        ' και εκείνη για τις βαφές..
+        sqlstring(1) = "SELECT  distinct Customers.Name, Customers.id " & _
+                    "FROM Customers INNER JOIN HairDies ON Customers.Id = HairDies.CustomerId " & _
+                    "WHERE Customers.Id = '" & dgvCustomers.Item("Id", dgvCustomers.CurrentRow.Index).Value & _
+                    "' AND HairDies.HairDieDescription Is Not null"
+
+        ' Ψάχνει πρώτα τα Χρέη (0) και μετά τις Βαφές(1)
+        For t = 0 To 1
+            'Initialization νεας σύνδεσης με το connectionString που παίρνει από τις GlobalVariables
+            Using con As New SqlConnection(connectionString)
+
+                'Initialization νέου CommandAdapter με την Stringα αναζήτησης και την σύνδεση
+                Using cmd As New SqlCommand(sqlstring(t), con)
+
+                    ' Ανοίγει την σύνδεση
+                    con.Open()
+
+                    'Ορισμός ExecuteReader 
+                    myReader = cmd.ExecuteReader()
+
+                    ' Αν υπάρχουν records
+                    If myReader.HasRows Then
+                        Return True  ' επιστρέφει την τιμή True (και βγαίνει από το function)
+                    End If
+
+                End Using
+            End Using
+        Next t
+
+        Return False  ' Αν ΔΕΝ υπάρχουν records επιστρέφει την τιμή False
+
+    End Function
+
+
+    ' Αναλαμβάνει να αρχίσει να αναβοσβήνει ένα label ενημέρωσης
+    Private Sub FlashingLabel(ByVal oLabel As Label, ByVal interval As Integer)
+
+        'If oLabel.ForeColor = oLabel.BackColor Then
+        '    oLabel.ForeColor = SystemColors.ControlText
+        'Else
+        '    oLabel.ForeColor = oLabel.BackColor
+        'End If
+
+        If oLabel.ForeColor = SystemColors.ControlText Then
+            oLabel.ForeColor = Color.Red
+        Else
+            oLabel.ForeColor = SystemColors.ControlText
+        End If
+
+    End Sub
+
+    ' Κάθε φορά που ο Timer κάνει tick τρέχει η ρουτίνα που αναβοσβήνει το label
+    Private Sub tmrFlashLabel_Tick(sender As Object, e As EventArgs) Handles tmrFlashLabel.Tick
+        FlashingLabel(timerLabel, 500)
+    End Sub
+
+    'Private Sub frmCustomersEdit_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
+    '    frmCustomers.BringToFront()
+    '    frmCustomers.grpCustomers.Enabled = True
+    '    frmCustomers.grpDebts.Enabled = True
+    '    frmCustomers.grpHairDies.Enabled = True
+    '    frmCustomers.MinimizeBox = True
+    'End Sub
+
+    ' Με το που φορτώνεται η φορμα κάνει τα εξής...
+    Private Sub frmCustomersEdit_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ' Καθορίζει το ενημερωτικό flashing label
+        timerLabel = lblCustomerEditMessage
+
+        'Αν το πληκτρο Edit δεν έχει πατηθεί ακόμα (->EDIT)... 
+        If btnEdit.Text = "Edit" Then
+
+            ChangeControlsCustomerEdit(True)
+
+            'Αν το πληκτρο Edit έχει ήδη πατηθεί ακόμα (-> CANCEL)... 
+        ElseIf btnEdit.Text = "Cancel" Then
+
+            ChangeControlsCustomerEdit(False)
+
+        End If
+    End Sub
+
+    
+    Private Sub btnExit_Click(sender As Object, e As EventArgs) Handles btnExit.Click
+        Me.Close()
+        frmCustomers.BringToFront()
+
+        ' Eνεργοποιεί τo TabControl
+        frmCustomers.tbcMain.Enabled = True
+       
+        frmCustomers.MinimizeBox = True
+
+    End Sub
+
+
+
+
+    Private Sub dgvHairDies_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles dgvCustomers.CellEndEdit
+        Try
+            ' Clear the row error in case the user presses ESC.   
+            dgvCustomers.Rows(e.RowIndex).ErrorText = String.Empty
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+    Private Sub dgvCustomers_CellValidating(sender As Object, e As DataGridViewCellValidatingEventArgs) Handles dgvCustomers.CellValidating
+
+        ' Κρατάει στη μνήμη τη παλιά και τη νέα τιμή του κελιού
+        Dim oldValue = dgvCustomers(e.ColumnIndex, e.RowIndex).Value.ToString
+        Dim newValue = e.FormattedValue
+
+        ' Ελέγχει αν βρισκόμαστε στο πεδίο Όνομα
+        Dim headerText As String = dgvCustomers.Columns(e.ColumnIndex).HeaderText
+        If headerText.Equals("Όνομα") Then
+            Dim mySQL As String = "Select Name, Id From Customers WHERE Name='" & newValue & "'"
+
+            'Αν η παλιά τιμή είναι διαφορετική από τη νέα ΚΑΙ η νέα τιμή υπάρχει ήδη στο database
+            If oldValue <> newValue AndAlso IsItAllreadyThere(mySQL) = True Then
+                'Μύνημα λάθους
+                MessageBox.Show("Το όνομα " & newValue & " υπάρχει ήδη !", "Επιβεβαίωση στοιχείων", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                'Ξαμαγράφει τη παλιά τιμή
+                dgvCustomers(e.ColumnIndex, e.RowIndex).Value = oldValue
+                ' Ανανεώνει το Datagrid για να φανεί πάλι η παλιά τιμή
+                dgvCustomers.RefreshEdit()
+                'Εμποδίζει την έξοδο από το κελί
+                e.Cancel = True
+            End If
+
+        End If
+
+    End Sub
+
+  
+
+End Class

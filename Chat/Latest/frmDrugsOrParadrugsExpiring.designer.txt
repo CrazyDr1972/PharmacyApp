@@ -1,0 +1,171 @@
+﻿' Exported: 2025-10-23 00:24:46 +03:00
+' Project:  Pharmacy.vbproj
+' Source:   frmDrugsOrParadrugsExpiring.Designer.vb
+'
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+Partial Class frmDrugsOrParadrugsExpiring
+    Inherits System.Windows.Forms.Form
+
+    'Form overrides dispose to clean up the component list.
+    <System.Diagnostics.DebuggerNonUserCode()> _
+    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
+        Try
+            If disposing AndAlso components IsNot Nothing Then
+                components.Dispose()
+            End If
+        Finally
+            MyBase.Dispose(disposing)
+        End Try
+    End Sub
+
+    'Required by the Windows Form Designer
+    Private components As System.ComponentModel.IContainer
+
+    'NOTE: The following procedure is required by the Windows Form Designer
+    'It can be modified using the Windows Form Designer.  
+    'Do not modify it using the code editor.
+    <System.Diagnostics.DebuggerStepThrough()> _
+    Private Sub InitializeComponent()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.grpExpiringProducts = New System.Windows.Forms.GroupBox()
+        Me.btnDeleteExp = New System.Windows.Forms.Button()
+        Me.dgvExpiringProducts = New System.Windows.Forms.DataGridView()
+        Me.cboAction = New System.Windows.Forms.ComboBox()
+        Me.cboPeriod = New System.Windows.Forms.ComboBox()
+        Me.lblSyndetiko = New System.Windows.Forms.Label()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.cboProduct2Expire = New System.Windows.Forms.ComboBox()
+        Me.grpExpiringProducts.SuspendLayout()
+        CType(Me.dgvExpiringProducts, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.SuspendLayout()
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label2.Location = New System.Drawing.Point(12, 18)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(75, 13)
+        Me.Label2.TabIndex = 95
+        Me.Label2.Text = "Προιόντα που"
+        '
+        'grpExpiringProducts
+        '
+        Me.grpExpiringProducts.Controls.Add(Me.btnDeleteExp)
+        Me.grpExpiringProducts.Controls.Add(Me.dgvExpiringProducts)
+        Me.grpExpiringProducts.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.grpExpiringProducts.Location = New System.Drawing.Point(10, 78)
+        Me.grpExpiringProducts.Name = "grpExpiringProducts"
+        Me.grpExpiringProducts.Size = New System.Drawing.Size(344, 320)
+        Me.grpExpiringProducts.TabIndex = 94
+        Me.grpExpiringProducts.TabStop = False
+        '
+        'btnDeleteExp
+        '
+        Me.btnDeleteExp.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.btnDeleteExp.Location = New System.Drawing.Point(233, 292)
+        Me.btnDeleteExp.Name = "btnDeleteExp"
+        Me.btnDeleteExp.Size = New System.Drawing.Size(97, 23)
+        Me.btnDeleteExp.TabIndex = 57
+        Me.btnDeleteExp.Text = "Διαγραφή λήξης"
+        Me.btnDeleteExp.UseVisualStyleBackColor = True
+        '
+        'dgvExpiringProducts
+        '
+        Me.dgvExpiringProducts.AllowUserToAddRows = False
+        Me.dgvExpiringProducts.AllowUserToDeleteRows = False
+        Me.dgvExpiringProducts.AllowUserToResizeColumns = False
+        Me.dgvExpiringProducts.AllowUserToResizeRows = False
+        Me.dgvExpiringProducts.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvExpiringProducts.Location = New System.Drawing.Point(14, 25)
+        Me.dgvExpiringProducts.Name = "dgvExpiringProducts"
+        Me.dgvExpiringProducts.ReadOnly = True
+        Me.dgvExpiringProducts.RowHeadersVisible = False
+        Me.dgvExpiringProducts.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
+        Me.dgvExpiringProducts.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.dgvExpiringProducts.ShowEditingIcon = False
+        Me.dgvExpiringProducts.Size = New System.Drawing.Size(316, 264)
+        Me.dgvExpiringProducts.TabIndex = 39
+        '
+        'cboAction
+        '
+        Me.cboAction.FormattingEnabled = True
+        Me.cboAction.Items.AddRange(New Object() {"έληξαν", "λήγουν"})
+        Me.cboAction.Location = New System.Drawing.Point(88, 14)
+        Me.cboAction.Name = "cboAction"
+        Me.cboAction.Size = New System.Drawing.Size(60, 21)
+        Me.cboAction.TabIndex = 101
+        Me.cboAction.Text = "έληξαν"
+        '
+        'cboPeriod
+        '
+        Me.cboPeriod.FormattingEnabled = True
+        Me.cboPeriod.Items.AddRange(New Object() {"1 μήνα", "3 μήνες", "6 μήνες", "1 χρόνο"})
+        Me.cboPeriod.Location = New System.Drawing.Point(280, 14)
+        Me.cboPeriod.Name = "cboPeriod"
+        Me.cboPeriod.Size = New System.Drawing.Size(73, 21)
+        Me.cboPeriod.TabIndex = 102
+        Me.cboPeriod.Text = "3 μήνες"
+        '
+        'lblSyndetiko
+        '
+        Me.lblSyndetiko.AutoSize = True
+        Me.lblSyndetiko.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblSyndetiko.Location = New System.Drawing.Point(152, 18)
+        Me.lblSyndetiko.Name = "lblSyndetiko"
+        Me.lblSyndetiko.Size = New System.Drawing.Size(127, 13)
+        Me.lblSyndetiko.TabIndex = 103
+        Me.lblSyndetiko.Text = "μέσα στους επόμενους "
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label1.Location = New System.Drawing.Point(14, 49)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(98, 13)
+        Me.Label1.TabIndex = 106
+        Me.Label1.Text = "Όνομα προιόντος:"
+        '
+        'cboProduct2Expire
+        '
+        Me.cboProduct2Expire.AutoCompleteCustomSource.AddRange(New String() {"ΟΛΑ"})
+        Me.cboProduct2Expire.FormattingEnabled = True
+        Me.cboProduct2Expire.Location = New System.Drawing.Point(117, 44)
+        Me.cboProduct2Expire.Name = "cboProduct2Expire"
+        Me.cboProduct2Expire.Size = New System.Drawing.Size(121, 21)
+        Me.cboProduct2Expire.TabIndex = 107
+        Me.cboProduct2Expire.Text = "ΟΛΑ"
+        '
+        'frmDrugsOrParadrugsExpiring
+        '
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(365, 415)
+        Me.Controls.Add(Me.cboProduct2Expire)
+        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.lblSyndetiko)
+        Me.Controls.Add(Me.cboPeriod)
+        Me.Controls.Add(Me.cboAction)
+        Me.Controls.Add(Me.Label2)
+        Me.Controls.Add(Me.grpExpiringProducts)
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
+        Me.Name = "frmDrugsOrParadrugsExpiring"
+        Me.Text = "Επόμενες λήξεις προιόντων"
+        Me.grpExpiringProducts.ResumeLayout(False)
+        CType(Me.dgvExpiringProducts, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
+
+    End Sub
+    Friend WithEvents Label2 As System.Windows.Forms.Label
+    Friend WithEvents grpExpiringProducts As System.Windows.Forms.GroupBox
+    Friend WithEvents dgvExpiringProducts As System.Windows.Forms.DataGridView
+    Friend WithEvents cboAction As System.Windows.Forms.ComboBox
+    Friend WithEvents cboPeriod As System.Windows.Forms.ComboBox
+    Friend WithEvents lblSyndetiko As System.Windows.Forms.Label
+    Friend WithEvents btnDeleteExp As System.Windows.Forms.Button
+    Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents cboProduct2Expire As System.Windows.Forms.ComboBox
+End Class

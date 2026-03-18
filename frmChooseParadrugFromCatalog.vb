@@ -1,0 +1,448 @@
+﻿Imports Pharmacy.GlobalFunctions
+Imports Pharmacy.GlobalVariables
+Imports System.Data.SqlClient
+Imports System.Windows.Forms.Timer
+Imports System.Threading.Timer
+Imports System.Globalization
+Imports System.Threading
+Imports System.Reflection.Emit
+
+
+Public Class frmChooseParadrugFromCatalog
+
+
+    Private Function GetMorfesList(ByVal mode As String) As Integer
+
+        Dim myTot As Integer
+        Dim Description As String = ""
+
+        Try
+            Description = dgvParaDrugs.SelectedRows(0).Cells(0).Value
+            'Αντικαθιστά τη διπλή απόστροφο με μονή για να αποφύγει τα λάθη SQL Transact
+            Description = Replace(Description, "e's", "e''''s")
+        Catch ex As Exception
+        End Try
+
+        If mode = "name" Then
+            stringDTG = "SELECT [AP_MORFI], [AP_TIMH_XON], [AP_TIMH_LIAN], [AP_CODE], [AP_ID], [BRAP_AP_BARCODE] " &
+                        "FROM APOTIKH left JOIN APOTIKH_BARCODES ON APOTIKH.AP_ID = APOTIKH_BARCODES.BRAP_AP_ID " &
+                        "WHERE AP_DESCRIPTION = '" & Description & "' " &
+                        "ORDER BY [AP_MORFI]"
+
+        ElseIf mode = "barcode" Then
+            stringDTG = "SELECT [AP_MORFI], [AP_TIMH_XON], [AP_TIMH_LIAN], [AP_CODE], [AP_ID], [BRAP_AP_BARCODE] " &
+                        "FROM APOTIKH left JOIN APOTIKH_BARCODES ON APOTIKH.AP_ID = APOTIKH_BARCODES.BRAP_AP_ID " &
+                        "WHERE BRAP_AP_BARCODE = '" & txtSearchParaDrugsByName.Text & "' " &
+                        "ORDER BY [AP_MORFI]"
+        ElseIf mode = "qrcode" Then
+            stringDTG = "SELECT [AP_MORFI], [AP_TIMH_XON], [AP_TIMH_LIAN], [AP_CODE], [AP_ID], [APQ_PRODUCT_CODE] " &
+                        "FROM APOTIKH left JOIN APOTIKH_QRCODES ON APOTIKH.AP_ID = APOTIKH_QRCODES.APQ_AP_ID " &
+                        "WHERE APQ_PRODUCT_CODE = '" & txtSearchParaDrugsByName.Text & "' " &
+                        "ORDER BY [AP_MORFI]"
+
+        End If
+
+        myTot = FillDatagrid(dgvMorfes, bsMorfesNew, {"Μορφές", "Χονδρ", "Λιαν"}, {240, 40, 40}, {"0", "F2", "F2"}, {})
+
+        Return myTot
+
+    End Function
+
+
+    Private Function GetParaDrugsList(ByVal mode As String) As Integer
+        Dim qrCode As String
+        Dim myTot As Integer, stringDTG_qr As String
+
+        _loadingParaDrugsList = True
+
+        If mode = "name" Then
+            stringDTG = "SELECT distinct REPLACE([AP_DESCRIPTION],'''''','''') " &
+                           "FROM [dbo].[APOTIKH] " &
+                           "WHERE AP_DESCRIPTION like '%" & txtSearchParaDrugsByName.Text & "%' " &
+                           "ORDER BY REPLACE([AP_DESCRIPTION],'''''','''')"
+        ElseIf mode = "barcode" Then
+            stringDTG = "SELECT distinct [AP_DESCRIPTION] " &
+                           "FROM APOTIKH left JOIN APOTIKH_BARCODES ON APOTIKH.AP_ID = APOTIKH_BARCODES.BRAP_AP_ID " &
+                           "WHERE BRAP_AP_BARCODE like '%" & txtSearchParaDrugsByName.Text & "%' " &
+                           "ORDER BY [AP_DESCRIPTION]"
+        ElseIf mode = "qrcode" Then
+
+            'If newString Is Nothing Then
+            '    newString = txtSearchParaDrugsByName.Text
+            'Else
+
+            'End If
+            'qrCode = GetQRFromScannedCode(newString)
+
+            stringDTG = "SELECT distinct [AP_DESCRIPTION] " &
+                           "FROM APOTIKH left JOIN APOTIKH_QRCODES ON APOTIKH.AP_ID = APOTIKH_QRCODES.APQ_AP_ID " &
+                           "WHERE APQ_PRODUCT_CODE = '" & txtSearchParaDrugsByName.Text & "' " &
+                           "ORDER BY [AP_DESCRIPTION]"
+        End If
+
+
+        myTot = FillDatagrid(dgvParaDrugs, bsDrugsNew, {"Προιόν"}, {320}, {"0"}, {})
+
+
+        ' Ενημερωτικό μύνημα
+        Select Case myTot
+            Case 0
+
+                rtxtParadrugsMessage.Text = "Δεν βρέθηκαν προιόντα"
+
+            Case 1
+
+                rtxtParadrugsMessage.Text = "Βρέθηκε 1 προιόν"
+
+                ' Αλλάζει με κόκκινο χρώμα τον αριθμό
+                HightlightInRichTextBox(rtxtParadrugsMessage, {"1"})
+
+            Case Is > 1
+
+                rtxtParadrugsMessage.Text = "Βρέθηκαν " & myTot.ToString & " προιόντα"
+
+                ' Αλλάζει με κόκκινο χρώμα τον αριθμό
+                HightlightInRichTextBox(rtxtParadrugsMessage, {myTot.ToString})
+
+        End Select
+
+        _loadingParaDrugsList = False
+
+        Return myTot
+
+
+
+    End Function
+
+
+
+
+
+    ' frmChooseParadrugFromCatalog.vb
+    Private Sub AddToExchangesDrugFromBarcode()
+
+        If dgvParaDrugs.SelectedRows.Count = 0 OrElse dgvMorfes.SelectedRows.Count = 0 Then Exit Sub
+
+        ' Συλλογή στοιχείων από τα δύο grids
+        Dim baseName As String = ""
+        Dim morfi As String = ""
+        Dim apCode As String = ""
+        Dim unitXondr As Decimal = 0D
+
+        Try
+            baseName = CStr(dgvParaDrugs.SelectedRows(0).Cells(0).Value)
+        Catch : End Try
+
+        Try
+            morfi = CStr(dgvMorfes.SelectedRows(0).Cells(0).Value) ' AP_MORFI
+        Catch : End Try
+
+        Try
+            apCode = CStr(dgvMorfes.SelectedRows(0).Cells(3).Value) ' AP_CODE
+        Catch : End Try
+
+        Try
+            unitXondr = CDec(dgvMorfes.SelectedRows(0).Cells(1).Value) ' AP_TIMH_XON
+        Catch : End Try
+
+        ' Ποσότητα από textbox (fallback: 1)
+        Dim qnt As Integer = 1
+        Integer.TryParse(txtQuantity.Text, qnt)
+        If qnt <= 0 Then qnt = 1
+
+        ' Υπολογισμός/εύρεση ΦΠΑ για τον κωδικό
+        Dim fpa As Decimal = 0D
+        Try
+            fpa = frmCustomers.GetPercentFromDrug(apCode)
+        Catch
+            fpa = 0D
+        End Try
+
+        ' Σύνθεση ονόματος όπως πριν (Περιγραφή + Μορφή)
+        Dim fullName As String = (baseName & " " & morfi).Trim()
+
+        ' FromTo: 0 = ΔΩΣΑΜΕ, 1 = ΠΗΡΑΜΕ
+        Dim fromTo As Integer = If(ExchangesGivenOrTaken = "given", 0, 1)
+
+        ' Άμεση εισαγωγή εγγραφής στον πίνακα Exchanges
+        frmCustomers.AddExchangeDirect(fullName, apCode, unitXondr, qnt, fpa, fromTo)
+
+        ' Μήνυμα επιβεβαίωσης στο σωστό label
+        lblChooseParadrugFromCatalog_info.Text =
+        If(ExchangesGivenOrTaken = "given",
+           "Το προιόν προστέθηκε στα ΔΩΣΑΜΕ",
+           "Το προιόν προστέθηκε στα ΠΗΡΑΜΕ")
+        lblChooseParadrugFromCatalog_info.Visible = True  ' το control υπάρχει στο designer αυτής της φόρμας
+        ' (βλ. frmChooseParadrugFromCatalog.designer) :contentReference[oaicite:3]{index=3}
+
+        ' Κλείσιμο φόρμας και επιστροφή στον πελάτη
+        frmCustomers.Enabled = True
+        'Me.Close()
+
+        ' Προαιρετικά: “έτοιμο για επόμενο” 
+        txtSearchParaDrugsByName.Clear()
+        txtQuantity.Text = "1"
+        txtSearchParaDrugsByName.Select()
+    End Sub
+
+
+    ' Διπλό κλικ σε κάποια μορφή → προσθήκη στην ανταλλαγή
+    Private Sub dgvMorfes_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs) _
+    Handles dgvMorfes.CellDoubleClick
+
+        ' αγνόησε header / άκυρες θέσεις
+        If e.RowIndex < 0 OrElse dgvMorfes.Rows.Count = 0 Then Return
+
+        ' βεβαιώσου ότι η γραμμή είναι επιλεγμένη (FullRowSelect)
+        If Not dgvMorfes.Rows(e.RowIndex).Selected Then
+            dgvMorfes.ClearSelection()
+            dgvMorfes.Rows(e.RowIndex).Selected = True
+        End If
+
+        AddToExchangesDrugFromBarcode()
+    End Sub
+
+
+    Private Sub frmChooseParadrugFromCatalog_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
+        ' Κλείνει την παρούσα form και ενεργοποιεί την αρχική
+        frmCustomers.Enabled = True
+        frmCustomers.DisplayFPAPerCurrentIntervall()
+    End Sub
+
+    Private Sub dgvParaDrugs_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvParaDrugs.CellClick
+        GetMorfesList("name")
+    End Sub
+
+
+    Private Sub rbByName_CheckedChanged(sender As Object, e As EventArgs) Handles rbByName.CheckedChanged
+        If _loadingChooseFromCatalog = False Then
+            If rbByName.Checked = True Then
+                txtSearchParaDrugsByName.Focus()
+                txtSearchParaDrugsByName.Width = 177
+                btnSearchByName.Visible = True
+            Else
+                txtSearchParaDrugsByName.Width = 206
+                btnSearchByName.Visible = False
+            End If
+        End If
+    End Sub
+
+    Private Sub rbByBarcode_CheckedChanged(sender As Object, e As EventArgs) Handles rbByBarcode.CheckedChanged
+        If _loadingChooseFromCatalog = False Then
+            txtSearchParaDrugsByName.Focus()
+            barcodeType = "barcode"
+            If txtSearchParaDrugsByName.Text <> "" Then
+                GetParaDrugsList(barcodeType)
+            Else
+                dgvParaDrugs.DataSource = Nothing
+                dgvMorfes.DataSource = Nothing
+            End If
+
+        End If
+
+    End Sub
+
+    Private Sub RbByQRcode_CheckedChanged(sender As Object, e As EventArgs) Handles rbByQRcode.CheckedChanged
+        If _loadingChooseFromCatalog = False Then
+            txtSearchParaDrugsByName.Focus()
+            GetParaDrugsList("qrcode")
+        End If
+    End Sub
+
+    Private Sub txtQuantity_Click(sender As Object, e As EventArgs) Handles txtQuantity.Click
+        txtQuantity.Focus()
+        txtQuantity.SelectionStart = 0
+        txtQuantity.SelectionLength = txtQuantity.TextLength
+    End Sub
+
+
+    Private Sub btnSearchByName_Click(sender As Object, e As EventArgs) Handles btnSearchByName.Click
+        Dim found, foundM As Integer
+        found = GetParaDrugsList("name") ' Λίστα φαρμάκων & παραφαρμάκων
+        If found > 0 Then
+            foundM = GetMorfesList("name") ' Λίστα μορφών
+            If found = 1 And foundM = 1 Then
+                tmrParadrugs.Enabled = True
+            End If
+        End If
+
+        txtSearchParaDrugsByName.SelectAll()
+        txtSearchParaDrugsByName.Focus()
+
+        _loadingChooseFromCatalog = False
+
+    End Sub
+
+
+    Private Sub tmrParadrugs_Tick(sender As Object, e As EventArgs) Handles tmrParadrugs.Tick
+        'If Len(txtSearchParaDrugsByName.Text) > 10 And dgvMorfes.Rows.Count = 1 Then
+        If barcodeType <> "name" Then
+            AddToExchangesDrugFromBarcode()
+        End If
+        tmrParadrugs.Enabled = False
+    End Sub
+
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs)
+        AddToExchangesDrugFromBarcode()
+    End Sub
+
+    ' Καλείται όταν θεωρούμε ότι το scan ολοκληρώθηκε
+    Private Sub ProcessScannedInput(ByVal input As String)
+        _loadingChooseFromCatalog = True
+
+        Dim found As Integer, foundM As Integer, qr As String, id As Integer
+        barcodeType = ""
+
+        If String.IsNullOrWhiteSpace(input) Then
+            _loadingChooseFromCatalog = False
+            Exit Sub
+        End If
+
+        ' 1) Είναι barcode;
+        id = GetIDFromBarCode(input)
+        If id > 0 Then
+            barcodeType = "barcode"
+            rbByBarcode.Checked = True
+            rbByQRcode.Checked = False
+            rbByName.Checked = False
+
+        Else
+            ' 2) Είναι QRCode;
+            qr = GetQRFromScannedCode(input)
+            If qr IsNot Nothing Then
+                txtSearchParaDrugsByName.Text = qr
+                id = GetIDFromQRCode(qr)
+                If id > 0 Then
+                    barcodeType = "qrcode"
+                    rbByBarcode.Checked = False
+                    rbByQRcode.Checked = True
+                    rbByName.Checked = False
+                Else
+                    ClearDatagrids()
+                    _loadingChooseFromCatalog = False
+                    Exit Sub
+                End If
+
+            Else
+                ' 3) Αλλιώς, όνομα (όχι καθαρά αριθμητικό)
+                If Not IsNumeric(input) Then
+                    barcodeType = "name"
+                    rbByBarcode.Checked = False
+                    rbByQRcode.Checked = False
+                    rbByName.Checked = True
+                Else
+                    ClearDatagrids()
+                    _loadingChooseFromCatalog = False
+                    Exit Sub
+                End If
+            End If
+        End If
+
+        ' Τρέχουμε τα queries
+        found = GetParaDrugsList(barcodeType)
+        If found > 0 Then
+            foundM = GetMorfesList(barcodeType)
+            If found = 1 AndAlso foundM = 1 AndAlso barcodeType <> "name" Then
+                tmrParadrugs.Enabled = True
+            End If
+        End If
+
+        txtSearchParaDrugsByName.SelectAll()
+        txtSearchParaDrugsByName.Focus()
+
+        _loadingChooseFromCatalog = False
+    End Sub
+
+
+    Private Sub tmrTextboxEntry_Tick(sender As Object, e As EventArgs) Handles tmrTextboxEntry.Tick
+        tmrTextboxEntry.Stop()
+        Dim snapshot As String = TryCast(tmrTextboxEntry.Tag, String)
+        ProcessScannedInput(If(snapshot, txtSearchParaDrugsByName.Text))
+    End Sub
+
+
+    Private lastKeyWasAlphaNumeric As Boolean = False
+
+    Private Sub txtSearchParaDrugsByName_KeyDown(sender As Object, e As KeyEventArgs) Handles txtSearchParaDrugsByName.KeyDown
+        lastKeyWasAlphaNumeric = IsAlphaNumericKey(e)
+
+        If e.KeyCode = Keys.Enter OrElse e.KeyCode = Keys.Tab Then
+            e.SuppressKeyPress = True ' μην κάνει ding/μετακίνηση focus
+            tmrTextboxEntry.Stop()
+            ProcessScannedInput(txtSearchParaDrugsByName.Text)
+        End If
+    End Sub
+
+
+    Private Sub txtSearchParaDrugsByName_TextChanged(sender As Object, e As EventArgs) Handles txtSearchParaDrugsByName.TextChanged
+        If _loadingChooseFromCatalog Then Exit Sub
+
+        ' (προαιρετικό) αν πληκτρολογεί άνθρωπος, γύρνα σε αναζήτηση ονόματος
+        If lastKeyWasAlphaNumeric Then
+            rbByName.Checked = True
+        End If
+
+        ' Debounce: κάθε αλλαγή restart τον timer.
+        tmrTextboxEntry.Stop()
+        tmrTextboxEntry.Interval = 300 ' 250–350ms παίζει πολύ καλά
+        ' αποθηκεύουμε το snapshot του κειμένου τη στιγμή της αλλαγής
+        tmrTextboxEntry.Tag = txtSearchParaDrugsByName.Text
+        tmrTextboxEntry.Start()
+    End Sub
+
+
+
+    Private Sub dgvParaDrugs_SelectionChanged(sender As Object, e As EventArgs) Handles dgvParaDrugs.SelectionChanged
+        If _loadingParaDrugsList = False Then
+            GetMorfesList("name")
+        End If
+    End Sub
+
+    Private Sub Button1_Click_1(sender As Object, e As EventArgs)
+        MsgBox(Me.Location.X & " " & Me.Location.Y)
+    End Sub
+
+    Private Sub SetFormLocationForExchanges()
+        Dim x, y As Integer
+        x = frmCustomers.Location.X
+        y = frmCustomers.Location.Y
+
+        If ExchangesGivenOrTaken = "taken" Then
+            Me.Location = New Point(x - 44, y - 12)
+        ElseIf ExchangesGivenOrTaken = "given" Then
+            Me.Location = New Point(x + 422, y - 12)
+        End If
+    End Sub
+
+    Private Sub frmChooseParadrugFromCatalog_GotFocus(sender As Object, e As EventArgs) Handles Me.GotFocus
+        SetFormLocationForExchanges()
+    End Sub
+
+
+    Private Sub frmChooseParadrugFromCatalog_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        SetFormLocationForExchanges()
+        barcodeType = ""
+        txtSearchParaDrugsByName.Text = ""
+        txtSearchParaDrugsByName.Focus()
+        txtSearchParaDrugsByName.Width = 177
+        btnSearchByName.Visible = True
+    End Sub
+
+    Private Sub txtQuantity_TextChanged(sender As Object, e As EventArgs) Handles txtQuantity.TextChanged
+
+    End Sub
+
+    Private Sub ClearDatagrids()
+        txtSearchParaDrugsByName.Text = ""
+        txtSearchParaDrugsByName.Focus()
+        barcodeType = ""
+        dgvParaDrugs.DataSource = Nothing
+        dgvMorfes.DataSource = Nothing
+    End Sub
+    Private Sub btnClearName_Click(sender As Object, e As EventArgs) Handles btnClearName.Click
+        ClearDatagrids()
+
+    End Sub
+
+End Class

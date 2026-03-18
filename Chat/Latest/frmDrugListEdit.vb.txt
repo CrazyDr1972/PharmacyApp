@@ -1,0 +1,901 @@
+﻿' Exported: 2025-10-23 00:24:46 +03:00
+' Project:  Pharmacy.vbproj
+' Source:   frmDrugListEdit.vb
+'
+Imports Pharmacy.GlobalFunctions
+Imports Pharmacy.GlobalVariables
+Imports System.Data.SqlClient
+Imports System.Data
+Imports System.Globalization
+Imports System.Threading
+
+
+Public Class frmDrugListEdit
+
+    Private dle_description, dle_morfi As String
+    Private dle_lianiki, dle_xondriki As Decimal
+    Private dle_changed As Boolean
+
+
+    ' ****************************************************************************************************************************
+    ' **********    ΔΙΑΧΕΙΡΗΣΗ ΑΡΧΕΙΟΥ ΠΡΟΙΟΝΤΩΝ   *******************************************************************************
+    ' ****************************************************************************************************************************
+
+
+    Private Sub DatagridWithControls_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+        Thread.CurrentThread.CurrentCulture = New CultureInfo("el-GR", False)
+
+        FillDatagridWithDrugList()
+
+    End Sub
+
+
+
+    Private Function EditDrugListWithControls(ByVal oDataGridView As DataGridView, ByVal oBindingSource As BindingSource, _
+                                  ByVal columnName() As String, ByVal columnWidth() As Integer, ByVal columnFormat() _
+                                  As String) As Integer
+
+        'Initialization νεας σύνδεσης με το connectionString που παίρνει από τις GlobalVariables
+        con = New SqlConnection(connectionString)
+
+        'που την ανοίγει εδώ
+        con.Open()
+
+        'Initialization νέου CommandAdapter με την SqlString που παίρνει σαν εξωτερική παράμετρο
+        cmdDTG = New SqlCommand(stringDTG, con)
+        daDTG = New SqlDataAdapter(cmdDTG)  'Ορισμός νέου SqlDataAdapter και νέου DataSet
+        cbDTG = New SqlCommandBuilder(daDTG)
+
+        dsDTG = New DataSet
+
+        'Αδειάζει το datagridView
+        oDataGridView.Columns.Clear()
+
+        ' και ο SqlDataAdapter γεμίζει το Dataset
+        daDTG.Fill(dsDTG, "DTG")
+        ' το οποίο γεμίζει το datatable
+        dtDTG = dsDTG.Tables("DTG")
+
+        'Καθορίζει το source του BindingSource ως το Datatable
+        oBindingSource.DataSource = dtDTG
+
+        'Κλείνει την σύνδεση
+        con.Close()
+
+        'Εμποδίσει το Datagrid να εμφανίσει αυτόματα τα Columns
+        oDataGridView.AutoGenerateColumns = False
+
+        'Καθορίζει το  source του DataGrid ως το BindingSource
+        oDataGridView.DataSource = oBindingSource
+
+        'Όρίζει το 1ο πεδίο του Datagrid σαν textbox
+        Dim Description As New DataGridViewTextBoxColumn
+        ' και του δίνει τη τιμή του αντίστοιχου πεδίου
+        Description.DataPropertyName = "AP_DESCRIPTION"
+
+        'Όρίζει το 2ο πεδίο του Datagrid σαν textbox
+        Dim Morfi As New DataGridViewTextBoxColumn
+        ' και του δίνει τη τιμή του αντίστοιχου πεδίου
+        Morfi.DataPropertyName = "AP_MORFI"
+
+        'Όρίζει το 3ο πεδίο του Datagrid σαν textbox
+        Dim PriceXondr As New DataGridViewTextBoxColumn
+        ' και του δίνει τη τιμή του αντίστοιχου πεδίου
+        PriceXondr.DataPropertyName = "AP_TIMH_XON"
+
+        'Όρίζει το 4ο πεδίο του Datagrid σαν textbox
+        Dim PriceLian As New DataGridViewTextBoxColumn
+        ' και του δίνει τη τιμή του αντίστοιχου πεδίου
+        PriceLian.DataPropertyName = "AP_TIMH_LIAN"
+
+        'Όρίζει το 5ο πεδίο του Datagrid σαν textbox
+        Dim Barcode As New DataGridViewTextBoxColumn
+        ' και του δίνει τη τιμή του αντίστοιχου πεδίου
+        'Barcode.DataPropertyName = "BRAP_AP_BARCODE"
+
+        'Όρίζει το 6ο πεδίο του Datagrid σαν textbox
+        Dim Id As New DataGridViewTextBoxColumn
+        ' και του δίνει τη τιμή του αντίστοιχου πεδίου
+        Id.DataPropertyName = "AP_ID"
+
+
+        'Όρίζει το 7ο πεδίο του Datagrid σαν textbox
+        Dim Code As New DataGridViewTextBoxColumn
+        ' και του δίνει τη τιμή του αντίστοιχου πεδίου
+        Code.DataPropertyName = "AP_CODE"
+
+        'Όρίζει το 8ο πεδίο του Datagrid σαν textbox
+        Dim Changed As New DataGridViewTextBoxColumn
+        ' και του δίνει τη τιμή του αντίστοιχου πεδίου
+        Changed.DataPropertyName = "AP_Free_1"
+
+        ''Όρίζει το 2ο πεδίο του Datagrid σαν combobox
+        'Dim Combo As New DataGridViewComboBoxColumn
+        '' και του δίνει τη τιμή του αντίστοιχου πεδίου
+        'Combo.DataPropertyName = "Category"
+
+        ''Παίρνει όλες τις πιθανές τιμές του Category και τις προσθέτει σαν επιλογές στο combobox
+        'For t = 0 To CategoryList.Length - 1
+        '    If Not (CategoryList(t) Is Nothing) Then Combo.Items.Add(CategoryList(t))
+        'Next
+
+
+        'Εμφανίζει τα columns του Datagrid
+        oDataGridView.Columns.Add(Description)
+        oDataGridView.Columns.Add(Morfi)
+        oDataGridView.Columns.Add(PriceXondr)
+        oDataGridView.Columns.Add(PriceLian)
+        oDataGridView.Columns.Add(Barcode)
+        oDataGridView.Columns.Add(Id)
+        oDataGridView.Columns.Add(Code)
+        oDataGridView.Columns.Add(Changed)
+       
+
+        ' Εναλλαγή του χρωματισμού των rows
+        oDataGridView.RowsDefaultCellStyle.BackColor = Color.Bisque
+        oDataGridView.AlternatingRowsDefaultCellStyle.BackColor = Color.Beige
+
+        'Εξαφανίζει τo πεδίο "Id"
+        oDataGridView.Columns(5).Visible = False
+        oDataGridView.Columns(6).Visible = False
+        oDataGridView.Columns(4).Visible = False
+
+        ' Μορφοποιεί τα columns
+        For t = 0 To columnName.Length - 1
+
+            oDataGridView.Columns(t).HeaderText = columnName(t) 'Βάζει τίτλο σε κάθε Column
+
+            oDataGridView.Columns(t).Width = columnWidth(t) ' Αλλάζει το φάρδος του κάθε Column
+
+            oDataGridView.Columns(t).DefaultCellStyle.Format = columnFormat(t)  ' Formatαρισμα των στοιχείων
+        Next
+
+        'Επιστρέφει τον συνολικό αριθμό εγγραφών του Datagrid
+        Return dsDTG.Tables(0).Rows.Count
+
+    End Function
+
+    'Private Sub btnNewCategory_Click(sender As Object, e As EventArgs) Handles btnNewCategory.Click
+
+    '    ' Εμφανίζει ένα inputBox για να καταχωρηθεί η νέα κατηγορία
+    '    Dim NewCategory As String = InputBox("Παρακαλώ καταχωρήστε τη νέα κατηγορία:", "Καταχώρηση Νέας Κατηγορίας")
+
+    '    ' Ελέγχει αν η κατηγορία υπάρχει ήδη στην λίστα
+    '    For t = 0 To CategoryList.Length - 1
+    '        If CategoryList(t) = NewCategory Then
+    '            MsgBox("H κατηγορία αυτή υπάρχει ήδη στην λίστα μου")
+    '            Exit Sub
+    '        End If
+    '    Next
+
+    '    ' Προσθέτει τη νέα κατηγορία στο ComboBox του Datagrid
+    '    Dim cboControl As New DataGridViewComboBoxCell
+    '    cboControl = dgvEditDrugsList.Rows(dgvEditDrugsList.CurrentRow.Index).Cells(1)
+    '    cboControl.Items.Add(NewCategory)
+
+    '    ' και τακτοποιεί τις κατηγορίες αλφαβητικά
+    '    cboControl.Sorted = True
+
+    'End Sub
+
+
+
+
+    Private Sub btnEditDrugList_Click(sender As Object, e As EventArgs) Handles btnEditDrugList.Click
+        ' Καθορίζει το ενημερωτικό flashing label
+        timerLabel = lblDrugListEditMessage
+
+        'Αν το πληκτρο Edit δεν έχει πατηθεί ακόμα (->EDIT)... 
+        If btnEditDrugList.Text = "Edit" Then
+
+            ChangeControlsDrugListEdit(True)
+
+            'Αν το πληκτρο Edit έχει ήδη πατηθεί ακόμα (-> CANCEL)... 
+        ElseIf btnEditDrugList.Text = "Cancel" Then
+
+            ChangeControlsDrugListEdit(False)
+
+        End If
+
+    End Sub
+
+
+
+    Private Sub ChangeControlsDrugListEdit(ByVal selector As Boolean)
+        ' Selector: True -> Edit
+        '           False -> Cancel, Save
+
+        FillDatagridWithDrugList()
+
+        ' Τροποποίηση κουμπιών κλπ ΕΝΤΟΣ του GroupBox που περιέχει το DataGrid μας
+        EditDatagrid({btnSaveDrugList, btnEditDrugList, btnDeleteDrugList}, dgvEditDrugsList, selector)
+
+        ' Ενεργοποίηση ενημερωτικού flashing label
+        timerLabel.Visible = selector
+        tmrFlashLabel.Enabled = selector
+
+    End Sub
+
+
+
+    Private Sub btnSaveDrugList_Click(sender As Object, e As EventArgs) Handles btnSaveDrugList.Click
+
+        ' Ξεκινάει την διαδικασία Updating των δεδομένων του DataGrid 
+        UpdateDrugList(dgvEditDrugsList.SelectedRows(0).Index)
+
+        ' μαζί με των κουμπιών που περιέχονται στο GroupBox του DataGrid
+        ChangeControlsDrugListEdit(False)
+
+    End Sub
+
+
+
+
+    Private Sub UpdateDrugList(ByVal i As Integer)
+        Dim insertData As String = ""
+
+        Using con As SqlConnection = New System.Data.SqlClient.SqlConnection(connectionstring)
+            con.Open()
+
+            Dim chkRE As Boolean = False
+            Dim chkRC As Boolean = False
+
+            dle_description = EditedFormatedValue(i, 0)
+            dle_morfi = EditedFormatedValue(i, 1)
+            dle_lianiki = If(EditedFormatedValue(i, 3) = "", 0, CType(EditedFormatedValue(i, 3), Decimal))
+            dle_xondriki = If(EditedFormatedValue(i, 2) = "", 0, CType(EditedFormatedValue(i, 2), Decimal))
+
+
+            Try
+                chkRE = CheckIfRecordExists(i)
+                If chkRE = True Then
+                    chkRC = CheckIfRecordChanged(i)
+                End If
+            Catch ex As Exception
+            End Try
+
+
+            ' Αν το προιον υπάρχει ήδη στο αρχείο και άλλαξε
+            If chkRE = True AndAlso chkRC = True Then
+
+                'MsgBox(" Line " & i.ToString & " exists!")
+                insertData = "BEGIN TRANSACTION " & _
+                                "UPDATE APOTIKH " & _
+                                "SET APOTIKH.AP_DESCRIPTION = @Description, APOTIKH.AP_MORFI= @Morfi, APOTIKH.AP_TIMH_XON = @PriceXondr, APOTIKH.AP_TIMH_LIAN = @PriceLian, " & _
+                                    "APOTIKH.AP_Free_1 = @Changed " & _
+                                "WHERE APOTIKH.AP_ID = @Id " & _
+                                 "COMMIT"
+                '"UPDATE APOTIKH_BARCODES " & _
+                '"SET APOTIKH_BARCODES.BRAP_AP_BARCODE = @Barcode " & _
+                '"WHERE BRAP_AP_ID = @Id " & _
+
+
+                ' Αν το προιον υπάρχει ήδη στο αρχείο και  ΔΕΝ άλλαξε
+            ElseIf chkRE = True AndAlso chkRC = False Then
+                insertData = ""
+
+                ' αν δεν υπάρχει και το προσθέσαμε
+            ElseIf chkRE = False Then
+                Try
+                    If dle_description = "" Then
+                        MsgBox("Πρέπει να γράψεις περιγραφή προιόντος!")
+                        Exit Sub
+                    ElseIf dle_xondriki = 0 Then
+                        MsgBox("Πρέπει να γράψεις χονδρική τιμή!")
+                        Exit Sub
+                    ElseIf dle_description <> "" And dle_xondriki > 0 Then
+
+
+                        insertData = "BEGIN TRANSACTION " & _
+                                        "INSERT INTO APOTIKH " & _
+                                        "( APOTIKH.AP_ID, APOTIKH.AP_CODE, APOTIKH.AP_DESCRIPTION, APOTIKH.AP_MORFI, APOTIKH.AP_TIMH_XON, APOTIKH.AP_TIMH_LIAN, APOTIKH.AP_Free_1 ) " & _
+                                        "VALUES (@APID, @Code, @Description, @Morfi, @PriceXondr, @PriceLian, @Changed) " & _
+                                          "COMMIT"
+                        '"INSERT INTO APOTIKH_BARCODES " & _
+                        ' "(APOTIKH_BARCODES.BRAP_AP_BARCODE) " & _
+                        ' "VALUES (@Barcode) " & _
+                    End If
+                Catch ex As Exception
+                End Try
+
+
+            End If
+
+            If insertData <> "" Then
+                Dim cmd As New SqlCommand(insertData, con)
+                cmd.Parameters.AddWithValue("@Description", dle_description)
+                cmd.Parameters.AddWithValue("@Morfi", dle_morfi)
+                cmd.Parameters.AddWithValue("@PriceXondr", dle_xondriki)
+                cmd.Parameters.AddWithValue("@PriceLian", dle_lianiki)
+                cmd.Parameters.AddWithValue("@Changed", dle_changed)
+
+                'cmd.Parameters.AddWithValue("@Barcode", EditedFormatedValue(i, 4))
+
+                cmd.Parameters.AddWithValue("@Id", dgvEditDrugsList.Rows(i).Cells(5).Value)
+
+                cmd.Parameters.AddWithValue("@APID", GetMaxIdFromDrugsList("select max(AP_ID) as myMax from apotikh") + 1)
+                cmd.Parameters.AddWithValue("@Code", GetMaxIdFromDrugsList("select max(convert(int, AP_CODE)) as myMax from apotikh") + 1)
+
+                Dim affRows As Integer = cmd.ExecuteNonQuery()
+
+                If affRows > 0 Then MsgBox("(" & affRows.ToString & ") Records Updated !!")
+            End If
+        End Using
+
+    End Sub
+
+    Private Function EditedFormatedValue(ByVal i As Integer, ByVal cell As Integer) As String
+        Dim result As String = ""
+
+        result = dgvEditDrugsList.Rows(i).Cells(cell).GetEditedFormattedValue(i, DataGridViewDataErrorContexts.CurrentCellChange)
+        result = If(IsDBNull(result), "", result)
+
+        If (cell = 2 Or cell = 3) AndAlso result.Length > 3 AndAlso result.Substring(result.Length - 3, 2) = " €" Then
+            result = result.Substring(0, result.Length - 2)
+        ElseIf (cell = 2 Or cell = 3) And result = "" Then
+            result = 0
+        End If
+
+        Return result
+
+    End Function
+
+    Private Function GetMaxIdFromDrugsList(ByVal sql As String) As Integer
+
+        Using con As SqlConnection = New System.Data.SqlClient.SqlConnection(connectionString)
+            con.Open()
+
+            Dim cmd As New SqlCommand(sql, con)
+
+            Dim myReader As SqlDataReader = cmd.ExecuteReader()
+
+            If myReader.HasRows Then
+                Do While myReader.Read()
+                    Return myReader(0)
+                Loop
+            End If
+        End Using
+        Return 0
+    End Function
+
+
+    Private Function CheckIfRecordChanged(ByVal index As Integer) As Boolean
+        Dim insertData As String = ""
+        Dim changed = False
+
+        Using con As SqlConnection = New System.Data.SqlClient.SqlConnection(connectionString)
+            con.Open()
+
+            insertData = "SELECT APOTIKH.AP_ID, APOTIKH.AP_CODE, APOTIKH.AP_DESCRIPTION, APOTIKH.AP_MORFI, APOTIKH.AP_TIMH_XON, APOTIKH.AP_TIMH_LIAN " & _
+                          "FROM APOTIKH  " & _
+                        "WHERE APOTIKH.AP_ID = @Id"
+
+            Dim cmd As New SqlCommand(insertData, con)
+
+            cmd.Parameters.AddWithValue("@Id", If(dgvEditDrugsList.Rows(index).Cells(5).Value, DBNull.Value))
+
+            Dim myReader As SqlClient.SqlDataReader = cmd.ExecuteReader()
+
+            If myReader.HasRows Then
+
+                Do While myReader.Read()
+
+                    ' Aν έχουν αλλάξει οι τιμές
+                   
+                    If If(IsDBNull(myReader("AP_DESCRIPTION")), "", myReader("AP_DESCRIPTION")) <> dle_description Then changed = True
+
+                    If If(IsDBNull(myReader("AP_MORFI")), "", myReader("AP_MORFI")) <> dle_morfi Then changed = True
+
+                    If If(IsDBNull(myReader("AP_TIMH_XON")), 0, myReader("AP_TIMH_XON")) <> dle_xondriki Then changed = True
+
+                    If If(IsDBNull(myReader("AP_TIMH_LIAN")), 0, myReader("AP_TIMH_LIAN")) <> dle_lianiki Then changed = True
+
+                    ' σημειώνει το record σαν changed
+                    Dim IsTheRecordSignedAsChanged As String = If(IsDBNull(dgvEditDrugsList.Rows(index).Cells(7).Value), "", dgvEditDrugsList.Rows(index).Cells(7).Value)
+
+                    If changed = True Then
+
+                        dgvEditDrugsList.Rows(index).Cells(7).Value = "True"
+                        dle_changed = True
+                        Return True
+
+                    End If
+
+                Loop
+
+            End If
+
+            Return False
+
+        End Using
+
+    End Function
+
+
+
+
+    Private Function CheckIfRecordExists(ByVal index As Integer) As Boolean
+        Dim insertData As String = ""
+
+        Using con As SqlConnection = New System.Data.SqlClient.SqlConnection(connectionString)
+            con.Open()
+
+            insertData = "SELECT * " & _
+                        "FROM APOTIKH " & _
+                        "WHERE APOTIKH.AP_ID = @Id"
+
+            Dim cmd As New SqlCommand(insertData, con)
+
+            cmd.Parameters.AddWithValue("@Id", If(dgvEditDrugsList.Rows(index).Cells(5).Value, DBNull.Value))
+
+            Dim myReader As SqlClient.SqlDataReader = cmd.ExecuteReader()
+
+            If myReader.HasRows Then
+
+                Return True
+
+            End If
+
+            Return False
+
+        End Using
+
+    End Function
+
+
+
+   
+
+
+
+    Private Function DeleteCurrentDatagridRow() As Integer
+        Dim insertData As String = ""
+        Dim affRows As Integer = 0
+        Dim id As Integer = dgvEditDrugsList.Rows(dgvEditDrugsList.SelectedRows(0).Index).Cells(5).Value
+
+        Using con As SqlConnection = New System.Data.SqlClient.SqlConnection(connectionstring)
+            con.Open()
+
+            insertData = "DELETE " & _
+                        "FROM APOTIKH " & _
+                        "WHERE APOTIKH.AP_ID = @Id"
+
+            Dim cmd As New SqlCommand(insertData, con)
+
+            cmd.Parameters.AddWithValue("@Id", id)
+
+            ' Επιβεβαίωση της διαγραφής
+            If MessageBox.Show("Do you want to delete row # " & id & " ?", "Delete", MessageBoxButtons.YesNo) = DialogResult.Yes Then
+
+                affRows = cmd.ExecuteNonQuery()
+                dgvEditDrugsList.Rows.RemoveAt(dgvEditDrugsList.SelectedRows(0).Index)
+
+            End If
+        End Using
+
+        Return affRows
+
+    End Function
+
+
+    'Private Sub btnDeleteDrugList_Click(sender As Object, e As EventArgs) Handles btnDeleteDrugList.Click
+
+    '    'Ελέγχει αν το επιλεγμένο φάρμακο έχει τιμές ή λήξεις
+    '    Select Case CheckIfDrugHasRecords()
+
+    '        Case 1
+    '            MessageBox.Show("Το επιλεγμένο προιόν έχει καταχωρημένες εγγραφές λήξης." & _
+    '                            vbCrLf & "Η διαγραφή του δεν επιτρέπεται.", "Αδυναμία διαγραφής",
+    '                            MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+    '        Case 2
+    '            MessageBox.Show("Το επιλεγμένο προιόν έχει καταχωρημένες εγγραφές τιμής." & _
+    '                            vbCrLf & "Η διαγραφή του δεν επιτρέπεται.", "Αδυναμία διαγραφής",
+    '                            MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+    '        Case 0
+    '            ' Ξεκινάει την διαδικασία Delete των δεδομένων του DataGrid 
+    '            ' μαζί με τροποποίηση των κουμπιών που περιέχονται στο GroupBox του DataGrid
+    '            DeleteDatagrid(dgvEditDrugsList)
+
+    '    End Select
+
+    '    ' Τροποποιεί τα Controls της τρέχουσας form
+    '    ChangeControlsDrugListEdit(False)
+
+    'End Sub
+
+
+
+    'Private Function CheckIfDrugHasRecords() As Integer
+
+    '    ' RETURN results:   '1' έχει λήξεις
+    '    '                   '2' έχει τιμές
+    '    '                   '0' δεν έχει ούτε λήξεις ούτε τιμές
+
+    '    'Μεταβλητές
+    '    Dim drugId As Integer = 0
+    '    Try
+    '        drugId = frmCustomers.dgvDrugs.Rows(frmCustomers.dgvDrugs.SelectedRows(0).Index).Cells("Id").Value
+    '    Catch ex As Exception
+
+    '    End Try
+    '    Dim sqlstring1 As String = "SELECT * FROM Expirations WHERE DrugId = '" & drugId & "' "
+    '    Dim sqlstring2 As String = "SELECT * FROM Prices WHERE DrugId = '" & drugId & "' "
+    '    Dim myReader As SqlDataReader
+
+
+
+    '    'Initialization νεας σύνδεσης με το connectionString που παίρνει από τις GlobalVariables
+    '    Using con As New SqlConnection(connectionString)
+
+    '        'Initialization νέου CommandAdapter με την Stringα αναζήτησης και την σύνδεση
+    '        Using cmd As New SqlCommand(sqlstring1, con)
+
+    '            ' Ανοίγει την σύνδεση
+    '            con.Open()
+
+    '            'Ορισμός ExecuteReader 
+    '            myReader = cmd.ExecuteReader()
+
+    '            ' Αν υπάρχουν records
+    '            If myReader.HasRows Then
+    '                Return 1 ' επιστρέφει την τιμή 1 (και βγαίνει από το function)
+    '            End If
+
+    '        End Using
+    '    End Using
+
+    '    'Initialization νεας σύνδεσης με το connectionString που παίρνει από τις GlobalVariables
+    '    Using con As New SqlConnection(connectionString)
+
+    '        'Initialization νέου CommandAdapter με την Stringα αναζήτησης και την σύνδεση
+    '        Using cmd As New SqlCommand(sqlstring2, con)
+
+    '            ' Ανοίγει την σύνδεση
+    '            con.Open()
+
+    '            'Ορισμός ExecuteReader 
+    '            myReader = cmd.ExecuteReader()
+
+    '            ' Αν υπάρχουν records
+    '            If myReader.HasRows Then
+    '                Return 2  ' επιστρέφει την τιμή 2 (και βγαίνει από το function)
+    '            End If
+
+    '        End Using
+    '    End Using
+    '    Return 0  ' Αν ΔΕΝ υπάρχουν records επιστρέφει την τιμή 0
+
+    'End Function
+
+
+    '' Αναλαμβάνει να αρχίσει να αναβοσβήνει ένα label ενημέρωσης
+    'Private Sub FlashingLabel(ByVal oLabel As Label, ByVal interval As Integer)
+
+    '    'If oLabel.ForeColor = oLabel.BackColor Then
+    '    '    oLabel.ForeColor = SystemColors.ControlText
+    '    'Else
+    '    '    oLabel.ForeColor = oLabel.BackColor
+    '    'End If
+
+    '    If oLabel.ForeColor = SystemColors.ControlText Then
+    '        oLabel.ForeColor = Color.Red
+    '    Else
+    '        oLabel.ForeColor = SystemColors.ControlText
+    '    End If
+
+    'End Sub
+
+    '' Κάθε φορά που ο Timer κάνει tick τρέχει η ρουτίνα που αναβοσβήνει το label
+    'Private Sub tmrFlashLabel_Tick(sender As Object, e As EventArgs) Handles tmrFlashLabel.Tick
+    '    FlashingLabel(timerLabel, 500)
+    'End Sub
+
+
+
+    ' Με το που φορτώνεται η φορμα κάνει τα εξής...
+    Private Sub frmCustomersEdit_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ' Καθορίζει το ενημερωτικό flashing label
+        timerLabel = lblDrugListEditMessage
+
+        'Αν το πληκτρο Edit δεν έχει πατηθεί ακόμα (->EDIT)... 
+        If btnEditDrugList.Text = "Edit" Then
+
+            ChangeControlsDrugListEdit(True)
+
+            'Αν το πληκτρο Edit έχει ήδη πατηθεί ακόμα (-> CANCEL)... 
+        ElseIf btnEditDrugList.Text = "Cancel" Then
+
+            ChangeControlsDrugListEdit(False)
+
+        End If
+    End Sub
+
+
+
+    Private Sub btnExitDrugList_Click(sender As Object, e As EventArgs) Handles btnExitDrugList.Click
+
+        Me.Close()
+
+        frmCustomers.BringToFront()
+
+        frmCustomers.tbcMain.Enabled = True
+
+        frmCustomers.MinimizeBox = True
+
+    End Sub
+
+
+    Private Sub FillDatagridWithDrugList()
+        stringDTG = "SELECT * " & _
+                    "FROM APOTIKH  " & _
+                    "WHERE APOTIKH.AP_DESCRIPTION LIKE '%" & txtSearchExpirDrugList.Text & "%' " & _
+                    "ORDER BY APOTIKH.AP_DESCRIPTION, APOTIKH.AP_MORFI"
+
+        'stringDTG = "SELECT APOTIKH.AP_ID, APOTIKH.AP_CODE, APOTIKH.AP_DESCRIPTION, APOTIKH.AP_MORFI, APOTIKH.AP_TIMH_XON, APOTIKH.AP_TIMH_LIAN, " & _
+        '                           "APOTIKH_BARCODES.BRAP_AP_BARCODE, APOTIKH.AP_Changed " & _
+        '                   "FROM APOTIKH LEFT JOIN APOTIKH_BARCODES ON APOTIKH.AP_ID = APOTIKH_BARCODES.BRAP_AP_ID " & _
+        '                   "WHERE APOTIKH.AP_DESCRIPTION LIKE '%" & txtSearchExpirDrugList.Text & "%' " & _
+        '                   " ORDER BY APOTIKH.AP_DESCRIPTION, APOTIKH.AP_MORFI"
+
+        ' stringDTG = "SELECT Name, Category, Id FROM Drugs WHERE Name LIKE '%" & txtSearchExpirDrugList.Text & "%' ORDER BY Name"
+        grpDrugLIstEdit.Text = "Σύνολο προιόντων: " & EditDrugListWithControls(dgvEditDrugsList, bsCustomersEdit, {"Προιόν", "Μορφή", "Χονδρική", "Λιανική", "Barcode"}, {300, 200, 100, 100, 120}, {"0", "0", "c", "c", "0"})
+    End Sub
+
+
+    Private Sub txtSearchExpirDrugList_TextChanged(sender As Object, e As EventArgs) Handles txtSearchExpirDrugList.TextChanged
+
+        '' Γεμίζει το DatagridView 
+        'stringDTG = "SELECT Name, Category, Id FROM Drugs WHERE Name LIKE '%" & txtSearchExpirDrugList.Text & "%' ORDER BY Name"
+        'grpDrugLIstEdit.Text = "Σύνολο προιόντων: " & EditDrugListWithControls(dgvEditDrugsList, bsCustomersEdit, {"Όνομα", "Κατηγορία"}, {300, 200}, {"0", "0"})
+
+        FillDatagridWithDrugList()
+
+    End Sub
+
+
+
+
+    'Private Sub dgvEditDrugsList_CellValidating(sender As Object, e As DataGridViewCellValidatingEventArgs) Handles dgvEditDrugsList.CellValidating
+
+
+
+    '    ' Κρατάει στη μνήμη τη παλιά και τη νέα τιμή του κελιού
+    '    Dim oldValue = dgvEditDrugsList(e.ColumnIndex, e.RowIndex).Value.ToString
+    '    Dim newValue = e.FormattedValue
+
+    '    ' Ελέγχει αν βρισκόμαστε στο πεδίο Όνομα
+    '    Dim headerText As String = dgvEditDrugsList.Columns(e.ColumnIndex).HeaderText
+    '    If headerText.Equals("Όνομα") Then
+    '        Dim mySQL As String = "SELECT APOTIKH.AP_ID, APOTIKH.AP_CODE, APOTIKH.AP_DESCRIPTION, APOTIKH.AP_MORFI, APOTIKH.AP_TIMH_XON, APOTIKH.AP_TIMH_LIAN, " & _
+    '                                    "APOTIKH_BARCODES.BRAP_AP_BARCODE " & _
+    '                                "FROM APOTIKH INNER JOIN APOTIKH_BARCODES ON APOTIKH.AP_ID = APOTIKH_BARCODES.BRAP_AP_ID " & _
+    '                                "WHERE APOTIKH.AP_ID = @Id"
+
+    '        'Αν η παλιά τιμή είναι διαφορετική από τη νέα ΚΑΙ η νέα τιμή υπάρχει ήδη στο database
+    '        If oldValue <> newValue AndAlso IsItAllreadyThere(mySQL) = True Then
+    '            'Μύνημα λάθους
+    '            MessageBox.Show("Το προιόν " & newValue & " υπάρχει ήδη !", "Επιβεβαίωση στοιχείων", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+    '            'Ξαμαγράφει τη παλιά τιμή
+    '            dgvEditDrugsList(e.ColumnIndex, e.RowIndex).Value = oldValue
+    '            ' Ανανεώνει το Datagrid για να φανεί πάλι η παλιά τιμή
+    '            dgvEditDrugsList.RefreshEdit()
+    '            'Εμποδίζει την έξοδο από το κελί
+    '            e.Cancel = True
+
+    '            'Αν έχουμε αλλάξει το όνομα του φαρμάκου και αυτό έχει ήδη εγγραφές
+    '        ElseIf oldValue <> newValue AndAlso (CheckIfDrugHasRecords <> 0) Then
+
+
+    '        End If
+
+    '    End If
+
+    'End Sub
+
+
+    Private Sub UpdateDrugIdInPricesAndExpirations()
+        ' Μεταβλητές
+        Dim sqlString As String = "UPDATE Expirations SET DrugId = {0} FROM Expirations WHERE Name = '{1}'"
+        Dim sqlString2 As String = "UPDATE Prices SET DrugId = {0} FROM Prices WHERE Name = '{1}'"
+
+
+        'Initialization νεας σύνδεσης με το connectionString που παίρνει από τις GlobalVariables
+        ' στο οποίο πρέπει να προσθέσουμε το 'MultipleActiveResultSets' για να έχουμε nested SQLcommands
+        Using con As New SqlClient.SqlConnection(connectionString & ";MultipleActiveResultSets=true")
+
+            ' Ανοίγει την σύνδεση
+            con.Open()
+
+            'Creating two commands form current connection
+            Dim cmd1 As SqlCommand = con.CreateCommand()
+            Dim cmd2 As SqlCommand = con.CreateCommand()
+
+            'Set the comment type
+            cmd1.CommandType = CommandType.Text
+            cmd2.CommandType = CommandType.Text
+
+            'Setting the command text to first command
+            cmd1.CommandText = "SELECT * FROM Drugs"
+
+            'Execute the first command
+            Dim idr1 As IDataReader = cmd1.ExecuteReader()
+
+            While idr1.Read()
+
+                'Διαβάζει το όνομα από το πρώτο command και ελέγχει ότι δεν είναι κενό
+                If idr1("Name").ToString <> "" Then
+                    ' Παίρνει το Id και το όνομα του φαρμάκου
+                    Dim intDrugId As Integer = idr1("Id")
+                    Dim strDrugName As String = idr1("Name")
+
+                    ' αντικαθιστά το ' με '' για να αποφύγει λάθη από το SQL Transact
+                    strDrugName = strDrugName.Replace("'", "''")
+
+                    'create second command, που ψάχνει τα Expirations
+                    cmd2.CommandText = String.Format(sqlString, intDrugId, strDrugName)
+
+                    'Execute the reader
+                    Dim idr2 As IDataReader = cmd2.ExecuteReader()
+
+                    'Dont forgot to close second reader, this will just close reader not connection
+                    idr2.Close()
+
+                    'create third command, που ψάχνει τα Prices
+                    cmd2.CommandText = String.Format(sqlString2, intDrugId, strDrugName)
+
+                    'Execute the reader
+                    idr2 = cmd2.ExecuteReader()
+
+                    ' Δείκτης θέσης αρχείου
+                    btnUpdateDrugName.Text = intDrugId.ToString
+                    btnUpdateDrugName.Refresh()
+
+                    'Dont forgot to close second reader, this will just close reader not connection
+                    idr2.Close()
+
+                End If
+
+
+            End While
+
+        End Using
+    End Sub
+
+    Private Sub dgvEditDrugsList_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvEditDrugsList.CellClick
+
+    End Sub
+
+    Private Sub dgvEditDrugsList_CellContextMenuStripChanged(sender As Object, e As DataGridViewCellEventArgs) Handles dgvEditDrugsList.CellContextMenuStripChanged
+
+    End Sub
+
+
+    Private Sub dgvEditDrugsList_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles dgvEditDrugsList.CellEndEdit
+        Try
+            ' Clear the row error in case the user presses ESC.   
+            dgvEditDrugsList.Rows(e.RowIndex).ErrorText = String.Empty
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+
+
+    Private Sub btnUpdateDrugName_Click(sender As Object, e As EventArgs) Handles btnUpdateDrugName.Click
+        UpdateDrugIdInPricesAndExpirations()
+    End Sub
+
+
+    Private Sub DisplayDetailsOfDrugs(ByVal id As Integer)
+
+        Dim insertData As String = ""
+        Dim changed = False
+
+        Using con As SqlConnection = New System.Data.SqlClient.SqlConnection(connectionstring)
+            con.Open()
+
+            insertData = "SELECT * " & _
+                        "FROM APOTIKH " & _
+                        "WHERE APOTIKH.AP_ID = @Id"
+
+            Dim cmd As New SqlCommand(insertData, con)
+
+            cmd.Parameters.AddWithValue("@Id", If(dgvEditDrugsList.Rows(dgvEditDrugsList.SelectedRows(0).Index).Cells(5).Value, DBNull.Value))
+
+            Dim myReader As SqlClient.SqlDataReader = cmd.ExecuteReader()
+
+            If myReader.HasRows Then
+
+                Do While myReader.Read()
+
+                    ' Aν έχουν αλλάξει οι τιμές
+                    'MsgBox(myReader("AP_DESCRIPTION") & "-" & dgvEditDrugsList.Rows(index).Cells(0).GetEditedFormattedValue(index, DataGridViewDataErrorContexts.CurrentCellChange))
+                    'MsgBox(myReader("AP_MORFI") & "-" & dgvEditDrugsList.Rows(index).Cells(1).GetEditedFormattedValue(index, DataGridViewDataErrorContexts.CurrentCellChange))
+                    'MsgBox(CType(myReader("AP_TIMH_XON"), Decimal) & "-" & CType(GetEditedFormatedValue(index, 2).Substring(0, GetEditedFormatedValue(index, 2).Length - 2), Decimal))
+                    'MsgBox(CType(myReader("AP_TIMH_LIAN"), Decimal) & "-" & GetEditedFormatedValue(index, 3).Substring(0, GetEditedFormatedValue(index, 3).Length - 2))
+
+                    'MsgBox(dle_description & " : " & dle_morfi & " : " & dle_lianiki.ToString & " : " & dle_xondriki.ToString)
+
+
+                    txtAP_Description.Text = If(IsDBNull(myReader("AP_DESCRIPTION")), "", myReader("AP_DESCRIPTION"))
+                    txtAP_Morfi.Text = If(IsDBNull(myReader("AP_MORFI")), "", myReader("AP_MORFI"))
+
+
+
+                    'If If(IsDBNull(myReader("AP_TIMH_XON")), 0, myReader("AP_TIMH_XON")) <> dle_xondriki Then changed = True
+
+                    'If If(IsDBNull(myReader("AP_TIMH_LIAN")), 0, myReader("AP_TIMH_LIAN")) <> dle_lianiki Then changed = True
+
+                    'If IsDBNull(myReader("AP_MORFI")) = True Then
+                    '    If morfi <> "" Then changed = True
+                    'Else
+                    '    If myReader("AP_MORFI") <> morfi Then changed = True
+                    'End If
+
+                    'If IsDBNull(myReader("AP_TIMH_XON")) = True Then
+                    '    If xondriki <> "" Then changed = True
+                    'ElseIf IsDBNull(myReader("AP_TIMH_XON")) = False And xondriki <> "" Then
+                    '    If myReader("AP_TIMH_XON") <> CType(xondriki.Substring(0, xondriki.Length - 2), Decimal) Then changed = True
+                    '    'MsgBox(myReader("AP_TIMH_XON") & " : " & CType(xondriki.Substring(0, xondriki.Length - 2), Decimal))
+                    'End If
+
+                    'If IsDBNull(myReader("AP_TIMH_LIAN")) = True Then
+                    '    If lianiki <> "" Then changed = True
+                    'ElseIf IsDBNull(myReader("AP_TIMH_LIAN")) = False And lianiki <> "" Then
+                    '    If myReader("AP_TIMH_LIAN") <> CType(lianiki.Substring(0, lianiki.Length - 2), Decimal) Then changed = True
+                    'End If
+
+                    'If myReader("BRAP_AP_BARCODE") <> dgvEditDrugsList.Rows(index).Cells(4).GetEditedFormattedValue(index, DataGridViewDataErrorContexts.CurrentCellChange) Then changed = True
+
+                    'MsgBox(myReader("AP_DESCRIPTION") & "-" & myReader("AP_MORFI") & "-" & myReader("AP_TIMH_XON") & "-" & myReader("AP_TIMH_LIAN") & "-" & myReader("BRAP_AP_BARCODE"))
+                    'For t = 0 To 6
+                    '    MsgBox("Field " & t & ":  " & myReader(t))
+                    'Next
+
+                    '        ' σημειώνει το record σαν changed
+                    '        If dgvEditDrugsList.Rows(index).Cells(7).Value = True Or changed = True Then dle_changed = True
+                    '        If changed = True Then dgvEditDrugsList.Rows(index).Cells(7).Value = True 'Return True
+
+
+                Loop
+
+
+
+            End If
+
+            'Return False
+
+        End Using
+    End Sub
+
+
+
+    Private Sub dgvEditDrugsList_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvEditDrugsList.CellContentClick
+
+
+
+    End Sub
+
+    Private Sub dgvEditDrugsList_RowLeave(sender As Object, e As DataGridViewCellEventArgs) Handles dgvEditDrugsList.RowLeave
+
+    End Sub
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+
+    End Sub
+
+    Private Sub dgvEditDrugsList_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles dgvEditDrugsList.CellValueChanged
+        ' Ξεκινάει την διαδικασία Updating των δεδομένων του DataGrid 
+        'MsgBox(e.RowIndex)
+        Try
+            UpdateDrugList(e.RowIndex)
+        Catch ex As Exception
+        End Try
+
+    End Sub
+
+    Private Sub btnDeleteDrugList_Click(sender As Object, e As EventArgs) Handles btnDeleteDrugList.Click
+        DeleteCurrentDatagridRow()
+    End Sub
+End Class

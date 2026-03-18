@@ -1,0 +1,269 @@
+﻿' Exported: 2025-10-23 00:24:46 +03:00
+' Project:  Pharmacy.vbproj
+' Source:   frmDrugsOrParadrugsExpiring.vb
+'
+'Imports Pharmacy.GlobalFunctions
+'Imports Pharmacy.GlobalVariables
+'Imports System.Data.SqlClient
+'Imports System.Windows.Forms.Timer
+'Imports System.Threading.Timer
+'Imports System.Globalization
+'Imports System.Threading
+Imports Pharmacy.GlobalFunctions
+Imports Pharmacy.GlobalVariables
+Imports System.Data.SqlClient
+Imports System.Windows.Forms.Timer
+Imports System.Threading.Timer
+Imports System.Globalization
+Imports System.Threading
+Imports System.IO
+Imports System.Collections.Generic
+Imports System.ComponentModel
+Imports System.Data
+Imports System.Drawing
+Imports System.Linq
+Imports System.Text
+Imports System.Windows.Forms
+Imports System.Configuration
+Imports Excel = Microsoft.Office.Interop.Excel
+
+
+Public Class frmDrugsOrParadrugsExpiring
+
+    Private Sub cboAction_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboAction.SelectedIndexChanged
+        If cboAction.Text = "έληξαν" Then
+            lblSyndetiko.Visible = False
+            cboPeriod.Visible = False
+        ElseIf cboAction.Text = "λήγουν" Then
+            lblSyndetiko.Visible = True
+            cboPeriod.Visible = True
+        End If
+        GetExpiringProducts()
+    End Sub
+
+    Private Sub cboPeriod_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboPeriod.SelectedIndexChanged
+        If cboPeriod.Text = "1 μήνα" Or cboPeriod.Text = "1 χρόνο" Then
+            lblSyndetiko.Text = "μέσα στον επόμενο"
+        ElseIf cboPeriod.Text = "3 μήνες" Or cboPeriod.Text = "6 μήνες" Then
+            lblSyndetiko.Text = "μέσα στους επόμενους"
+        End If
+        GetExpiringProducts()
+    End Sub
+
+    Private Sub frmDrugsOrParadrugsExpiring_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        frmCustomers.Enabled = True
+    End Sub
+
+    Private Sub frmDrugsOrParadrugsExpiring_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Me.Location = New Point(frmCustomers.Location.X + 266, frmCustomers.Location.Y + 136)
+        GetExpiringProducts()
+    End Sub
+
+    Private Sub GetExpiringProducts()
+        Dim myTot As Integer
+        Dim productName As String = ""
+
+        'stringDTG = "SELECT ProductName, concat([Month],'-' , [Year]) as ExpDate, Id, convert(varchar, concat([Year],'/',[Month],'/01'), 102) as CompleteExpDate " & _
+        '            "FROM PharmacyCustomFiles.[dbo].[Expirations] "
+
+        stringDTG = "SELECT ProductName, " & _
+                        "CONVERT(nvarchar,[Month]) + '-' + CONVERT(nvarchar,[Year]) as ExpDate, " & _
+                        "Id, " & _
+                        "CONVERT(Datetime, CONVERT(nvarchar, [Year]) + '/' + CONVERT(nvarchar, [Month]) + '/01', 102) as CompleteExpDate " & _
+                    "FROM PharmacyCustomFiles.[dbo].[Expirations] "
+
+        If cboAction.Text = "έληξαν" Then
+            'stringDTG &= "where [Month] is not null and [year] is not null and datediff(d,getdate(), concat([Year],'/',[Month],'/01')) <0 "
+            stringDTG &= "WHERE [Month] IS NOT NULL AND [year] IS NOT NULL AND DATEDIFF(d,getdate(), CONVERT(Datetime, CONVERT(nvarchar, [Year]) + '/' + CONVERT(nvarchar, [Month]) + '/01', 102)) <0 "
+        ElseIf cboAction.Text = "λήγουν" Then
+            If cboPeriod.Text = "1 μήνα" Then
+                'stringDTG &= "where [Month] is not null and [year] is not null and datediff(d,getdate(), concat([Year],'/',[Month],'/01')) <30 "
+                stringDTG &= "WHERE [Month] IS NOT NULL AND [year] IS NOT NULL AND DATEDIFF(d,getdate(), CONVERT(Datetime, CONVERT(nvarchar, [Year]) + '/' + CONVERT(nvarchar, [Month]) + '/01', 102))  <30 "
+            ElseIf cboPeriod.Text = "3 μήνες" Then
+                stringDTG &= "WHERE [Month] IS NOT NULL AND [year] IS NOT NULL AND DATEDIFF(d,getdate(), CONVERT(Datetime, CONVERT(nvarchar, [Year]) + '/' + CONVERT(nvarchar, [Month]) + '/01', 102)) <90 "
+            ElseIf cboPeriod.Text = "6 μήνες" Then
+                stringDTG &= "WHERE [Month] IS NOT NULL AND [year] IS NOT NULL AND DATEDIFF(d,getdate(), CONVERT(Datetime, CONVERT(nvarchar, [Year]) + '/' + CONVERT(nvarchar, [Month]) + '/01', 102))  <180 "
+            ElseIf cboPeriod.Text = "1 χρόνο" Then
+                stringDTG &= "WHERE [Month] IS NOT NULL AND [year] IS NOT NULL AND DATEDIFF(d,getdate(), CONVERT(Datetime, CONVERT(nvarchar, [Year]) + '/' + CONVERT(nvarchar, [Month]) + '/01', 102))  <365 "
+            End If
+        End If
+
+        If cboProduct2Expire.Text <> "ΟΛΑ" Then
+            stringDTG &= "AND [ProductName] LIKE '%" & cboProduct2Expire.Text & "%' "
+        End If
+
+        stringDTG &= "ORDER BY DATEDIFF(d,getdate(), CONVERT(Datetime, CONVERT(nvarchar, [Year]) + '/' + CONVERT(nvarchar, [Month]) + '/01', 102)), ProductName"
+
+
+        'myTot = FillDatagrid(dgvExpiringProducts, bsExpiringProducts, {"Προιόν", "Λήξη"}, {246, 60}, {"", ""}, {"Id", "CompleteExpDate"})
+        myTot = DisplayCustomDatagrid_DrugsExpiring(stringDTG)
+
+        'Πάει στο τελευταίο record του datagrid
+        'Try
+        '    Dim myRow As Integer = Me.dgvExpirations.RowCount - 1
+        '    Me.dgvExpirations.FirstDisplayedScrollingRowIndex = myRow
+        '    Me.dgvExpirations.CurrentCell = Me.dgvExpirations.Rows(myRow).Cells(0)
+        'Catch ex As Exception
+        'End Try
+
+        ' Ενημερωτικό μύνημα
+        Select Case myTot
+            Case 0
+                grpExpiringProducts.Text = ""
+            Case 1
+                grpExpiringProducts.Text = "1 προιόν"
+            Case Is > 1
+                grpExpiringProducts.Text = myTot.ToString & " προιόντα"
+        End Select
+
+    End Sub
+
+
+
+    Private Function DisplayCustomDatagrid_DrugsExpiring(ByVal mysql As String) As Integer
+
+        'Initialization νεας σύνδεσης με το connectionString που παίρνει από τις GlobalVariables
+        con = New SqlConnection(connectionstring)
+
+        'που την ανοίγει εδώ
+        con.Open()
+
+        'Initialization νέου CommandAdapter με την SqlString που παίρνει σαν εξωτερική παράμετρο
+        cmdDTG = New SqlCommand(mysql, con)
+        daDTG = New SqlDataAdapter(cmdDTG)  'Ορισμός νέου SqlDataAdapter και νέου DataSet
+        cbDTG = New SqlCommandBuilder(daDTG)
+        dsDTG = New DataSet
+
+        ' και ο SqlDataAdapter γεμίζει το Dataset
+        daDTG.Fill(dsDTG, "DTG-DrExp")
+        ' το οποίο γεμίζει το datatable
+        dtDTG = dsDTG.Tables("DTG-DrExp")
+
+        'Καθορίζει το source του BindingSource ως το Datatable
+        bsExpiringProducts.DataSource = dtDTG
+
+        'Κλείνει την σύνδεση
+        con.Close()
+
+
+        With dgvExpiringProducts
+
+            'Αδειάζει το datagridView
+            .Columns.Clear()
+
+            'Εμποδίσει το Datagrid να εμφανίσει αυτόματα τα Columns
+            .AutoGenerateColumns = False
+
+            'Καθορίζει το  source του DataGrid ως το BindingSource
+            .DataSource = bsExpiringProducts
+
+        End With
+
+        'Όρίζει το 1ο πεδίο του Datagrid 
+        Dim Product As New DataGridViewTextBoxColumn
+        With Product
+            ' και του δίνει τη τιμή του αντίστοιχου πεδίου
+            .DataPropertyName = "ProductName"
+            ' Formatting..
+            .HeaderText = "Προιόν"
+            .Width = 246
+            .DefaultCellStyle.Format = ""
+        End With
+
+        'Όρίζει το 2ο πεδίο του Datagrid 
+        Dim ExpDate As New DataGridViewTextBoxColumn
+        With ExpDate
+            ' και του δίνει τη τιμή του αντίστοιχου πεδίου
+            .DataPropertyName = "ExpDate"
+            ' Formatting..
+            .HeaderText = "Λήξη"
+            .Width = 60
+            .DefaultCellStyle.Format = ""
+        End With
+
+        Dim Id As New DataGridViewTextBoxColumn
+        With Id
+            ' και του δίνει τη τιμή του αντίστοιχου πεδίου
+            .DataPropertyName = "Id"
+            ' Formatting..
+            .HeaderText = "Id"
+            .Width = 60
+            .DefaultCellStyle.Format = ""
+        End With
+
+        Dim ComplExpDate As New DataGridViewTextBoxColumn
+        With ComplExpDate
+            ' και του δίνει τη τιμή του αντίστοιχου πεδίου
+            .DataPropertyName = "CompleteExpDate"
+            ' Formatting..
+            .HeaderText = "CompleteExpDate"
+            .Width = 220
+            .DefaultCellStyle.Format = ""
+        End With
+
+        With dgvExpiringProducts
+            'Εμφανίζει τα columns του Datagrid
+            .Columns.Add(Product)
+            .Columns.Add(ExpDate)
+            .Columns.Add(Id)
+            .Columns.Add(ComplExpDate)
+
+            ' Εναλλαγή του χρωματισμού των rows
+            .RowsDefaultCellStyle.BackColor = Color.Bisque
+            .AlternatingRowsDefaultCellStyle.BackColor = Color.Beige
+
+            'Εξαφανίζει τo πεδίο "Id"
+            .Columns(2).Visible = False
+            .Columns(3).Visible = False
+        End With
+
+        'Επιστρέφει τον συνολικό αριθμό εγγραφών του Datagrid
+        Return dsDTG.Tables("DTG-DrExp").Rows.Count
+
+    End Function
+
+
+
+    Private Sub DeleteExpiration()
+        Dim insertData As String = ""
+        Dim id As Integer = 0
+
+        Try
+            id = dgvExpiringProducts.SelectedRows(0).Cells(2).Value
+        Catch ex As Exception
+        End Try
+
+        Using con As SqlConnection = New System.Data.SqlClient.SqlConnection(connectionstring)
+            con.Open()
+
+            insertData = "DELETE FROM PharmacyCustomFiles.dbo.Expirations " & _
+                         "WHERE Id = @Id"
+
+            ' Επιβεβαίωση της διαγραφής
+            If MessageBox.Show("Θέλετε να διαγράψετε τη λήξη # " & id & " ?", "Διαγραφή", MessageBoxButtons.YesNo) = DialogResult.Yes Then
+
+                ' Aφαίρεση της επιλεγμένης εγγραφής από το DataGRidView
+                'dgvExchangesFrom.Rows.Remove(dgvExchangesFrom.Rows(selectedRow))
+
+                Dim cmd As New SqlCommand(insertData, con)
+                cmd.Parameters.AddWithValue("@Id", id)
+
+                cmd.ExecuteNonQuery()
+            End If
+        End Using
+
+    End Sub
+
+    Private Sub btnDeleteExp_Click(sender As Object, e As EventArgs) Handles btnDeleteExp.Click
+        DeleteExpiration()
+        GetExpiringProducts()
+    End Sub
+
+    Private Sub cboProduct2Expire_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboProduct2Expire.SelectedIndexChanged
+
+    End Sub
+
+    Private Sub cboProduct2Expire_TextChanged(sender As Object, e As EventArgs) Handles cboProduct2Expire.TextChanged
+        GetExpiringProducts()
+    End Sub
+End Class

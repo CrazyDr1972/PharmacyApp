@@ -1,0 +1,157 @@
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+Partial Class frmIFETprice
+    Inherits System.Windows.Forms.Form
+
+    'Form overrides dispose to clean up the component list.
+    <System.Diagnostics.DebuggerNonUserCode()> _
+    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
+        Try
+            If disposing AndAlso components IsNot Nothing Then
+                components.Dispose()
+            End If
+        Finally
+            MyBase.Dispose(disposing)
+        End Try
+    End Sub
+
+    'Required by the Windows Form Designer
+    Private components As System.ComponentModel.IContainer
+
+    'NOTE: The following procedure is required by the Windows Form Designer
+    'It can be modified using the Windows Form Designer.  
+    'Do not modify it using the code editor.
+    <System.Diagnostics.DebuggerStepThrough()> _
+    Private Sub InitializeComponent()
+        Me.txtIFETFPA = New System.Windows.Forms.TextBox()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.txtIFETProfit = New System.Windows.Forms.TextBox()
+        Me.Label7 = New System.Windows.Forms.Label()
+        Me.txtIFETLian = New System.Windows.Forms.TextBox()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.btnIFETOK = New System.Windows.Forms.Button()
+        Me.GroupBox1.SuspendLayout()
+        Me.SuspendLayout()
+        '
+        'txtIFETFPA
+        '
+        Me.txtIFETFPA.BackColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer))
+        Me.txtIFETFPA.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.txtIFETFPA.Location = New System.Drawing.Point(58, 34)
+        Me.txtIFETFPA.Name = "txtIFETFPA"
+        Me.txtIFETFPA.Size = New System.Drawing.Size(34, 20)
+        Me.txtIFETFPA.TabIndex = 44
+        Me.txtIFETFPA.Text = "6"
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label1.Location = New System.Drawing.Point(6, 37)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(34, 13)
+        Me.Label1.TabIndex = 45
+        Me.Label1.Text = "ΦΠΑ:"
+        '
+        'txtIFETProfit
+        '
+        Me.txtIFETProfit.BackColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer))
+        Me.txtIFETProfit.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.txtIFETProfit.Location = New System.Drawing.Point(58, 11)
+        Me.txtIFETProfit.Name = "txtIFETProfit"
+        Me.txtIFETProfit.Size = New System.Drawing.Size(34, 20)
+        Me.txtIFETProfit.TabIndex = 42
+        Me.txtIFETProfit.Text = "32,42"
+        '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label7.Location = New System.Drawing.Point(6, 14)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(46, 13)
+        Me.Label7.TabIndex = 43
+        Me.Label7.Text = "Κέρδος:"
+        '
+        'txtIFETLian
+        '
+        Me.txtIFETLian.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.txtIFETLian.Location = New System.Drawing.Point(97, 36)
+        Me.txtIFETLian.Name = "txtIFETLian"
+        Me.txtIFETLian.Size = New System.Drawing.Size(59, 20)
+        Me.txtIFETLian.TabIndex = 46
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label2.Location = New System.Drawing.Point(20, 39)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(71, 13)
+        Me.Label2.TabIndex = 47
+        Me.Label2.Text = "Λιανική Τιμή:"
+        '
+        'Label3
+        '
+        Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.Label3.ForeColor = System.Drawing.Color.DodgerBlue
+        Me.Label3.Location = New System.Drawing.Point(5, 6)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(169, 13)
+        Me.Label3.TabIndex = 48
+        Me.Label3.Text = "Υπολογισμός Χονδρικής Τιμής"
+        Me.Label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'GroupBox1
+        '
+        Me.GroupBox1.Controls.Add(Me.Label1)
+        Me.GroupBox1.Controls.Add(Me.Label7)
+        Me.GroupBox1.Controls.Add(Me.txtIFETProfit)
+        Me.GroupBox1.Controls.Add(Me.txtIFETFPA)
+        Me.GroupBox1.Location = New System.Drawing.Point(42, 62)
+        Me.GroupBox1.Name = "GroupBox1"
+        Me.GroupBox1.Size = New System.Drawing.Size(99, 61)
+        Me.GroupBox1.TabIndex = 49
+        Me.GroupBox1.TabStop = False
+        '
+        'btnIFETOK
+        '
+        Me.btnIFETOK.Location = New System.Drawing.Point(51, 129)
+        Me.btnIFETOK.Name = "btnIFETOK"
+        Me.btnIFETOK.Size = New System.Drawing.Size(83, 23)
+        Me.btnIFETOK.TabIndex = 46
+        Me.btnIFETOK.Text = "Καταχώρηση"
+        Me.btnIFETOK.UseVisualStyleBackColor = True
+        '
+        'frmIFETprice
+        '
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(178, 164)
+        Me.Controls.Add(Me.btnIFETOK)
+        Me.Controls.Add(Me.GroupBox1)
+        Me.Controls.Add(Me.Label3)
+        Me.Controls.Add(Me.txtIFETLian)
+        Me.Controls.Add(Me.Label2)
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
+        Me.Name = "frmIFETprice"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
+        Me.Text = "Φάρμακο ΙΦΕΤ"
+        Me.GroupBox1.ResumeLayout(False)
+        Me.GroupBox1.PerformLayout()
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
+
+    End Sub
+    Friend WithEvents txtIFETFPA As System.Windows.Forms.TextBox
+    Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents txtIFETProfit As System.Windows.Forms.TextBox
+    Friend WithEvents Label7 As System.Windows.Forms.Label
+    Friend WithEvents txtIFETLian As System.Windows.Forms.TextBox
+    Friend WithEvents Label2 As System.Windows.Forms.Label
+    Friend WithEvents Label3 As System.Windows.Forms.Label
+    Friend WithEvents GroupBox1 As System.Windows.Forms.GroupBox
+    Friend WithEvents btnIFETOK As System.Windows.Forms.Button
+End Class

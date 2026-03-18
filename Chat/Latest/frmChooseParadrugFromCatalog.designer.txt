@@ -1,0 +1,259 @@
+﻿' Exported: 2025-10-23 00:24:45 +03:00
+' Project:  Pharmacy.vbproj
+' Source:   frmChooseParadrugFromCatalog.Designer.vb
+'
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+Partial Class frmChooseParadrugFromCatalog
+    Inherits System.Windows.Forms.Form
+
+    'Form overrides dispose to clean up the component list.
+    <System.Diagnostics.DebuggerNonUserCode()> _
+    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
+        Try
+            If disposing AndAlso components IsNot Nothing Then
+                components.Dispose()
+            End If
+        Finally
+            MyBase.Dispose(disposing)
+        End Try
+    End Sub
+
+    'Required by the Windows Form Designer
+    Private components As System.ComponentModel.IContainer
+
+    'NOTE: The following procedure is required by the Windows Form Designer
+    'It can be modified using the Windows Form Designer.  
+    'Do not modify it using the code editor.
+    <System.Diagnostics.DebuggerStepThrough()> _
+    Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmChooseParadrugFromCatalog))
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.txtSearchParaDrugsByName = New System.Windows.Forms.TextBox()
+        Me.dgvParaDrugs = New System.Windows.Forms.DataGridView()
+        Me.dgvMorfes = New System.Windows.Forms.DataGridView()
+        Me.tmrParadrugs = New System.Windows.Forms.Timer(Me.components)
+        Me.rtxtParadrugsMessage = New System.Windows.Forms.RichTextBox()
+        Me.rbByName = New System.Windows.Forms.RadioButton()
+        Me.grpSearchParadrugOptions = New System.Windows.Forms.GroupBox()
+        Me.rbByQRcode = New System.Windows.Forms.RadioButton()
+        Me.rbByBarcode = New System.Windows.Forms.RadioButton()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.txtQuantity = New System.Windows.Forms.TextBox()
+        Me.btnSearchByName = New System.Windows.Forms.Button()
+        Me.tmrTextboxEntry = New System.Windows.Forms.Timer(Me.components)
+        Me.lblChooseParadrugFromCatalog_info = New System.Windows.Forms.Label()
+        Me.btnClearName = New System.Windows.Forms.Button()
+        CType(Me.dgvParaDrugs, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dgvMorfes, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.grpSearchParadrugOptions.SuspendLayout()
+        Me.SuspendLayout()
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Location = New System.Drawing.Point(9, 12)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(66, 13)
+        Me.Label2.TabIndex = 42
+        Me.Label2.Text = "Αναζήτηση:"
+        '
+        'txtSearchParaDrugsByName
+        '
+        Me.txtSearchParaDrugsByName.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.txtSearchParaDrugsByName.Location = New System.Drawing.Point(12, 28)
+        Me.txtSearchParaDrugsByName.Name = "txtSearchParaDrugsByName"
+        Me.txtSearchParaDrugsByName.Size = New System.Drawing.Size(177, 20)
+        Me.txtSearchParaDrugsByName.TabIndex = 41
+        '
+        'dgvParaDrugs
+        '
+        Me.dgvParaDrugs.AllowUserToAddRows = False
+        Me.dgvParaDrugs.AllowUserToDeleteRows = False
+        Me.dgvParaDrugs.AllowUserToResizeColumns = False
+        Me.dgvParaDrugs.AllowUserToResizeRows = False
+        Me.dgvParaDrugs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvParaDrugs.Location = New System.Drawing.Point(12, 113)
+        Me.dgvParaDrugs.Name = "dgvParaDrugs"
+        Me.dgvParaDrugs.ReadOnly = True
+        Me.dgvParaDrugs.RowHeadersVisible = False
+        Me.dgvParaDrugs.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
+        Me.dgvParaDrugs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.dgvParaDrugs.ShowEditingIcon = False
+        Me.dgvParaDrugs.Size = New System.Drawing.Size(326, 219)
+        Me.dgvParaDrugs.TabIndex = 39
+        '
+        'dgvMorfes
+        '
+        Me.dgvMorfes.AllowUserToAddRows = False
+        Me.dgvMorfes.AllowUserToDeleteRows = False
+        Me.dgvMorfes.AllowUserToResizeColumns = False
+        Me.dgvMorfes.AllowUserToResizeRows = False
+        Me.dgvMorfes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvMorfes.Location = New System.Drawing.Point(12, 368)
+        Me.dgvMorfes.Name = "dgvMorfes"
+        Me.dgvMorfes.ReadOnly = True
+        Me.dgvMorfes.RowHeadersVisible = False
+        Me.dgvMorfes.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.dgvMorfes.ShowEditingIcon = False
+        Me.dgvMorfes.Size = New System.Drawing.Size(328, 111)
+        Me.dgvMorfes.TabIndex = 39
+        '
+        'tmrParadrugs
+        '
+        Me.tmrParadrugs.Interval = 1
+        '
+        'rtxtParadrugsMessage
+        '
+        Me.rtxtParadrugsMessage.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.rtxtParadrugsMessage.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.rtxtParadrugsMessage.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.rtxtParadrugsMessage.Location = New System.Drawing.Point(12, 338)
+        Me.rtxtParadrugsMessage.Name = "rtxtParadrugsMessage"
+        Me.rtxtParadrugsMessage.Size = New System.Drawing.Size(326, 24)
+        Me.rtxtParadrugsMessage.TabIndex = 43
+        Me.rtxtParadrugsMessage.Text = ""
+        '
+        'rbByName
+        '
+        Me.rbByName.AutoSize = True
+        Me.rbByName.Location = New System.Drawing.Point(5, 11)
+        Me.rbByName.Name = "rbByName"
+        Me.rbByName.Size = New System.Drawing.Size(59, 17)
+        Me.rbByName.TabIndex = 44
+        Me.rbByName.Text = "Όνομα"
+        Me.rbByName.UseVisualStyleBackColor = True
+        '
+        'grpSearchParadrugOptions
+        '
+        Me.grpSearchParadrugOptions.Controls.Add(Me.rbByQRcode)
+        Me.grpSearchParadrugOptions.Controls.Add(Me.rbByBarcode)
+        Me.grpSearchParadrugOptions.Controls.Add(Me.rbByName)
+        Me.grpSearchParadrugOptions.Location = New System.Drawing.Point(265, 4)
+        Me.grpSearchParadrugOptions.Name = "grpSearchParadrugOptions"
+        Me.grpSearchParadrugOptions.Size = New System.Drawing.Size(73, 83)
+        Me.grpSearchParadrugOptions.TabIndex = 45
+        Me.grpSearchParadrugOptions.TabStop = False
+        '
+        'rbByQRcode
+        '
+        Me.rbByQRcode.AutoSize = True
+        Me.rbByQRcode.Location = New System.Drawing.Point(5, 57)
+        Me.rbByQRcode.Name = "rbByQRcode"
+        Me.rbByQRcode.Size = New System.Drawing.Size(68, 17)
+        Me.rbByQRcode.TabIndex = 46
+        Me.rbByQRcode.Text = "QR code"
+        Me.rbByQRcode.UseVisualStyleBackColor = True
+        '
+        'rbByBarcode
+        '
+        Me.rbByBarcode.AutoSize = True
+        Me.rbByBarcode.Checked = True
+        Me.rbByBarcode.Location = New System.Drawing.Point(5, 34)
+        Me.rbByBarcode.Name = "rbByBarcode"
+        Me.rbByBarcode.Size = New System.Drawing.Size(65, 17)
+        Me.rbByBarcode.TabIndex = 45
+        Me.rbByBarcode.TabStop = True
+        Me.rbByBarcode.Text = "Barcode"
+        Me.rbByBarcode.UseVisualStyleBackColor = True
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(14, 84)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(61, 13)
+        Me.Label1.TabIndex = 47
+        Me.Label1.Text = "Ποσότητα:"
+        '
+        'txtQuantity
+        '
+        Me.txtQuantity.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.txtQuantity.Location = New System.Drawing.Point(81, 81)
+        Me.txtQuantity.Name = "txtQuantity"
+        Me.txtQuantity.Size = New System.Drawing.Size(24, 20)
+        Me.txtQuantity.TabIndex = 46
+        Me.txtQuantity.Text = "1"
+        Me.txtQuantity.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
+        'btnSearchByName
+        '
+        Me.btnSearchByName.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.btnSearchByName.Location = New System.Drawing.Point(195, 26)
+        Me.btnSearchByName.Name = "btnSearchByName"
+        Me.btnSearchByName.Size = New System.Drawing.Size(23, 23)
+        Me.btnSearchByName.TabIndex = 48
+        Me.btnSearchByName.Text = ">>"
+        Me.btnSearchByName.UseVisualStyleBackColor = True
+        '
+        'tmrTextboxEntry
+        '
+        Me.tmrTextboxEntry.Interval = 200
+        '
+        'lblChooseParadrugFromCatalog_info
+        '
+        Me.lblChooseParadrugFromCatalog_info.AutoSize = True
+        Me.lblChooseParadrugFromCatalog_info.ForeColor = System.Drawing.Color.Red
+        Me.lblChooseParadrugFromCatalog_info.Location = New System.Drawing.Point(125, 90)
+        Me.lblChooseParadrugFromCatalog_info.Name = "lblChooseParadrugFromCatalog_info"
+        Me.lblChooseParadrugFromCatalog_info.Size = New System.Drawing.Size(208, 13)
+        Me.lblChooseParadrugFromCatalog_info.TabIndex = 49
+        Me.lblChooseParadrugFromCatalog_info.Text = "To προιόν προστέθηκε στις Ανταλλαγές"
+        Me.lblChooseParadrugFromCatalog_info.Visible = False
+        '
+        'btnClearName
+        '
+        Me.btnClearName.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.btnClearName.Image = CType(resources.GetObject("btnClearName.Image"), System.Drawing.Image)
+        Me.btnClearName.Location = New System.Drawing.Point(224, 26)
+        Me.btnClearName.Name = "btnClearName"
+        Me.btnClearName.Size = New System.Drawing.Size(23, 23)
+        Me.btnClearName.TabIndex = 50
+        Me.btnClearName.UseVisualStyleBackColor = True
+        '
+        'frmChooseParadrugFromCatalog
+        '
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(367, 497)
+        Me.Controls.Add(Me.txtSearchParaDrugsByName)
+        Me.Controls.Add(Me.btnClearName)
+        Me.Controls.Add(Me.lblChooseParadrugFromCatalog_info)
+        Me.Controls.Add(Me.btnSearchByName)
+        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.txtQuantity)
+        Me.Controls.Add(Me.grpSearchParadrugOptions)
+        Me.Controls.Add(Me.rtxtParadrugsMessage)
+        Me.Controls.Add(Me.dgvMorfes)
+        Me.Controls.Add(Me.dgvParaDrugs)
+        Me.Controls.Add(Me.Label2)
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
+        Me.Name = "frmChooseParadrugFromCatalog"
+        Me.Text = "Επιλογή προιόντος από Κατάλογο"
+        Me.TopMost = True
+        CType(Me.dgvParaDrugs, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dgvMorfes, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.grpSearchParadrugOptions.ResumeLayout(False)
+        Me.grpSearchParadrugOptions.PerformLayout()
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
+
+    End Sub
+    Friend WithEvents Label2 As System.Windows.Forms.Label
+    Friend WithEvents txtSearchParaDrugsByName As System.Windows.Forms.TextBox
+    Friend WithEvents dgvParaDrugs As System.Windows.Forms.DataGridView
+    Friend WithEvents dgvMorfes As System.Windows.Forms.DataGridView
+    Friend WithEvents tmrParadrugs As System.Windows.Forms.Timer
+    Friend WithEvents rtxtParadrugsMessage As System.Windows.Forms.RichTextBox
+    Friend WithEvents rbByName As System.Windows.Forms.RadioButton
+    Friend WithEvents grpSearchParadrugOptions As System.Windows.Forms.GroupBox
+    Friend WithEvents rbByBarcode As System.Windows.Forms.RadioButton
+    Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents txtQuantity As System.Windows.Forms.TextBox
+    Friend WithEvents btnSearchByName As System.Windows.Forms.Button
+    Friend WithEvents tmrTextboxEntry As System.Windows.Forms.Timer
+    Friend WithEvents lblChooseParadrugFromCatalog_info As System.Windows.Forms.Label
+    Friend WithEvents rbByQRcode As RadioButton
+    Friend WithEvents btnClearName As Button
+End Class

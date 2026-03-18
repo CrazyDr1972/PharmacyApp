@@ -1,0 +1,420 @@
+﻿Imports System.Diagnostics
+Imports Microsoft.Win32
+Imports System.Linq
+
+Public Class frmDebtEntry
+
+    ' === Delegates για να χρησιμοποιήσεις τις ΥΠΑΡΧΟΥΣΕΣ συναρτήσεις σου ===
+    Public Delegate Function LookupByBarcodeDelegate(barcode As String) As String
+    Public Delegate Function LookupByQRCodeDelegate(qrcode As String) As String
+    Public Delegate Function GetRetailFromScannedDelegate(raw As String) As Decimal?
+
+    Private ReadOnly _lookupBarcode As LookupByBarcodeDelegate
+    Private ReadOnly _lookupQR As LookupByQRCodeDelegate
+    Private ReadOnly _getRetailFromScanned As GetRetailFromScannedDelegate
+    ' --- Guards για διπλές αποθηκεύσεις ---
+    Private _committing As Boolean = False
+    Private _lastCommittedRaw As String = ""
+    Private _lastCommitTs As DateTime = DateTime.MinValue
+    ' --- Cooldown μετά από επιτυχημένο commit στο Scanner ---
+    Private _commitCooldownUntil As DateTime = DateTime.MinValue
+    Private Const COMMIT_COOLDOWN_MS As Integer = 250
+
+
+    ' === Public Event προς frmCustomers (για να καλέσεις SaveDebtRow κλπ) ===
+    Public Class DebtCommittedEventArgs
+        Inherits EventArgs
+        Public Property DateIn As Date
+        Public Property Retail As Decimal
+        Public Property RawCode As String
+        Public Property Description As String
+        Public Property IsPrescription As Boolean
+    End Class
+    Public Event DebtCommitted(sender As Object, e As DebtCommittedEventArgs)
+
+    ' === Heuristics για scanner ===
+    Private ReadOnly _sw As New Stopwatch()
+    Private Const MAX_EDIT_MS_FOR_SCANNER As Integer = 600
+
+    ' === Μόνιμη αποθήκευση θέσης ===
+    Private Const REG_PATH As String = "Software\Pharmacy\DebtEntryForm"
+    ' === Debounce για το scan ===
+    Private ReadOnly _scanTimer As New Timer() With {.Interval = 120}
+
+    Public Sub New(lookupBarcode As LookupByBarcodeDelegate,
+                   lookupQR As LookupByQRCodeDelegate,
+                   getRetailFromScanned As GetRetailFromScannedDelegate)
+
+        InitializeComponent()
+
+        AddHandler _scanTimer.Tick, AddressOf ScanTimer_Tick
+
+
+        _lookupBarcode = lookupBarcode
+        _lookupQR = lookupQR
+        _getRetailFromScanned = getRetailFromScanned
+
+        rbScanner.Checked = True
+        UpdateInfoLabel()
+    End Sub
+
+    ' -------- Life cycle / Settings --------
+    Private Sub frmDebtEntry_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        RestoreWindowLocation()
+        dtpDate.Value = Date.Today
+        txtRetail.Text = ""
+        txtCode.Text = ""
+        lblPriceErrorMsg.Visible = False   ' ΝΕΟ: κρυφό στην αρχή
+        UpdateInfoLabel() ' <<< βεβαιώσου ότι το AcceptButton ταιριάζει με το αρχικό mode
+        txtCode.Focus()
+        txtCode.Select()
+    End Sub
+
+    Private Sub frmDebtEntry_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        SaveWindowLocation()
+    End Sub
+
+    ' === ΝΕΟ: auto-switch σε Scanner όταν ανιχνευθεί «γρήγορη» εισαγωγή (scan) ===
+    Private Sub AutoSwitchToScannerIfFastInput(currentText As String)
+        ' Αν ήδη είμαστε σε Scanner, δεν χρειάζεται τίποτα
+        If rbScanner.Checked Then Exit Sub
+
+        ' Συνθήκες: έχει ξεκινήσει το stopwatch, είμαστε εντός ορίου «γρήγορης» πληκτρολόγησης
+        ' και το μήκος δείχνει ότι δεν είναι μεμονωμένο πάτημα (π.χ. 8+ χαρακτήρες)
+        If _sw.IsRunning AndAlso _sw.ElapsedMilliseconds <= MAX_EDIT_MS_FOR_SCANNER AndAlso currentText.Length >= 8 Then
+            rbScanner.Checked = True   ' θα ενημερωθεί και το lblInfo μέσω του CheckedChanged
+        End If
+    End Sub
+
+
+
+    ' === ΝΕΟ: αναγνώριση «συνταγής» από το raw ===
+    Private Function IsPrescriptionRaw(raw As String) As Boolean
+        If String.IsNullOrWhiteSpace(raw) Then Return False
+        ' Συνταγή: 12+ ψηφία ΚΑΙ να μην επιστρέφει περιγραφή το lookup
+        If raw.All(AddressOf Char.IsDigit) AndAlso raw.Length >= 12 Then
+            Dim desc As String = Nothing
+            If _lookupBarcode IsNot Nothing Then desc = _lookupBarcode.Invoke(raw)
+            If String.IsNullOrEmpty(desc) Then Return True
+        End If
+        Return False
+    End Function
+
+    ' === ΝΕΟ: UI χειρισμός όταν λείπει λιανική σε σκαναρισμένη συνταγή ===
+    Private Sub ShowRetailMissingErrorUI()
+        lblPriceErrorMsg.Text = "Δώστε λιανική τιμή πριν τη συνταγή."
+        lblPriceErrorMsg.Visible = True
+        txtCode.Clear()
+        txtRetail.Focus()
+        txtRetail.SelectAll()
+    End Sub
+
+
+    Private Function EnsureRetailBeforeCommit() As Boolean
+        ' Αν υπάρχει ήδη τιμή, είμαστε οκ
+        Dim s As String = If(txtRetail.Text, "").Trim()
+        If s <> "" AndAlso s <> "0" Then Return True
+
+        ' Προσπάθησε να την αντλήσεις από το scan
+        Dim raw As String = If(txtCode.Text, "").Trim()
+        If raw <> "" Then
+            MaybeFillRetailFromScan(raw)
+            s = If(txtRetail.Text, "").Trim()
+            If s <> "" AndAlso s <> "0" Then Return True
+        End If
+
+        ' === ΝΕΟ: Αν είμαστε σε scanner mode ΚΑΙ πρόκειται για συνταγή, μη βγάλεις MessageBox
+        If rbScanner.Checked AndAlso LooksLikePrescription(raw) Then
+            ShowRetailMissingErrorUI()
+            Return False
+        End If
+
+
+        ' Σε κάθε άλλη περίπτωση (πληκτρολόγηση κ.λπ.) άφησέ το να αποτύχει αργότερα στο ParseRetail (που θα εμφανίσει μήνυμα)
+        Return False
+    End Function
+
+
+
+    Private Sub RestoreWindowLocation()
+        Try
+            Using k = Registry.CurrentUser.OpenSubKey(REG_PATH, False)
+                If k IsNot Nothing Then
+                    Dim left = CInt(k.GetValue("Left", Me.Left))
+                    Dim top = CInt(k.GetValue("Top", Me.Top))
+                    Me.Left = left
+                    Me.Top = top
+                Else
+                    Me.CenterToScreen()
+                End If
+            End Using
+        Catch
+            Me.CenterToScreen()
+        End Try
+    End Sub
+
+    Private Sub SaveWindowLocation()
+        Try
+            Using k = Registry.CurrentUser.CreateSubKey(REG_PATH)
+                k.SetValue("Left", Me.Left, RegistryValueKind.DWord)
+                k.SetValue("Top", Me.Top, RegistryValueKind.DWord)
+            End Using
+        Catch
+        End Try
+    End Sub
+
+    ' -------- UI state --------
+    Private Sub rbTyping_CheckedChanged(sender As Object, e As EventArgs) Handles rbTyping.CheckedChanged
+        UpdateInfoLabel()
+    End Sub
+
+    Private Sub rbScanner_CheckedChanged(sender As Object, e As EventArgs) Handles rbScanner.CheckedChanged
+        UpdateInfoLabel()
+    End Sub
+
+    Private Sub UpdateInfoLabel()
+        If rbScanner.Checked Then
+            lblInfo.Text = "Λειτουργία: Scanner (αυτόματη αποθήκευση με το scan)"
+            Me.AcceptButton = Nothing     ' <<< ΝΕΟ: Απενεργοποίηση Enter στο Scanner
+        Else
+            lblInfo.Text = "Λειτουργία: Πληκτρολόγηση (Enter για αποθήκευση)"
+            Me.AcceptButton = btnSave     ' <<< ΝΕΟ: Ενεργοποίηση Enter στο Typing
+        End If
+    End Sub
+
+
+    ' -------- Validation helpers --------
+    Private Function ParseRetail() As Decimal?
+        Dim s As String = If(txtRetail.Text, "").Trim()
+        If s = "" Or s = "0" Then
+            MessageBox.Show("Η λιανική δεν μπορεί να είναι κενή ή μηδενική.", "Σφάλμα ποσού",
+                        MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            txtCode.Text = ""
+            txtRetail.Text = ""
+            txtRetail.Focus()
+            Return Nothing
+        End If
+        Dim value As Decimal
+        If Decimal.TryParse(s, Globalization.NumberStyles.Any, Globalization.CultureInfo.CurrentCulture, value) Then
+            If Math.Abs(value) > 10000D Then
+                MessageBox.Show("Το ποσό δεν μπορεί να υπερβαίνει τα 10.000,00 €.", "Σφάλμα ποσού", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                Return Nothing
+            End If
+            If value < 0D Then
+                MessageBox.Show("Η λιανική δεν μπορεί να είναι αρνητική.", "Σφάλμα ποσού", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                Return Nothing
+            End If
+            Return value
+        Else
+            MessageBox.Show("Δώσε έγκυρη αριθμητική τιμή στη Λιανική (π.χ. 12,34).", "Σφάλμα ποσού", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Return Nothing
+        End If
+    End Function
+
+    Private Function ResolveDescription(ByRef isPrescription As Boolean) As String
+        Dim raw As String = If(txtCode.Text, "").Trim()
+        isPrescription = False
+        If raw = "" Then Return ""
+
+        ' QR vs Barcode vs Ελεύθερο κείμενο
+        If raw.Length > 15 AndAlso Not raw.Any(AddressOf Char.IsWhiteSpace) Then
+            ' QR (τυπικά παίρνουμε τα 14 από θέση 2)
+            Dim qr As String = If(raw.Length >= 16, raw.Substring(2, 14), raw)
+            Dim desc As String = Nothing
+            If _lookupQR IsNot Nothing Then desc = _lookupQR.Invoke(qr)
+            If Not String.IsNullOrEmpty(desc) Then Return desc
+        End If
+
+        If raw.All(AddressOf Char.IsDigit) AndAlso raw.Length >= 12 Then
+            ' Καθαρό barcode
+            Dim desc As String = Nothing
+            If _lookupBarcode IsNot Nothing Then desc = _lookupBarcode.Invoke(raw)
+            If Not String.IsNullOrEmpty(desc) Then Return desc
+
+            ' Αν δεν βρέθηκε: συνταγή
+            isPrescription = True
+            Return $"Συνταγή ({raw})"
+        End If
+
+        ' Ελεύθερη περιγραφή
+        Return raw
+    End Function
+
+    ' Αν ο scanner «πετάξει» και την λιανική μέσα στο raw, πάρε την
+    Private Sub MaybeFillRetailFromScan(raw As String)
+        If _getRetailFromScanned Is Nothing Then Return
+        Dim r = _getRetailFromScanned.Invoke(raw)
+        If r.HasValue Then
+            txtRetail.Text = r.Value.ToString("0.00")
+        End If
+    End Sub
+
+    ' -------- Commit logic --------
+    Private Function ValidateAllAndCommit() As Boolean
+        ' --- Reentrancy guard ---
+        If _committing Then Return False
+        ' --- ΝΕΟ: Cooldown, μόνο σε Scanner mode ---
+        If rbScanner.Checked AndAlso Date.Now < _commitCooldownUntil Then
+            Return False
+        End If
+        _committing = True
+        Try
+            Dim d As Date = dtpDate.Value
+
+            ' --- Anti-double: αν ίδιο raw πολύ πρόσφατα, μην ξαναπεράσεις ---
+            Dim currentRaw As String = If(txtCode.Text, "").Trim()
+            If currentRaw <> "" AndAlso
+           currentRaw = _lastCommittedRaw AndAlso
+           (Date.Now - _lastCommitTs).TotalMilliseconds < 800 Then
+                Return False
+            End If
+
+            ' === όπως ήδη υπάρχει ===
+            If Not EnsureRetailBeforeCommit() Then
+                Return False
+            End If
+
+            Dim retail As Decimal? = ParseRetail()
+            If Not retail.HasValue Then Return False
+
+            Dim isRx As Boolean = False
+            Dim desc As String = ResolveDescription(isRx)
+            If String.IsNullOrWhiteSpace(desc) Then
+                MessageBox.Show("Συμπλήρωσε κωδικό/περιγραφή.", "Ελλιπή στοιχεία",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                txtCode.Focus()
+                Return False
+            End If
+
+            RaiseEvent DebtCommitted(Me, New DebtCommittedEventArgs With {
+            .DateIn = d,
+            .Retail = retail.Value,
+            .RawCode = currentRaw,
+            .Description = desc,
+            .IsPrescription = isRx
+        })
+
+            ' --- Επιτυχές commit: ενημέρωσε τα σημάδια για διπλό submit ---
+            _lastCommittedRaw = currentRaw
+            _lastCommitTs = Date.Now
+
+            ' --- ΝΕΟ: Στήσε μικρό cooldown για να καταπιεί τυχόν 2ο trigger του ίδιου scan ---
+            _commitCooldownUntil = Date.Now.AddMilliseconds(COMMIT_COOLDOWN_MS)
+
+            txtCode.Clear()
+            txtRetail.Clear()
+            dtpDate.Value = Date.Today
+            txtCode.Focus()
+            Return True
+
+        Finally
+            _committing = False
+        End Try
+    End Function
+
+    Private Sub txtCode_KeyDown(sender As Object, e As KeyEventArgs) Handles txtCode.KeyDown
+        If rbScanner.Checked AndAlso (e.KeyCode = Keys.Enter OrElse e.KeyCode = Keys.Return) Then
+            e.Handled = True
+            e.SuppressKeyPress = True
+        End If
+    End Sub
+
+
+    Private Sub txtRetail_TextChanged(sender As Object, e As EventArgs) Handles txtRetail.TextChanged
+        If lblPriceErrorMsg.Visible Then
+            Dim s = txtRetail.Text.Trim()
+            If s <> "" AndAlso s <> "0" Then
+                lblPriceErrorMsg.Visible = False
+            End If
+        End If
+    End Sub
+
+
+
+    ' === ΝΕΟ: μόλις πάμε να σκανάρουμε/γράψουμε ξανά, κρύψε το μήνυμα λάθους τιμής ===
+    Private Sub txtCode_Enter(sender As Object, e As EventArgs) Handles txtCode.Enter
+        If lblPriceErrorMsg.Visible Then
+            lblPriceErrorMsg.Visible = False
+        End If
+    End Sub
+
+
+    ' --- Πληκτρολόγηση: Enter για αποθήκευση ---
+    Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
+        ValidateAllAndCommit()
+    End Sub
+
+    Private Sub frmDebtEntry_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+        If rbTyping.Checked AndAlso e.KeyCode = Keys.Enter Then
+            e.Handled = True
+            e.SuppressKeyPress = True
+            ValidateAllAndCommit()
+        End If
+    End Sub
+
+    ' --- Scanner: αυτομάτως μόλις ολοκληρωθεί το scan ---
+
+    Private Sub txtCode_TextChanged(sender As Object, e As EventArgs) Handles txtCode.TextChanged
+        Dim txt As String = If(txtCode.Text, "").Trim()
+
+        If txt.Length = 0 Then
+            _sw.Reset()
+            _scanTimer.Stop()
+            Exit Sub
+        End If
+
+        If Not _sw.IsRunning Then _sw.Restart()
+
+        ' Auto-switch σε Scanner αν φαίνεται «γρήγορη» είσοδος
+        'AutoSwitchToScannerIfFastInput(txt)
+
+        ' Debounce: κάθε αλλαγή επανεκκινεί τον timer.
+        _scanTimer.Stop()
+        _scanTimer.Start()
+    End Sub
+
+
+    ' === Τρέχει ΜΟΝΟ όταν «ησυχάσει» η είσοδος (debounced) ===
+    Private Sub ScanTimer_Tick(sender As Object, e As EventArgs)
+        _scanTimer.Stop()
+
+        Dim raw As String = If(txtCode.Text, "").Trim()
+        If raw = "" Then
+            _sw.Reset()
+            Exit Sub
+        End If
+
+        ' Είναι «γρήγορη» εισαγωγή; (δηλ. πιθανό scan)
+        Dim fast As Boolean = _sw.IsRunning AndAlso _sw.ElapsedMilliseconds <= MAX_EDIT_MS_FOR_SCANNER
+
+        ' Τυπικά τα EAN/συνταγές έχουν 12+ χαρακτήρες
+        If rbScanner.Checked AndAlso fast AndAlso raw.Length >= 12 Then
+            ' 1) Αν ο scanner έφερε embedded λιανική, γέμισέ την
+            MaybeFillRetailFromScan(raw)
+
+            ' 2) Αν μοιάζει με συνταγή ΚΑΙ λείπει η λιανική, ΜΗΝ κάνεις commit — δείξε μήνυμα και οδήγησε τον χρήστη
+            If LooksLikePrescription(raw) Then
+                Dim s As String = If(txtRetail.Text, "").Trim()
+                If s = "" OrElse s = "0" Then
+                    ShowRetailMissingErrorUI()
+                    _sw.Reset()
+                    Exit Sub
+                End If
+            End If
+
+            ' 3) Κανονικό commit με πλήρη γραμμή scan
+            ValidateAllAndCommit()
+        End If
+
+        _sw.Reset()
+    End Sub
+
+
+    ' === ΓΡΗΓΟΡΟ, ΧΩΡΙΣ LOOKUP ===
+    Private Function LooksLikePrescription(raw As String) As Boolean
+        Return Not String.IsNullOrWhiteSpace(raw) AndAlso
+           raw.All(AddressOf Char.IsDigit) AndAlso raw.Length >= 12
+    End Function
+
+
+End Class

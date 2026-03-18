@@ -1,0 +1,230 @@
+﻿' Exported: 2025-10-23 00:24:46 +03:00
+' Project:  Pharmacy.vbproj
+' Source:   frmEditRecipes.Designer.vb
+'
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+Partial Class frmEditRecipes
+    Inherits System.Windows.Forms.Form
+
+    'Form overrides dispose to clean up the component list.
+    <System.Diagnostics.DebuggerNonUserCode()> _
+    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
+        Try
+            If disposing AndAlso components IsNot Nothing Then
+                components.Dispose()
+            End If
+        Finally
+            MyBase.Dispose(disposing)
+        End Try
+    End Sub
+
+    'Required by the Windows Form Designer
+    Private components As System.ComponentModel.IContainer
+
+    'NOTE: The following procedure is required by the Windows Form Designer
+    'It can be modified using the Windows Form Designer.  
+    'Do not modify it using the code editor.
+    <System.Diagnostics.DebuggerStepThrough()> _
+    Private Sub InitializeComponent()
+        Me.dgvIngredientList = New System.Windows.Forms.DataGridView()
+        Me.dgvCompleteList = New System.Windows.Forms.DataGridView()
+        Me.btnRemoveIngredient = New System.Windows.Forms.Button()
+        Me.btnAddIngredient = New System.Windows.Forms.Button()
+        Me.txtSearchCompleteList = New System.Windows.Forms.TextBox()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.txtRecipeName = New System.Windows.Forms.TextBox()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.Label4 = New System.Windows.Forms.Label()
+        Me.cbRecipeBook = New System.Windows.Forms.ComboBox()
+        Me.Label5 = New System.Windows.Forms.Label()
+        Me.txtRecipePage = New System.Windows.Forms.TextBox()
+        Me.btnAddRecipe = New System.Windows.Forms.Button()
+        Me.dgvRecipesList = New System.Windows.Forms.DataGridView()
+        Me.Label6 = New System.Windows.Forms.Label()
+        CType(Me.dgvIngredientList, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dgvCompleteList, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dgvRecipesList, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.SuspendLayout()
+        '
+        'dgvIngredientList
+        '
+        Me.dgvIngredientList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvIngredientList.Location = New System.Drawing.Point(273, 240)
+        Me.dgvIngredientList.Name = "dgvIngredientList"
+        Me.dgvIngredientList.Size = New System.Drawing.Size(202, 226)
+        Me.dgvIngredientList.TabIndex = 19
+        '
+        'dgvCompleteList
+        '
+        Me.dgvCompleteList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvCompleteList.Location = New System.Drawing.Point(35, 240)
+        Me.dgvCompleteList.Name = "dgvCompleteList"
+        Me.dgvCompleteList.Size = New System.Drawing.Size(202, 226)
+        Me.dgvCompleteList.TabIndex = 18
+        '
+        'btnRemoveIngredient
+        '
+        Me.btnRemoveIngredient.Location = New System.Drawing.Point(248, 338)
+        Me.btnRemoveIngredient.Name = "btnRemoveIngredient"
+        Me.btnRemoveIngredient.Size = New System.Drawing.Size(19, 23)
+        Me.btnRemoveIngredient.TabIndex = 17
+        Me.btnRemoveIngredient.Text = "<"
+        Me.btnRemoveIngredient.UseVisualStyleBackColor = True
+        '
+        'btnAddIngredient
+        '
+        Me.btnAddIngredient.Location = New System.Drawing.Point(248, 309)
+        Me.btnAddIngredient.Name = "btnAddIngredient"
+        Me.btnAddIngredient.Size = New System.Drawing.Size(19, 23)
+        Me.btnAddIngredient.TabIndex = 16
+        Me.btnAddIngredient.Text = ">"
+        Me.btnAddIngredient.UseVisualStyleBackColor = True
+        '
+        'txtSearchCompleteList
+        '
+        Me.txtSearchCompleteList.Location = New System.Drawing.Point(35, 214)
+        Me.txtSearchCompleteList.Name = "txtSearchCompleteList"
+        Me.txtSearchCompleteList.Size = New System.Drawing.Size(202, 20)
+        Me.txtSearchCompleteList.TabIndex = 13
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Location = New System.Drawing.Point(32, 198)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(170, 13)
+        Me.Label2.TabIndex = 12
+        Me.Label2.Text = "Λίστα υλικών βάσει αναζήτησης"
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(273, 224)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(114, 13)
+        Me.Label1.TabIndex = 11
+        Me.Label1.Text = "Συστατικά συνταγής"
+        '
+        'txtRecipeName
+        '
+        Me.txtRecipeName.Location = New System.Drawing.Point(261, 58)
+        Me.txtRecipeName.Name = "txtRecipeName"
+        Me.txtRecipeName.Size = New System.Drawing.Size(232, 20)
+        Me.txtRecipeName.TabIndex = 20
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(258, 42)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(94, 13)
+        Me.Label3.TabIndex = 21
+        Me.Label3.Text = "Όνομα συνταγής"
+        '
+        'Label4
+        '
+        Me.Label4.AutoSize = True
+        Me.Label4.Location = New System.Drawing.Point(258, 84)
+        Me.Label4.Name = "Label4"
+        Me.Label4.Size = New System.Drawing.Size(73, 13)
+        Me.Label4.TabIndex = 23
+        Me.Label4.Text = "Τσελεμεντές"
+        '
+        'cbRecipeBook
+        '
+        Me.cbRecipeBook.FormattingEnabled = True
+        Me.cbRecipeBook.Location = New System.Drawing.Point(261, 101)
+        Me.cbRecipeBook.Name = "cbRecipeBook"
+        Me.cbRecipeBook.Size = New System.Drawing.Size(232, 21)
+        Me.cbRecipeBook.TabIndex = 24
+        '
+        'Label5
+        '
+        Me.Label5.AutoSize = True
+        Me.Label5.Location = New System.Drawing.Point(258, 126)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(41, 13)
+        Me.Label5.TabIndex = 25
+        Me.Label5.Text = "Σελίδα"
+        '
+        'txtRecipePage
+        '
+        Me.txtRecipePage.Location = New System.Drawing.Point(261, 142)
+        Me.txtRecipePage.Name = "txtRecipePage"
+        Me.txtRecipePage.Size = New System.Drawing.Size(38, 20)
+        Me.txtRecipePage.TabIndex = 26
+        '
+        'btnAddRecipe
+        '
+        Me.btnAddRecipe.Location = New System.Drawing.Point(383, 475)
+        Me.btnAddRecipe.Name = "btnAddRecipe"
+        Me.btnAddRecipe.Size = New System.Drawing.Size(91, 23)
+        Me.btnAddRecipe.TabIndex = 27
+        Me.btnAddRecipe.Text = "Create Recipe"
+        Me.btnAddRecipe.UseVisualStyleBackColor = True
+        '
+        'dgvRecipesList
+        '
+        Me.dgvRecipesList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvRecipesList.Location = New System.Drawing.Point(32, 34)
+        Me.dgvRecipesList.Name = "dgvRecipesList"
+        Me.dgvRecipesList.Size = New System.Drawing.Size(202, 135)
+        Me.dgvRecipesList.TabIndex = 29
+        '
+        'Label6
+        '
+        Me.Label6.AutoSize = True
+        Me.Label6.Location = New System.Drawing.Point(32, 18)
+        Me.Label6.Name = "Label6"
+        Me.Label6.Size = New System.Drawing.Size(92, 13)
+        Me.Label6.TabIndex = 28
+        Me.Label6.Text = "Λίστα συνταγών"
+        '
+        'frmEditRecipes
+        '
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(507, 510)
+        Me.Controls.Add(Me.dgvRecipesList)
+        Me.Controls.Add(Me.Label6)
+        Me.Controls.Add(Me.btnAddRecipe)
+        Me.Controls.Add(Me.txtRecipePage)
+        Me.Controls.Add(Me.Label5)
+        Me.Controls.Add(Me.cbRecipeBook)
+        Me.Controls.Add(Me.Label4)
+        Me.Controls.Add(Me.Label3)
+        Me.Controls.Add(Me.txtRecipeName)
+        Me.Controls.Add(Me.dgvIngredientList)
+        Me.Controls.Add(Me.dgvCompleteList)
+        Me.Controls.Add(Me.btnRemoveIngredient)
+        Me.Controls.Add(Me.btnAddIngredient)
+        Me.Controls.Add(Me.txtSearchCompleteList)
+        Me.Controls.Add(Me.Label2)
+        Me.Controls.Add(Me.Label1)
+        Me.Name = "frmEditRecipes"
+        Me.Text = "Τροποποίηση συνταγών"
+        CType(Me.dgvIngredientList, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dgvCompleteList, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dgvRecipesList, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
+
+    End Sub
+    Friend WithEvents dgvIngredientList As System.Windows.Forms.DataGridView
+    Friend WithEvents dgvCompleteList As System.Windows.Forms.DataGridView
+    Friend WithEvents btnRemoveIngredient As System.Windows.Forms.Button
+    Friend WithEvents btnAddIngredient As System.Windows.Forms.Button
+    Friend WithEvents txtSearchCompleteList As System.Windows.Forms.TextBox
+    Friend WithEvents Label2 As System.Windows.Forms.Label
+    Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents txtRecipeName As System.Windows.Forms.TextBox
+    Friend WithEvents Label3 As System.Windows.Forms.Label
+    Friend WithEvents Label4 As System.Windows.Forms.Label
+    Friend WithEvents cbRecipeBook As System.Windows.Forms.ComboBox
+    Friend WithEvents Label5 As System.Windows.Forms.Label
+    Friend WithEvents txtRecipePage As System.Windows.Forms.TextBox
+    Friend WithEvents btnAddRecipe As System.Windows.Forms.Button
+    Friend WithEvents dgvRecipesList As System.Windows.Forms.DataGridView
+    Friend WithEvents Label6 As System.Windows.Forms.Label
+End Class

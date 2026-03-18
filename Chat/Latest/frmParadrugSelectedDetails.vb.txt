@@ -1,0 +1,230 @@
+﻿' Exported: 2025-10-23 00:24:46 +03:00
+' Project:  Pharmacy.vbproj
+' Source:   frmParadrugSelectedDetails.vb
+'
+Imports Pharmacy.GlobalFunctions
+Imports Pharmacy.GlobalVariables
+Imports System.Data.SqlClient
+Imports System.Windows.Forms.Timer
+Imports System.Threading.Timer
+Imports System.Globalization
+Imports System.Threading
+
+Public Class frmParadrugSelectedDetails
+
+    Private Sub GetDetailsSelectedDrug()
+
+        Dim SQLstring As String = "SELECT AP_DESCRIPTION,  AP_MORFI, AP_TIMH_XON, AP_TIMH_LIAN, [AP_NARKWTIKO], [AP_NOSOKOMEIAKO], [AP_KTHNIATRIKO], [AP_IFET], AP_FP_ID " & _
+                            "FROM APOTIKH  " & _
+                            "WHERE AP_CODE = '" & SelectedDetailsApCode & "' "
+        Dim Xondr As Decimal = 0
+        Dim Lian As Decimal = 0
+
+        'Initialization νεας σύνδεσης με το connectionString που παίρνει από τις GlobalVariables
+        Using con As New SqlClient.SqlConnection(connectionstring)
+
+            'Initialization νέου CommandAdapter με την Stringα αναζήτησης και την σύνδεση
+            Using cmd As New SqlClient.SqlCommand(SQLstring, con)
+
+                ' Ανοίγει την σύνδεση
+                con.Open()
+
+                'Ορισμός ExecuteReader 
+                Dim myReader As SqlClient.SqlDataReader = cmd.ExecuteReader()
+
+                If myReader.HasRows Then
+                    Do While myReader.Read()
+
+                        lblParadrugName.Text = myReader(0)
+
+                        Try
+                            lblParadrugMorfi.Text = myReader(1)
+                        Catch ex As Exception
+                            lblParadrugMorfi.Text = ""
+                        End Try
+
+                        Xondr = myReader(2)
+                        Lian = myReader(3)
+                        lblXondr.Text = Xondr.ToString("c")
+                        lblLian.Text = Lian.ToString("c")
+
+                        SelectedDetailsXondr = Xondr
+
+                        chkNarkvtiko.Checked = myReader(4)
+                        chkNosokomeiako.Checked = myReader(5)
+                        'chkKthniatriko.Checked = myReader(6)
+                        chkIFET.Checked = myReader(7)
+
+                        Select Case myReader(8)
+                            Case 1
+                                lblFPA.Text = "13%"
+                            Case 2
+                                lblFPA.Text = "23%"
+                            Case 3
+                                lblFPA.Text = "6%"
+                        End Select
+                    Loop
+                End If
+
+            End Using
+        End Using
+    End Sub
+
+
+    Private Sub GetBarcode()
+
+        Dim SQLstring As String = "SELECT APOTIKH.AP_CODE, APOTIKH_BARCODES.BRAP_AP_BARCODE " & _
+                                    "FROM APOTIKH INNER JOIN APOTIKH_BARCODES ON APOTIKH.AP_ID = APOTIKH_BARCODES.BRAP_AP_ID " & _
+                                    "WHERE  APOTIKH.AP_CODE ='" & SelectedDetailsApCode & "' "
+
+        'Initialization νεας σύνδεσης με το connectionString που παίρνει από τις GlobalVariables
+        Using con As New SqlClient.SqlConnection(connectionstring)
+
+            'Initialization νέου CommandAdapter με την Stringα αναζήτησης και την σύνδεση
+            Using cmd As New SqlClient.SqlCommand(SQLstring, con)
+
+                ' Ανοίγει την σύνδεση
+                con.Open()
+
+                'Ορισμός ExecuteReader 
+                Dim myReader As SqlClient.SqlDataReader = cmd.ExecuteReader()
+
+                If myReader.HasRows Then
+                    Do While myReader.Read()
+                        lblBarcode.Text = myReader(1)
+                    Loop
+                End If
+
+            End Using
+        End Using
+    End Sub
+
+
+
+    Public Shared Function GetOtherDetails(ByVal SQLstring As String) As String
+        Dim myvalue As String
+
+        'Initialization νεας σύνδεσης με το connectionString που παίρνει από τις GlobalVariables
+        Using con As New SqlClient.SqlConnection(connectionstring)
+
+            SQLstring &= "WHERE  APOTIKH.AP_CODE ='" & SelectedDetailsApCode & "' "
+
+            'Initialization νέου CommandAdapter με την Stringα αναζήτησης και την σύνδεση
+            Using cmd As New SqlClient.SqlCommand(SQLstring, con)
+
+                ' Ανοίγει την σύνδεση
+                con.Open()
+
+                'Ορισμός ExecuteReader 
+                Dim myReader As SqlClient.SqlDataReader = cmd.ExecuteReader()
+
+                If myReader.HasRows Then
+                    Do While myReader.Read()
+                        Try
+                            myvalue = myReader(0)
+                        Catch ex As Exception
+                        End Try
+                    Loop
+                End If
+
+            End Using
+        End Using
+        Return myvalue
+    End Function
+
+
+    Public Shared Function GetOtherDetailsByBarcode(ByVal SQLstring As String) As String
+
+        frmCustomers.txtSearchPricesParadrugs.Text = myBarcode
+
+        'Initialization νεας σύνδεσης με το connectionString που παίρνει από τις GlobalVariables
+        Using con As New SqlClient.SqlConnection(connectionstring)
+
+            SQLstring &= "FROM APOTIKH INNER JOIN APOTIKH_BARCODES ON APOTIKH.AP_ID = APOTIKH_BARCODES.BRAP_AP_ID " & _
+                        "WHERE APOTIKH_BARCODES.BRAP_AP_BARCODE ='" & frmCustomers.txtSearchPricesParadrugs.Text & "' "
+
+            'Initialization νέου CommandAdapter με την Stringα αναζήτησης και την σύνδεση
+            Using cmd As New SqlClient.SqlCommand(SQLstring, con)
+
+                ' Ανοίγει την σύνδεση
+                con.Open()
+
+                'Ορισμός ExecuteReader 
+                Dim myReader As SqlClient.SqlDataReader = cmd.ExecuteReader()
+
+                If myReader.HasRows Then
+                    Do While myReader.Read()
+                        Return myReader(0)
+                    Loop
+                End If
+
+            End Using
+        End Using
+
+    End Function
+
+
+
+    Private Sub frmParadrugSelectedDetails_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
+        frmCustomers.Enabled = True
+    End Sub
+
+
+    Private Sub ParadrugSelectedDetails_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        'Αν έχουμε έρθει από τα φάρμακα του Customers
+        If frmCustomers.tbcMain.SelectedIndex = 2 And frmCustomers.rbDrugs.Checked = True Then
+            btnDeleteCode.Visible = False
+            btnEdit.Visible = False
+        Else
+            btnDeleteCode.Visible = True
+            btnEdit.Visible = True
+        End If
+
+        GetDetailsSelectedDrug()
+
+        lblBarcode.Text = GetOtherDetails("SELECT APOTIKH_BARCODES.BRAP_AP_BARCODE FROM APOTIKH INNER JOIN APOTIKH_BARCODES ON APOTIKH.AP_ID = APOTIKH_BARCODES.BRAP_AP_ID ")
+        lblDrastiki.Text = GetOtherDetails("SELECT DROYSIA.DR_DESCRIPTION FROM APOTIKH INNER JOIN DROYSIA ON APOTIKH.AP_DR_ID = DROYSIA.DR_ID ")
+        lblDosologia.Text = GetOtherDetails("SELECT DOSOLOGIA.DO_DESCRIPTION FROM APOTIKH INNER JOIN DOSOLOGIA ON APOTIKH.AP_DO_ID = DOSOLOGIA.DO_ID ")
+        lblIndication.Text = GetOtherDetails("SELECT ENDEIXH.EN_DESCRIPTION FROM APOTIKH INNER JOIN ENDEIXH ON APOTIKH.AP_EN_ID = ENDEIXH.EN_ID ")
+        lblCategory.Text = GetOtherDetails("SELECT KATEGORY.KA_DESCRIPTION FROM APOTIKH INNER JOIN KATEGORY ON APOTIKH.AP_KA_ID = KATEGORY.KA_ID ")
+        lblYpokathgoria.Text = GetOtherDetails("SELECT YPOKATHGORIES.YPK_DESCRIPTION FROM APOTIKH INNER JOIN YPOKATHGORIES ON APOTIKH.AP_YPK_ID = YPOKATHGORIES.YPK_ID ")
+        lblNotes.Text = GetOtherDetails("SELECT APOTIKH.AP_MEMO_PWL_CUSTOM FROM APOTIKH ")
+        lblEidos.Text = GetOtherDetails("SELECT DRUG_TYPES.DT_DESCRIPTION FROM APOTIKH INNER JOIN DRUG_TYPES ON APOTIKH.AP_DT_ID = DRUG_TYPES.DT_ID ")
+
+    End Sub
+
+    Private Sub btnEdit_Click(sender As Object, e As EventArgs) Handles btnEdit.Click
+        Me.Close()
+        OpenParadrugSelectionFromCatalogForm()
+
+    End Sub
+
+    Private Sub OpenParadrugSelectionFromCatalogForm()
+
+        ' Ανοίγει το form για να επιλέξουμε προιόν
+        frmChooseParadrugFromCatalog.Show()
+
+        'Περνάει στην αναζήτηση τη πρώτη λέξη της ονομασίας του επιλεγμένου παραφάρμακου
+        Dim textBox As TextBox = Nothing
+        Dim str As String = SelectedDetailsDrugName
+
+        textBox = frmChooseParadrugFromCatalog.txtSearchParaDrugsByName
+        Try
+            textBox.Text = str.Substring(0, str.IndexOf(" "))
+        Catch ex As Exception
+        End Try
+
+        'Focus στο textbook που εισάγεται το barcode και επιλογή του
+        textBox.Focus()
+        textBox.SelectionStart = 0
+        textBox.SelectionLength = textBox.TextLength
+
+    End Sub
+
+    Private Sub btnDeleteCode_Click(sender As Object, e As EventArgs) Handles btnDeleteCode.Click
+        frmCustomers.dgvPricesParadrugs.SelectedRows(0).Cells(3).Value = 0
+        frmCustomers.dgvPricesParadrugs.SelectedRows(0).Cells(5).Value = 0
+        frmCustomers.dgvPricesParadrugs.CurrentCell = frmCustomers.dgvPricesParadrugs.SelectedRows(0).Cells(1)
+        Me.Close()
+    End Sub
+End Class

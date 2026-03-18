@@ -1,0 +1,295 @@
+﻿Imports System.IO
+Imports Pharmacy.GlobalFunctions
+Imports Pharmacy.GlobalVariables
+Imports System.Data.SqlClient
+Imports System.Management
+Imports System.ServiceProcess
+
+Public Class frmUpdateFarmNetDB
+    Private Sub Button13_Click(sender As Object, e As EventArgs) Handles btnOpenSQLServMng.Click
+        ' CRAZYDR
+        'Process.Start("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Microsoft SQL Server 2017\Configuration Tools\SQL Server 2017 Configuration Manager")
+        ' FARMAKEIO
+        Process.Start("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Microsoft SQL Server 2019\Configuration Tools\SQL Server 2019 Configuration Manager")
+    End Sub
+
+    Private Sub FrmUpdateFarmNetDB_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        FindLatestFarmNet()
+
+        Dim svcClass As ManagementClass = New ManagementClass("Win32_Service")
+        For Each svcObj As ManagementObject In svcClass.GetInstances
+            ListBoxInstalledServices.Items.Add(svcObj.Item("Name"))
+        Next
+
+    End Sub
+
+    Private Sub FindLatestFarmNet()
+
+        Dim dir = New System.IO.DirectoryInfo(FarNetFolder)
+        Dim file = dir.EnumerateFiles("FarmNet*.mdf").
+            OrderByDescending(Function(f) f.LastWriteTime).
+            FirstOrDefault()
+        If file IsNot Nothing Then
+            txtLastFarmNetDB.Text = file.Name.Substring(0, file.Name.Length - 4)
+        End If
+
+    End Sub
+
+    Private Sub UpdatePharmacy2013C()
+        Dim sql As String = ""
+        Dim InitTime As DateTime = Now()
+        'Dim strTarget As String = "Farnet_2018"
+        Dim strTarget As String = txtLastFarmNetDB.Text
+
+        'Καθαρίζει το listbox
+        lstMessage.Items.Clear()
+        lstIndex = -1
+
+        Using con As SqlConnection = New System.Data.SqlClient.SqlConnection(connectionstring)
+
+            ' Βγάζει τα database offline
+            lstMessage.Items.Add("Setting " & strDB1 & " offline... ")
+            lstIndex += 1
+            lstMessage.Refresh()
+
+            con.Open()
+            sql = "ALTER DATABASE [" & strDB1 & "] SET Offline WITH ROLLBACK IMMEDIATE "
+            Dim cmd As New SqlCommand(sql, con)
+            cmd.ExecuteNonQuery()
+
+            lstMessage.Items(lstIndex) &= "OK"
+            lstMessage.Refresh()
+
+            ' Αντιγράφει τα database
+            lstMessage.Items.Add("Updating " & strDB1 & "... ")
+            lstIndex += 1
+            lstMessage.Refresh()
+
+            Try
+                My.Computer.FileSystem.CopyFile(FarNetFolder & "\" & strTarget & ".MDF", pharmacy2013Folder & "\" & strDB1 & ".mdf", FileIO.UIOption.AllDialogs)
+                My.Computer.FileSystem.CopyFile(FarNetFolder & "\" & strTarget & "_log.LDF", pharmacy2013Folder & "\" & strDB1 & ".ldf", FileIO.UIOption.AllDialogs)
+            Catch ex As Exception
+                lstMessage.Items.Add("!!! Error !!!")
+                lstIndex += 1
+                lstMessage.Refresh()
+            End Try
+            lstMessage.Items(lstIndex) &= "OK"
+            lstMessage.Refresh()
+
+            ' Βγάζει τα database online
+            lstMessage.Items.Add("Setting " & strDB1 & " online... ")
+            lstIndex += 1
+            lstMessage.Refresh()
+
+            sql = "ALTER DATABASE [" & strDB1 & "] SET Online "
+            cmd = New SqlCommand(sql, con)
+            cmd.ExecuteNonQuery()
+
+            lstMessage.Items(lstIndex) &= "OK"
+            lstMessage.Refresh()
+
+            Dim TimeDiff As Integer = DateDiff(DateInterval.Second, InitTime, Now())
+
+            lstMessage.Items.Add("Update of " & strDB1 & " completed in " & TimeDiff & " sec.")
+            lstMessage.Items.Add("-------------------------------------")
+            lstIndex += 2
+            lstMessage.Refresh()
+
+        End Using
+
+    End Sub
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles btnOpenFarmNetDB.Click
+        FindLatestFarmNet()
+    End Sub
+
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles btnStartCopying.Click
+        UpdatePharmacy2013C()
+    End Sub
+
+    Private Sub CheckBox1_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBox1.CheckedChanged
+        If CheckBox1.Checked = True Then
+            CheckBox2.Visible = True
+            btnOpenSQLServMng.Visible = True
+
+            'Καθαρίζει το listbox
+            lstMessage.Items.Clear()
+            lstIndex = -1
+            ' Αναγράφει τις πρώτες οδηγίες
+            lstMessage.Items.Add("1. Πατήστε το κουμπί για να ανοίξει η πλατφόρμα")
+            lstIndex += 1
+            lstMessage.Items.Add("  διαχείρησης των Services.")
+            lstIndex += 1
+            lstMessage.Items.Add("2. Βρείτε στο δεξιό panel τον SQL SERVER με το")
+            lstIndex += 1
+            lstMessage.Items.Add("  όνομα CSASQL.")
+            lstIndex += 1
+            lstMessage.Items.Add("3. Κάνοντας δεξί click πάνω στο όνομα του,")
+            lstIndex += 1
+            lstMessage.Items.Add("  επιλέξτε 'Stop service'.")
+            lstMessage.Refresh()
+        End If
+    End Sub
+
+    Private Sub CheckBox2_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBox2.CheckedChanged
+
+        If CheckBox2.Checked = True Then
+            CheckBox3.Visible = True
+            btnStartCopying.Visible = True
+            btnOpenFarmNetDB.Visible = True
+            txtLastFarmNetDB.Visible = True
+
+
+        End If
+    End Sub
+
+    Private Sub CheckBox3_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBox3.CheckedChanged
+        If CheckBox3.Checked = True Then
+            CheckBox4.Visible = True
+        End If
+    End Sub
+
+    Private Sub CheckBox4_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBox4.CheckedChanged
+        If CheckBox4.Checked = True Then
+            Me.Close()
+        End If
+    End Sub
+
+
+    Private Sub ListBoxInstalledServices_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListBoxInstalledServices.SelectedIndexChanged
+        'Dim myService As String = If(String.IsNullOrEmpty(myService), "", ListBoxInstalledServices.SelectedItem.ToString)
+        Dim myService As String = ListBoxInstalledServices.SelectedItem.ToString
+        'If myService <> "" Then
+        '    txtService.Text = myService
+        'End If
+        txtService.Text = myService
+        btnStartService.Text = "Start " & myService
+        btnStopService.Text = "Stop " & myService
+        IsServicePresent(myService)
+    End Sub
+
+    Private Sub BtnStartService_Click(sender As Object, e As EventArgs) Handles btnStartService.Click
+        StartService(txtService.Text)
+    End Sub
+
+    Private Sub BtnStopService_Click(sender As Object, e As EventArgs) Handles btnStopService.Click
+        StopService(txtService.Text)
+    End Sub
+
+    Public Sub StopService(ByVal myServiceName As String)
+
+        'Dim DataSource As String = txtServer.Text
+        Dim sStatus As String
+        Dim myController As ServiceController
+
+        myController = New ServiceController
+        'myController.MachineName = DataSource
+        myController.ServiceName = myServiceName
+
+        lblServiceExist.Text += "Stopping service """ & myServiceName & """...." & vbNewLine
+
+        If myController.Status = ServiceProcess.ServiceControllerStatus.Stopped Then
+            lblServiceExist.Text += "Service """ & myServiceName & """ is already stopped" & vbNewLine
+        Else
+
+            Try
+                myController.Refresh()
+                sStatus = myController.Status.ToString
+                myController.Stop()
+                myController.WaitForStatus(ServiceControllerStatus.Stopped)
+                lblServiceExist.Text += "Service """ & myServiceName & """ stopped..." & vbNewLine
+            Catch exp As Exception
+                lblServiceExist.Text += "Could not stop service """ & myServiceName & """" & vbNewLine
+            End Try
+        End If
+    End Sub
+
+    Public Sub StartService(ByVal myServiceName As String)
+
+        'Dim DataSource As String = txtServer.Text
+        Dim sStatus, mName As String
+        Dim myController As ServiceController
+
+        myController = New ServiceController
+        'myController.MachineName = DataSource
+        myController.ServiceName = myServiceName
+        mName = myController.MachineName.ToString
+
+        lblServiceExist.Text = "Starting service """ & myServiceName & """...." & vbNewLine
+
+        Try
+            myController.Refresh()
+            sStatus = myController.Status.ToString
+            myController.Start()
+            myController.WaitForStatus(ServiceControllerStatus.Running)
+            lblServiceExist.Text += "Service """ & myServiceName & """ started..." & vbNewLine
+        Catch exp As Exception
+            lblServiceExist.Text += "Could not start service """ & myServiceName & """" & vbNewLine
+        End Try
+
+    End Sub
+
+    Public Sub IsServicePresent(ByVal myService As String)
+        Try
+            Dim svcStatus As String
+            'Dim svcClass As ManagementClass = New ManagementClass("Win32_Service")
+
+            'For Each svcObj As ManagementObject In svcClass.GetInstances
+            '    frmSrv.ListBoxInstalledServices.Items.Add(svcObj.Item("Name"))
+            'Next
+            With Me
+                If .ListBoxInstalledServices.Items.Contains(myService) = True Then
+                    .lblServiceExist.Text = "The Service " & myService & " IS Present"
+                    svcStatus = IsServiceRunning(myService)
+                    If svcStatus = "Stopped" Then
+                        .lblServiceExist.Text &= " But STOPPED"
+                        .lblServiceExist.ForeColor = Color.DarkOrange
+                        .btnStartService.Enabled = True
+                        .btnStopService.Enabled = False
+                    ElseIf svcStatus = "Running" Then
+                        .lblServiceExist.Text &= " And RUNNING"
+                        .lblServiceExist.ForeColor = Color.DarkSeaGreen
+                        .btnStartService.Enabled = False
+                        .btnStopService.Enabled = True
+                    ElseIf svcStatus = "Disabled" Then
+                        .lblServiceExist.Text &= " But DISABLED"
+                        .lblServiceExist.ForeColor = Color.DarkRed
+                        .btnStartService.Enabled = False
+                        .btnStopService.Enabled = False
+                    Else
+                        .lblServiceExist.Text &= "(" & svcStatus & ")"
+                        .lblServiceExist.ForeColor = Color.Black
+                        .btnStartService.Enabled = True
+                        .btnStopService.Enabled = True
+                    End If
+
+                ElseIf .ListBoxInstalledServices.Items.Contains(myService) = False Then
+                    .lblServiceExist.Text = "The Service " & myService & " IS Not Present " &
+                      vbNewLine & "You Can Not Use This Program To Control The Service " & myService
+                    .lblServiceExist.ForeColor = Color.DarkRed
+                    .btnStartService.Enabled = False
+                    .btnStopService.Enabled = False
+                End If
+            End With
+
+        Catch ex As Exception
+            MsgBox("Error" & vbNewLine & ex.Message.ToString,
+               MsgBoxStyle.Information, "Error Service Verification")
+        End Try
+    End Sub
+
+    Public Function IsServiceRunning(ByVal myService As String) As String
+        Dim SvcStatus As String
+        Dim ServiceController1 As ServiceController
+
+        ServiceController1 = New ServiceController
+        '    ServiceController1.MachineName = DataSource
+        ServiceController1.ServiceName = myService
+
+        ServiceController1.Refresh()
+        SvcStatus = ServiceController1.Status().ToString
+
+        Return SvcStatus
+
+    End Function
+End Class

@@ -1,0 +1,464 @@
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+Partial Class frmDrugListEdit
+    Inherits System.Windows.Forms.Form
+
+    'Form overrides dispose to clean up the component list.
+    <System.Diagnostics.DebuggerNonUserCode()> _
+    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
+        Try
+            If disposing AndAlso components IsNot Nothing Then
+                components.Dispose()
+            End If
+        Finally
+            MyBase.Dispose(disposing)
+        End Try
+    End Sub
+
+    'Required by the Windows Form Designer
+    Private components As System.ComponentModel.IContainer
+
+    'NOTE: The following procedure is required by the Windows Form Designer
+    'It can be modified using the Windows Form Designer.  
+    'Do not modify it using the code editor.
+    <System.Diagnostics.DebuggerStepThrough()> _
+    Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
+        Me.dgvEditDrugsList = New System.Windows.Forms.DataGridView()
+        Me.btnNewCategory = New System.Windows.Forms.Button()
+        Me.btnExitDrugList = New System.Windows.Forms.Button()
+        Me.btnDeleteDrugList = New System.Windows.Forms.Button()
+        Me.btnEditDrugList = New System.Windows.Forms.Button()
+        Me.btnSaveDrugList = New System.Windows.Forms.Button()
+        Me.grpDrugLIstEdit = New System.Windows.Forms.GroupBox()
+        Me.btnUpdateDrugName = New System.Windows.Forms.Button()
+        Me.txtSearchExpirDrugList = New System.Windows.Forms.TextBox()
+        Me.lblDrugListEditMessage = New System.Windows.Forms.Label()
+        Me.tmrFlashLabel = New System.Windows.Forms.Timer(Me.components)
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.txtAP_Description = New System.Windows.Forms.TextBox()
+        Me.txtAP_Morfi = New System.Windows.Forms.TextBox()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.TextBox1 = New System.Windows.Forms.TextBox()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.Button1 = New System.Windows.Forms.Button()
+        Me.ckhAP_Ektos_Kykl = New System.Windows.Forms.CheckBox()
+        Me.ckhAP_aposyrsh_Al = New System.Windows.Forms.CheckBox()
+        Me.ckhAP_STD_Lianikh = New System.Windows.Forms.CheckBox()
+        Me.ckhAP_Lhxh = New System.Windows.Forms.CheckBox()
+        Me.ckhAP_CSA = New System.Windows.Forms.CheckBox()
+        Me.ckhAP_My_Eidos = New System.Windows.Forms.CheckBox()
+        Me.ckhAP_Accept_timh = New System.Windows.Forms.CheckBox()
+        Me.ckhAP_ifet = New System.Windows.Forms.CheckBox()
+        Me.ckhAP_lista_2 = New System.Windows.Forms.CheckBox()
+        Me.ckhAP_lista_1 = New System.Windows.Forms.CheckBox()
+        Me.ckhAP_aposyrsh = New System.Windows.Forms.CheckBox()
+        Me.ckhAP_elleich = New System.Windows.Forms.CheckBox()
+        Me.chkAP_Kthniatriko = New System.Windows.Forms.CheckBox()
+        Me.chkAP_Nosokomeiako = New System.Windows.Forms.CheckBox()
+        Me.chkAP_Narkwtiko = New System.Windows.Forms.CheckBox()
+        CType(Me.dgvEditDrugsList, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.grpDrugLIstEdit.SuspendLayout()
+        Me.GroupBox1.SuspendLayout()
+        Me.SuspendLayout()
+        '
+        'dgvEditDrugsList
+        '
+        Me.dgvEditDrugsList.AllowUserToResizeColumns = False
+        Me.dgvEditDrugsList.AllowUserToResizeRows = False
+        Me.dgvEditDrugsList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvEditDrugsList.Location = New System.Drawing.Point(21, 28)
+        Me.dgvEditDrugsList.Name = "dgvEditDrugsList"
+        Me.dgvEditDrugsList.RowHeadersVisible = False
+        Me.dgvEditDrugsList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.dgvEditDrugsList.Size = New System.Drawing.Size(520, 372)
+        Me.dgvEditDrugsList.TabIndex = 13
+        '
+        'btnNewCategory
+        '
+        Me.btnNewCategory.Location = New System.Drawing.Point(187, 412)
+        Me.btnNewCategory.Name = "btnNewCategory"
+        Me.btnNewCategory.Size = New System.Drawing.Size(92, 23)
+        Me.btnNewCategory.TabIndex = 14
+        Me.btnNewCategory.Text = "Νέα κατηγορία"
+        Me.btnNewCategory.UseVisualStyleBackColor = True
+        '
+        'btnExitDrugList
+        '
+        Me.btnExitDrugList.Location = New System.Drawing.Point(486, 402)
+        Me.btnExitDrugList.Name = "btnExitDrugList"
+        Me.btnExitDrugList.Size = New System.Drawing.Size(52, 23)
+        Me.btnExitDrugList.TabIndex = 18
+        Me.btnExitDrugList.Text = "Exit"
+        Me.btnExitDrugList.UseVisualStyleBackColor = True
+        '
+        'btnDeleteDrugList
+        '
+        Me.btnDeleteDrugList.Enabled = False
+        Me.btnDeleteDrugList.Location = New System.Drawing.Point(411, 412)
+        Me.btnDeleteDrugList.Name = "btnDeleteDrugList"
+        Me.btnDeleteDrugList.Size = New System.Drawing.Size(52, 23)
+        Me.btnDeleteDrugList.TabIndex = 17
+        Me.btnDeleteDrugList.Text = "Delete"
+        Me.btnDeleteDrugList.UseVisualStyleBackColor = True
+        '
+        'btnEditDrugList
+        '
+        Me.btnEditDrugList.Location = New System.Drawing.Point(353, 412)
+        Me.btnEditDrugList.Name = "btnEditDrugList"
+        Me.btnEditDrugList.Size = New System.Drawing.Size(52, 23)
+        Me.btnEditDrugList.TabIndex = 16
+        Me.btnEditDrugList.Text = "Edit"
+        Me.btnEditDrugList.UseVisualStyleBackColor = True
+        '
+        'btnSaveDrugList
+        '
+        Me.btnSaveDrugList.Enabled = False
+        Me.btnSaveDrugList.Location = New System.Drawing.Point(295, 412)
+        Me.btnSaveDrugList.Name = "btnSaveDrugList"
+        Me.btnSaveDrugList.Size = New System.Drawing.Size(52, 23)
+        Me.btnSaveDrugList.TabIndex = 15
+        Me.btnSaveDrugList.Text = "Save"
+        Me.btnSaveDrugList.UseVisualStyleBackColor = True
+        '
+        'grpDrugLIstEdit
+        '
+        Me.grpDrugLIstEdit.Controls.Add(Me.btnUpdateDrugName)
+        Me.grpDrugLIstEdit.Controls.Add(Me.txtSearchExpirDrugList)
+        Me.grpDrugLIstEdit.Controls.Add(Me.lblDrugListEditMessage)
+        Me.grpDrugLIstEdit.Controls.Add(Me.dgvEditDrugsList)
+        Me.grpDrugLIstEdit.Controls.Add(Me.btnExitDrugList)
+        Me.grpDrugLIstEdit.Controls.Add(Me.btnNewCategory)
+        Me.grpDrugLIstEdit.Controls.Add(Me.btnDeleteDrugList)
+        Me.grpDrugLIstEdit.Controls.Add(Me.btnSaveDrugList)
+        Me.grpDrugLIstEdit.Controls.Add(Me.btnEditDrugList)
+        Me.grpDrugLIstEdit.Location = New System.Drawing.Point(12, 12)
+        Me.grpDrugLIstEdit.Name = "grpDrugLIstEdit"
+        Me.grpDrugLIstEdit.Size = New System.Drawing.Size(556, 452)
+        Me.grpDrugLIstEdit.TabIndex = 19
+        Me.grpDrugLIstEdit.TabStop = False
+        '
+        'btnUpdateDrugName
+        '
+        Me.btnUpdateDrugName.Enabled = False
+        Me.btnUpdateDrugName.Location = New System.Drawing.Point(486, 426)
+        Me.btnUpdateDrugName.Name = "btnUpdateDrugName"
+        Me.btnUpdateDrugName.Size = New System.Drawing.Size(52, 23)
+        Me.btnUpdateDrugName.TabIndex = 21
+        Me.btnUpdateDrugName.Text = "UDN"
+        Me.btnUpdateDrugName.UseVisualStyleBackColor = True
+        '
+        'txtSearchExpirDrugList
+        '
+        Me.txtSearchExpirDrugList.Location = New System.Drawing.Point(18, 414)
+        Me.txtSearchExpirDrugList.Name = "txtSearchExpirDrugList"
+        Me.txtSearchExpirDrugList.Size = New System.Drawing.Size(154, 20)
+        Me.txtSearchExpirDrugList.TabIndex = 20
+        '
+        'lblDrugListEditMessage
+        '
+        Me.lblDrugListEditMessage.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.lblDrugListEditMessage.ForeColor = System.Drawing.Color.Red
+        Me.lblDrugListEditMessage.Location = New System.Drawing.Point(18, 12)
+        Me.lblDrugListEditMessage.Name = "lblDrugListEditMessage"
+        Me.lblDrugListEditMessage.Size = New System.Drawing.Size(520, 13)
+        Me.lblDrugListEditMessage.TabIndex = 19
+        Me.lblDrugListEditMessage.Text = "!!!   Τροποποίηση δεδομένων  !!!"
+        Me.lblDrugListEditMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.lblDrugListEditMessage.Visible = False
+        '
+        'tmrFlashLabel
+        '
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(584, 24)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(156, 13)
+        Me.Label1.TabIndex = 20
+        Me.Label1.Text = "Περιγραφή Είδους (Ονομασία)"
+        '
+        'txtAP_Description
+        '
+        Me.txtAP_Description.Location = New System.Drawing.Point(587, 40)
+        Me.txtAP_Description.Name = "txtAP_Description"
+        Me.txtAP_Description.Size = New System.Drawing.Size(243, 20)
+        Me.txtAP_Description.TabIndex = 21
+        '
+        'txtAP_Morfi
+        '
+        Me.txtAP_Morfi.Location = New System.Drawing.Point(587, 79)
+        Me.txtAP_Morfi.Name = "txtAP_Morfi"
+        Me.txtAP_Morfi.Size = New System.Drawing.Size(243, 20)
+        Me.txtAP_Morfi.TabIndex = 23
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Location = New System.Drawing.Point(584, 63)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(111, 13)
+        Me.Label2.TabIndex = 22
+        Me.Label2.Text = "Μορφή - Συσκευασία"
+        '
+        'TextBox1
+        '
+        Me.TextBox1.Location = New System.Drawing.Point(587, 118)
+        Me.TextBox1.Name = "TextBox1"
+        Me.TextBox1.Size = New System.Drawing.Size(243, 20)
+        Me.TextBox1.TabIndex = 25
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(584, 102)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(60, 13)
+        Me.Label3.TabIndex = 24
+        Me.Label3.Text = "Κατηγορία"
+        '
+        'GroupBox1
+        '
+        Me.GroupBox1.Controls.Add(Me.Button1)
+        Me.GroupBox1.Controls.Add(Me.ckhAP_Ektos_Kykl)
+        Me.GroupBox1.Controls.Add(Me.ckhAP_aposyrsh_Al)
+        Me.GroupBox1.Controls.Add(Me.ckhAP_STD_Lianikh)
+        Me.GroupBox1.Controls.Add(Me.ckhAP_Lhxh)
+        Me.GroupBox1.Controls.Add(Me.ckhAP_CSA)
+        Me.GroupBox1.Controls.Add(Me.ckhAP_My_Eidos)
+        Me.GroupBox1.Controls.Add(Me.ckhAP_Accept_timh)
+        Me.GroupBox1.Controls.Add(Me.ckhAP_ifet)
+        Me.GroupBox1.Controls.Add(Me.ckhAP_lista_2)
+        Me.GroupBox1.Controls.Add(Me.ckhAP_lista_1)
+        Me.GroupBox1.Controls.Add(Me.ckhAP_aposyrsh)
+        Me.GroupBox1.Controls.Add(Me.ckhAP_elleich)
+        Me.GroupBox1.Controls.Add(Me.chkAP_Kthniatriko)
+        Me.GroupBox1.Controls.Add(Me.chkAP_Nosokomeiako)
+        Me.GroupBox1.Controls.Add(Me.chkAP_Narkwtiko)
+        Me.GroupBox1.Location = New System.Drawing.Point(576, 155)
+        Me.GroupBox1.Name = "GroupBox1"
+        Me.GroupBox1.Size = New System.Drawing.Size(256, 306)
+        Me.GroupBox1.TabIndex = 26
+        Me.GroupBox1.TabStop = False
+        Me.GroupBox1.Text = "GroupBox1"
+        '
+        'Button1
+        '
+        Me.Button1.Location = New System.Drawing.Point(162, 144)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(75, 23)
+        Me.Button1.TabIndex = 16
+        Me.Button1.Text = "Button1"
+        Me.Button1.UseVisualStyleBackColor = True
+        '
+        'ckhAP_Ektos_Kykl
+        '
+        Me.ckhAP_Ektos_Kykl.AutoSize = True
+        Me.ckhAP_Ektos_Kykl.Location = New System.Drawing.Point(130, 98)
+        Me.ckhAP_Ektos_Kykl.Name = "ckhAP_Ektos_Kykl"
+        Me.ckhAP_Ektos_Kykl.Size = New System.Drawing.Size(121, 17)
+        Me.ckhAP_Ektos_Kykl.TabIndex = 15
+        Me.ckhAP_Ektos_Kykl.Text = "Εκτός κυκλοφορίας"
+        Me.ckhAP_Ektos_Kykl.UseVisualStyleBackColor = True
+        '
+        'ckhAP_aposyrsh_Al
+        '
+        Me.ckhAP_aposyrsh_Al.AutoSize = True
+        Me.ckhAP_aposyrsh_Al.Location = New System.Drawing.Point(130, 75)
+        Me.ckhAP_aposyrsh_Al.Name = "ckhAP_aposyrsh_Al"
+        Me.ckhAP_aposyrsh_Al.Size = New System.Drawing.Size(127, 17)
+        Me.ckhAP_aposyrsh_Al.TabIndex = 14
+        Me.ckhAP_aposyrsh_Al.Text = "Απόσυρση αλυσίδας"
+        Me.ckhAP_aposyrsh_Al.UseVisualStyleBackColor = True
+        '
+        'ckhAP_STD_Lianikh
+        '
+        Me.ckhAP_STD_Lianikh.Location = New System.Drawing.Point(130, 19)
+        Me.ckhAP_STD_Lianikh.Name = "ckhAP_STD_Lianikh"
+        Me.ckhAP_STD_Lianikh.Size = New System.Drawing.Size(107, 50)
+        Me.ckhAP_STD_Lianikh.TabIndex = 13
+        Me.ckhAP_STD_Lianikh.Text = "Διαχωρισμός υπολογιζόμενης λιανικής ή μη"
+        Me.ckhAP_STD_Lianikh.UseVisualStyleBackColor = True
+        '
+        'ckhAP_Lhxh
+        '
+        Me.ckhAP_Lhxh.AutoSize = True
+        Me.ckhAP_Lhxh.Location = New System.Drawing.Point(15, 282)
+        Me.ckhAP_Lhxh.Name = "ckhAP_Lhxh"
+        Me.ckhAP_Lhxh.Size = New System.Drawing.Size(145, 17)
+        Me.ckhAP_Lhxh.TabIndex = 12
+        Me.ckhAP_Lhxh.Text = "Παρακολούθηση λήξεων"
+        Me.ckhAP_Lhxh.UseVisualStyleBackColor = True
+        '
+        'ckhAP_CSA
+        '
+        Me.ckhAP_CSA.AutoSize = True
+        Me.ckhAP_CSA.Location = New System.Drawing.Point(15, 259)
+        Me.ckhAP_CSA.Name = "ckhAP_CSA"
+        Me.ckhAP_CSA.Size = New System.Drawing.Size(132, 17)
+        Me.ckhAP_CSA.TabIndex = 11
+        Me.ckhAP_CSA.Text = "Ενημέρωση από CSA;"
+        Me.ckhAP_CSA.UseVisualStyleBackColor = True
+        '
+        'ckhAP_My_Eidos
+        '
+        Me.ckhAP_My_Eidos.AutoSize = True
+        Me.ckhAP_My_Eidos.Location = New System.Drawing.Point(15, 236)
+        Me.ckhAP_My_Eidos.Name = "ckhAP_My_Eidos"
+        Me.ckhAP_My_Eidos.Size = New System.Drawing.Size(142, 17)
+        Me.ckhAP_My_Eidos.TabIndex = 10
+        Me.ckhAP_My_Eidos.Text = "Είδος του Φαρμακείου;"
+        Me.ckhAP_My_Eidos.UseVisualStyleBackColor = True
+        '
+        'ckhAP_Accept_timh
+        '
+        Me.ckhAP_Accept_timh.AutoSize = True
+        Me.ckhAP_Accept_timh.Location = New System.Drawing.Point(15, 213)
+        Me.ckhAP_Accept_timh.Name = "ckhAP_Accept_timh"
+        Me.ckhAP_Accept_timh.Size = New System.Drawing.Size(163, 17)
+        Me.ckhAP_Accept_timh.TabIndex = 9
+        Me.ckhAP_Accept_timh.Text = "Δέχεται τιμή στην πώληση;"
+        Me.ckhAP_Accept_timh.UseVisualStyleBackColor = True
+        '
+        'ckhAP_ifet
+        '
+        Me.ckhAP_ifet.AutoSize = True
+        Me.ckhAP_ifet.Location = New System.Drawing.Point(15, 190)
+        Me.ckhAP_ifet.Name = "ckhAP_ifet"
+        Me.ckhAP_ifet.Size = New System.Drawing.Size(81, 17)
+        Me.ckhAP_ifet.TabIndex = 8
+        Me.ckhAP_ifet.Text = "Είναι ΙΦΕΤ;"
+        Me.ckhAP_ifet.UseVisualStyleBackColor = True
+        '
+        'ckhAP_lista_2
+        '
+        Me.ckhAP_lista_2.AutoSize = True
+        Me.ckhAP_lista_2.Location = New System.Drawing.Point(15, 167)
+        Me.ckhAP_lista_2.Name = "ckhAP_lista_2"
+        Me.ckhAP_lista_2.Size = New System.Drawing.Size(65, 17)
+        Me.ckhAP_lista_2.TabIndex = 7
+        Me.ckhAP_lista_2.Text = "Λίστα 2"
+        Me.ckhAP_lista_2.UseVisualStyleBackColor = True
+        '
+        'ckhAP_lista_1
+        '
+        Me.ckhAP_lista_1.AutoSize = True
+        Me.ckhAP_lista_1.Location = New System.Drawing.Point(15, 144)
+        Me.ckhAP_lista_1.Name = "ckhAP_lista_1"
+        Me.ckhAP_lista_1.Size = New System.Drawing.Size(65, 17)
+        Me.ckhAP_lista_1.TabIndex = 6
+        Me.ckhAP_lista_1.Text = "Λίστα 1"
+        Me.ckhAP_lista_1.UseVisualStyleBackColor = True
+        '
+        'ckhAP_aposyrsh
+        '
+        Me.ckhAP_aposyrsh.AutoSize = True
+        Me.ckhAP_aposyrsh.Location = New System.Drawing.Point(15, 121)
+        Me.ckhAP_aposyrsh.Name = "ckhAP_aposyrsh"
+        Me.ckhAP_aposyrsh.Size = New System.Drawing.Size(77, 17)
+        Me.ckhAP_aposyrsh.TabIndex = 5
+        Me.ckhAP_aposyrsh.Text = "Απόσυρση"
+        Me.ckhAP_aposyrsh.UseVisualStyleBackColor = True
+        '
+        'ckhAP_elleich
+        '
+        Me.ckhAP_elleich.AutoSize = True
+        Me.ckhAP_elleich.Location = New System.Drawing.Point(15, 98)
+        Me.ckhAP_elleich.Name = "ckhAP_elleich"
+        Me.ckhAP_elleich.Size = New System.Drawing.Size(67, 17)
+        Me.ckhAP_elleich.TabIndex = 4
+        Me.ckhAP_elleich.Text = "Έλλειψη"
+        Me.ckhAP_elleich.UseVisualStyleBackColor = True
+        '
+        'chkAP_Kthniatriko
+        '
+        Me.chkAP_Kthniatriko.AutoSize = True
+        Me.chkAP_Kthniatriko.Location = New System.Drawing.Point(15, 75)
+        Me.chkAP_Kthniatriko.Name = "chkAP_Kthniatriko"
+        Me.chkAP_Kthniatriko.Size = New System.Drawing.Size(86, 17)
+        Me.chkAP_Kthniatriko.TabIndex = 3
+        Me.chkAP_Kthniatriko.Text = "Κτηνιατρικό"
+        Me.chkAP_Kthniatriko.UseVisualStyleBackColor = True
+        '
+        'chkAP_Nosokomeiako
+        '
+        Me.chkAP_Nosokomeiako.AutoSize = True
+        Me.chkAP_Nosokomeiako.Location = New System.Drawing.Point(15, 52)
+        Me.chkAP_Nosokomeiako.Name = "chkAP_Nosokomeiako"
+        Me.chkAP_Nosokomeiako.Size = New System.Drawing.Size(96, 17)
+        Me.chkAP_Nosokomeiako.TabIndex = 2
+        Me.chkAP_Nosokomeiako.Text = "Νοσοκομειακό"
+        Me.chkAP_Nosokomeiako.UseVisualStyleBackColor = True
+        '
+        'chkAP_Narkwtiko
+        '
+        Me.chkAP_Narkwtiko.AutoSize = True
+        Me.chkAP_Narkwtiko.Location = New System.Drawing.Point(15, 29)
+        Me.chkAP_Narkwtiko.Name = "chkAP_Narkwtiko"
+        Me.chkAP_Narkwtiko.Size = New System.Drawing.Size(79, 17)
+        Me.chkAP_Narkwtiko.TabIndex = 0
+        Me.chkAP_Narkwtiko.Text = "Ναρκωτικό"
+        Me.chkAP_Narkwtiko.UseVisualStyleBackColor = True
+        '
+        'frmDrugListEdit
+        '
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(844, 476)
+        Me.ControlBox = False
+        Me.Controls.Add(Me.GroupBox1)
+        Me.Controls.Add(Me.TextBox1)
+        Me.Controls.Add(Me.Label3)
+        Me.Controls.Add(Me.txtAP_Morfi)
+        Me.Controls.Add(Me.Label2)
+        Me.Controls.Add(Me.txtAP_Description)
+        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.grpDrugLIstEdit)
+        Me.Name = "frmDrugListEdit"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
+        Me.Text = "Διαχείρηση Αρχείου Προιόντων"
+        CType(Me.dgvEditDrugsList, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.grpDrugLIstEdit.ResumeLayout(False)
+        Me.grpDrugLIstEdit.PerformLayout()
+        Me.GroupBox1.ResumeLayout(False)
+        Me.GroupBox1.PerformLayout()
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
+
+    End Sub
+    Friend WithEvents dgvEditDrugsList As System.Windows.Forms.DataGridView
+    Friend WithEvents btnNewCategory As System.Windows.Forms.Button
+    Friend WithEvents btnExitDrugList As System.Windows.Forms.Button
+    Friend WithEvents btnDeleteDrugList As System.Windows.Forms.Button
+    Friend WithEvents btnEditDrugList As System.Windows.Forms.Button
+    Friend WithEvents btnSaveDrugList As System.Windows.Forms.Button
+    Friend WithEvents grpDrugLIstEdit As System.Windows.Forms.GroupBox
+    Friend WithEvents lblDrugListEditMessage As System.Windows.Forms.Label
+    Friend WithEvents tmrFlashLabel As System.Windows.Forms.Timer
+    Friend WithEvents txtSearchExpirDrugList As System.Windows.Forms.TextBox
+    Friend WithEvents btnUpdateDrugName As System.Windows.Forms.Button
+    Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents txtAP_Description As System.Windows.Forms.TextBox
+    Friend WithEvents txtAP_Morfi As System.Windows.Forms.TextBox
+    Friend WithEvents Label2 As System.Windows.Forms.Label
+    Friend WithEvents TextBox1 As System.Windows.Forms.TextBox
+    Friend WithEvents Label3 As System.Windows.Forms.Label
+    Friend WithEvents GroupBox1 As System.Windows.Forms.GroupBox
+    Friend WithEvents ckhAP_Ektos_Kykl As System.Windows.Forms.CheckBox
+    Friend WithEvents ckhAP_aposyrsh_Al As System.Windows.Forms.CheckBox
+    Friend WithEvents ckhAP_STD_Lianikh As System.Windows.Forms.CheckBox
+    Friend WithEvents ckhAP_Lhxh As System.Windows.Forms.CheckBox
+    Friend WithEvents ckhAP_CSA As System.Windows.Forms.CheckBox
+    Friend WithEvents ckhAP_My_Eidos As System.Windows.Forms.CheckBox
+    Friend WithEvents ckhAP_Accept_timh As System.Windows.Forms.CheckBox
+    Friend WithEvents ckhAP_ifet As System.Windows.Forms.CheckBox
+    Friend WithEvents ckhAP_lista_2 As System.Windows.Forms.CheckBox
+    Friend WithEvents ckhAP_lista_1 As System.Windows.Forms.CheckBox
+    Friend WithEvents ckhAP_aposyrsh As System.Windows.Forms.CheckBox
+    Friend WithEvents ckhAP_elleich As System.Windows.Forms.CheckBox
+    Friend WithEvents chkAP_Kthniatriko As System.Windows.Forms.CheckBox
+    Friend WithEvents chkAP_Nosokomeiako As System.Windows.Forms.CheckBox
+    Friend WithEvents chkAP_Narkwtiko As System.Windows.Forms.CheckBox
+    Friend WithEvents Button1 As System.Windows.Forms.Button
+End Class
