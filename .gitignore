@@ -9,10 +9,12 @@ TestResults/
 *.user
 *.cache
 *.pdb
+*.log
 
 *_TemporaryKey.pfx
 *.nupkg
 _ReSharper*/
+
 UpgradeLog*.XML
 UpgradeLog*.htm
 _UpgradeReport_Files/
