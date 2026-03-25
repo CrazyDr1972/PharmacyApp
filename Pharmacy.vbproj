@@ -494,10 +494,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>
-    <PostBuildEvent>powershell -ExecutionPolicy Bypass -NoProfile -File "E:\- Documents &amp; Projects\Visual Studio 2012 - LEARNING\Pharmacy\Pharmacy\tools\Update-Version.ps1" -Root "E:\- Documents &amp; Projects\Visual Studio 2012 - LEARNING\Pharmacy\Pharmacy" || exit /b 1
-powershell -ExecutionPolicy Bypass -NoProfile -File "E:\- Documents &amp; Projects\Visual Studio 2012 - LEARNING\Pharmacy\Pharmacy\tools\ExportAllVbAsTxt.ps1" -Root "E:\- Documents &amp; Projects\Visual Studio 2012 - LEARNING\Pharmacy\Pharmacy" || exit /b 1
-
-</PostBuildEvent>
+    <PostBuildEvent>powershell -ExecutionPolicy Bypass -NoProfile -File "E:\- Documents &amp; Projects\Visual Studio 2012 - LEARNING\Pharmacy\Pharmacy\tools\Update-Version.ps1" -Root "E:\- Documents &amp; Projects\Visual Studio 2012 - LEARNING\Pharmacy\Pharmacy" || exit /b 1</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
