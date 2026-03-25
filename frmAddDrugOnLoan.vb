@@ -356,6 +356,7 @@ Public Class frmAddDrugOnLoan
                                 "FROM APOTIKH left JOIN APOTIKH_BARCODES ON APOTIKH.AP_ID = APOTIKH_BARCODES.BRAP_AP_ID " &
                                 "WHERE BRAP_AP_BARCODE like '%" & barcode & "%' "
         ElseIf mode = "qrcode" Then
+            EnsureDrugQrCodeOverridesTable()
             qr = GetQRFromScannedCode(barcode)
             If qr IsNot Nothing Then
                 txtDrugBarcode.Text = qr
@@ -364,8 +365,10 @@ Public Class frmAddDrugOnLoan
             End If
 
             sqlString = "SELECT [AP_DESCRIPTION], [AP_Morfi], [AP_TIMH_LIAN] " &
-                                "FROM APOTIKH left JOIN APOTIKH_QRCODES ON APOTIKH.AP_ID = APOTIKH_QRCODES.APQ_AP_ID " &
-                                "WHERE APQ_PRODUCT_CODE like '%" & qr & "%' "
+                                "FROM APOTIKH " &
+                                "LEFT JOIN APOTIKH_QRCODES ON APOTIKH.AP_ID = APOTIKH_QRCODES.APQ_AP_ID " &
+                                "LEFT JOIN PharmacyCustomFiles.dbo.DrugQrCodeOverrides AS QRO ON APOTIKH.AP_ID = QRO.AP_ID " &
+                                "WHERE ISNULL(NULLIF(QRO.QRCode, ''), APQ_PRODUCT_CODE) like '%" & qr & "%' "
         End If
 
         Dim DrugInfo() As String = {"", ""}

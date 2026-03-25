@@ -49,6 +49,10 @@ Public Class frmCustomers
     Private lastKeyWasAlphaNumeric As Boolean = False
     Private _loadingChooseFromCatalog As Boolean = False   ' guard όπως στο choose-form
     Private barcodeType As String = ""                     ' "name" / "barcode" / "qrcode"
+    Private _pricesCellOldValue As String = ""
+    Private _pricesCellOldRow As Integer = -1
+    Private _pricesCellOldColumn As Integer = -1
+    Private _suppressDrugQrCellEvents As Boolean = False
     ' module-level
     Private _editSw As New Stopwatch()
     Private _enterPressedThisEdit As Boolean = False
@@ -1711,6 +1715,8 @@ Handles dgvDebtsList.EditingControlShowing
 
         Dim str2find, qr As String
 
+        EnsureDrugQrCodeOverridesTable()
+
         str2find = txtSearchPricesParadrugs.Text
 
 
@@ -1727,10 +1733,14 @@ Handles dgvDebtsList.EditingControlShowing
             Try
                 stringDTG = "SELECT dbo.APOTIKH.AP_ID, dbo.APOTIKH.AP_CODE, dbo.APOTIKH.AP_DESCRIPTION, dbo.APOTIKH.AP_MORFI, dbo.APOTIKH.AP_NARKWTIKO, 
                                            dbo.APOTIKH.AP_NOSOKOMEIAKO, dbo.APOTIKH.AP_KTHNIATRIKO, dbo.APOTIKH.AP_ELLEICH, dbo.APOTIKH.AP_APOSYRSH, dbo.APOTIKH.AP_LISTA, 
-                                           dbo.APOTIKH.AP_IFET, dbo.APOTIKH_BARCODES.BRAP_AP_BARCODE, dbo.APOTIKH_QRCODES.APQ_PRODUCT_CODE, dbo.APOTIKH.AP_TIMH_XON, dbo.APOTIKH.AP_TIMH_LIAN 
+                                           dbo.APOTIKH.AP_IFET, dbo.APOTIKH_BARCODES.BRAP_AP_BARCODE, 
+                                           ISNULL(NULLIF(QRO.QRCode, ''), dbo.APOTIKH_QRCODES.APQ_PRODUCT_CODE) AS APQ_PRODUCT_CODE, 
+                                           CASE WHEN NULLIF(QRO.QRCode, '') IS NULL THEN 0 ELSE 1 END AS APQ_IS_CUSTOM_QR,
+                                           dbo.APOTIKH.AP_TIMH_XON, dbo.APOTIKH.AP_TIMH_LIAN 
                              FROM dbo.APOTIKH 
 							 LEFT JOIN dbo.APOTIKH_BARCODES ON dbo.APOTIKH.AP_ID = dbo.APOTIKH_BARCODES.BRAP_AP_ID 
 						     LEFT JOIN dbo.APOTIKH_QRCODES ON dbo.APOTIKH.AP_ID = dbo.APOTIKH_QRCODES.APQ_AP_ID 
+                             LEFT JOIN PharmacyCustomFiles.dbo.DrugQrCodeOverrides AS QRO ON dbo.APOTIKH.AP_ID = QRO.AP_ID
                              WHERE AP_DESCRIPTION like '%" & str2find & "%'  
                              ORDER BY AP_DESCRIPTION, AP_MORFI"
 
@@ -1757,9 +1767,11 @@ Handles dgvDebtsList.EditingControlShowing
 
             stringDTG = "SELECT dbo.APOTIKH.AP_ID, dbo.APOTIKH.AP_CODE, dbo.APOTIKH.AP_DESCRIPTION, dbo.APOTIKH.AP_MORFI, dbo.APOTIKH.AP_NARKWTIKO, " &
                             "dbo.APOTIKH.AP_NOSOKOMEIAKO, dbo.APOTIKH.AP_KTHNIATRIKO, dbo.APOTIKH.AP_ELLEICH, dbo.APOTIKH.AP_APOSYRSH, dbo.APOTIKH.AP_LISTA, " &
-                            "dbo.APOTIKH.AP_IFET, dbo.APOTIKH_QRCODES.APQ_PRODUCT_CODE, dbo.APOTIKH.AP_TIMH_XON, dbo.APOTIKH.AP_TIMH_LIAN " &
-                        "FROM dbo.APOTIKH INNER JOIN dbo.APOTIKH_QRCODES ON dbo.APOTIKH.AP_ID = dbo.APOTIKH_QRCODES.APQ_AP_ID " &
-                        "WHERE dbo.APOTIKH_QRCODES.APQ_PRODUCT_CODE like '%" & str2find & "%' " &
+                            "dbo.APOTIKH.AP_IFET, ISNULL(NULLIF(QRO.QRCode, ''), dbo.APOTIKH_QRCODES.APQ_PRODUCT_CODE) AS APQ_PRODUCT_CODE, CASE WHEN NULLIF(QRO.QRCode, '') IS NULL THEN 0 ELSE 1 END AS APQ_IS_CUSTOM_QR, dbo.APOTIKH.AP_TIMH_XON, dbo.APOTIKH.AP_TIMH_LIAN " &
+                        "FROM dbo.APOTIKH " &
+                        "LEFT JOIN dbo.APOTIKH_QRCODES ON dbo.APOTIKH.AP_ID = dbo.APOTIKH_QRCODES.APQ_AP_ID " &
+                        "LEFT JOIN PharmacyCustomFiles.dbo.DrugQrCodeOverrides AS QRO ON dbo.APOTIKH.AP_ID = QRO.AP_ID " &
+                        "WHERE ISNULL(NULLIF(QRO.QRCode, ''), dbo.APOTIKH_QRCODES.APQ_PRODUCT_CODE) like '%" & str2find & "%' " &
                          "ORDER BY AP_DESCRIPTION, AP_MORFI"
 
         End If
@@ -13364,42 +13376,65 @@ Handles dgvDebtsList.EditingControlShowing
 
         Dim Barcode2 As New DataGridViewTextBoxColumn
         Dim Qrcode2 As New DataGridViewTextBoxColumn
+        Dim QrcodeCustom2 As New DataGridViewTextBoxColumn
         If rbByName.Checked = True Then
             With Barcode2
                 ' και του δίνει τη τιμή του αντίστοιχου πεδίου
+                .Name = "colDrugBarcode"
                 .DataPropertyName = "BRAP_AP_BARCODE"
                 ' Formatting..
                 .HeaderText = "Barcode"
                 .Width = 90
                 .DefaultCellStyle.Format = ""
+                .ReadOnly = True
             End With
 
             With Qrcode2
                 ' και του δίνει τη τιμή του αντίστοιχου πεδίου
+                .Name = "colDrugQRCode"
                 .DataPropertyName = "APQ_PRODUCT_CODE"
                 ' Formatting..
                 .HeaderText = "QRcode"
                 .Width = 100
                 .DefaultCellStyle.Format = ""
+                .ReadOnly = False
+            End With
+
+            With QrcodeCustom2
+                .Name = "colDrugQRCodeCustom"
+                .DataPropertyName = "APQ_IS_CUSTOM_QR"
+                .HeaderText = "IsCustomQr"
+                .Visible = False
             End With
         Else
             If barcodeType = "barcode" Then
                 With Barcode2
                     ' και του δίνει τη τιμή του αντίστοιχου πεδίου
+                    .Name = "colDrugBarcode"
                     .DataPropertyName = "BRAP_AP_BARCODE"
                     ' Formatting..
                     .HeaderText = "Barcode"
                     .Width = 90
                     .DefaultCellStyle.Format = ""
+                    .ReadOnly = True
                 End With
             ElseIf barcodeType = "qrcode" Then
                 With Barcode2
                     ' και του δίνει τη τιμή του αντίστοιχου πεδίου
+                    .Name = "colDrugQRCode"
                     .DataPropertyName = "APQ_PRODUCT_CODE"
                     ' Formatting..
                     .HeaderText = "QRcode"
                     .Width = 100
                     .DefaultCellStyle.Format = ""
+                    .ReadOnly = False
+                End With
+
+                With QrcodeCustom2
+                    .Name = "colDrugQRCodeCustom"
+                    .DataPropertyName = "APQ_IS_CUSTOM_QR"
+                    .HeaderText = "IsCustomQr"
+                    .Visible = False
                 End With
             End If
         End If
@@ -13416,6 +13451,7 @@ Handles dgvDebtsList.EditingControlShowing
                 .Columns.Add(AP_ID2)
                 .Columns.Add(Barcode2)
                 .Columns.Add(Qrcode2)
+                .Columns.Add(QrcodeCustom2)
             Else
                 .Columns.Add(Name2)
                 .Columns.Add(Morfi2)
@@ -13424,11 +13460,25 @@ Handles dgvDebtsList.EditingControlShowing
                 .Columns.Add(AP_Code2)
                 .Columns.Add(AP_ID2)
                 .Columns.Add(Barcode2)
+                If barcodeType = "qrcode" Then
+                    .Columns.Add(QrcodeCustom2)
+                End If
             End If
 
             ' Εναλλαγή του χρωματισμού των rows
             .RowsDefaultCellStyle.BackColor = Color.Bisque
             .AlternatingRowsDefaultCellStyle.BackColor = Color.Beige
+
+            .ReadOnly = False
+            For Each col As DataGridViewColumn In .Columns
+                col.ReadOnly = True
+            Next
+            If .Columns.Contains("colDrugQRCode") Then
+                .Columns("colDrugQRCode").ReadOnly = False
+            End If
+            If .Columns.Contains("colDrugQRCodeCustom") Then
+                .Columns("colDrugQRCodeCustom").Visible = False
+            End If
 
             'Εξαφανίζει τo πεδίο "Id"
             .Columns(4).Visible = False
@@ -14549,6 +14599,142 @@ Handles dgvDebtsList.EditingControlShowing
 
     End Sub
 
+    Private Function IsDrugQrCodeColumn(ByVal column As DataGridViewColumn) As Boolean
+        If column Is Nothing Then Return False
+        Return column.Name = "colDrugQRCode" OrElse column.HeaderText = "QRcode"
+    End Function
+
+    Private Function NormalizeQrCodeInput(ByVal input As String) As String
+        Dim value As String = If(input, String.Empty).Trim()
+        If value = "" Then Return ""
+
+        If value.Length > 15 Then
+            Dim extracted As String = GlobalFunctions.GetQRFromScannedCode(value)
+            If Not String.IsNullOrWhiteSpace(extracted) Then
+                Return extracted.Trim()
+            End If
+        End If
+
+        Return value
+    End Function
+
+    Private Sub ApplyDrugQrCodeVisuals()
+        If dgvPricesParadrugs Is Nothing OrElse dgvPricesParadrugs.Columns.Count = 0 Then Exit Sub
+        If Not dgvPricesParadrugs.Columns.Contains("colDrugQRCode") Then Exit Sub
+        If Not dgvPricesParadrugs.Columns.Contains("colDrugQRCodeCustom") Then Exit Sub
+
+        For Each row As DataGridViewRow In dgvPricesParadrugs.Rows
+            If row.IsNewRow Then Continue For
+
+            Dim qrCell = row.Cells("colDrugQRCode")
+            Dim flagCell = row.Cells("colDrugQRCodeCustom")
+            Dim isCustom As Boolean = False
+
+            If flagCell.Value IsNot Nothing AndAlso Not IsDBNull(flagCell.Value) Then
+                Boolean.TryParse(flagCell.Value.ToString(), isCustom)
+                If Not isCustom Then isCustom = (flagCell.Value.ToString() = "1")
+            End If
+
+            If isCustom Then
+                qrCell.Style.BackColor = Color.LightGoldenrodYellow
+                qrCell.Style.SelectionBackColor = Color.Goldenrod
+                qrCell.Style.Font = New Font(dgvPricesParadrugs.Font, FontStyle.Bold)
+                qrCell.ToolTipText = "Custom override από PharmacyCustomFiles"
+            Else
+                qrCell.Style.BackColor = dgvPricesParadrugs.DefaultCellStyle.BackColor
+                qrCell.Style.SelectionBackColor = dgvPricesParadrugs.DefaultCellStyle.SelectionBackColor
+                qrCell.Style.Font = New Font(dgvPricesParadrugs.Font, FontStyle.Regular)
+                qrCell.ToolTipText = "QRcode από Pharmacy2013C"
+            End If
+        Next
+    End Sub
+
+    Private Sub dgvPricesParadrugs_CellBeginEdit(sender As Object, e As DataGridViewCellCancelEventArgs) Handles dgvPricesParadrugs.CellBeginEdit
+        If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Exit Sub
+
+        If rbDrugs.Checked AndAlso IsDrugQrCodeColumn(dgvPricesParadrugs.Columns(e.ColumnIndex)) Then
+            Dim currentValue = dgvPricesParadrugs.Rows(e.RowIndex).Cells(e.ColumnIndex).Value
+            If currentValue Is Nothing OrElse IsDBNull(currentValue) Then
+                _pricesCellOldValue = ""
+            Else
+                _pricesCellOldValue = currentValue.ToString()
+            End If
+            _pricesCellOldRow = e.RowIndex
+            _pricesCellOldColumn = e.ColumnIndex
+        End If
+    End Sub
+
+    Private Sub dgvPricesParadrugs_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles dgvPricesParadrugs.CellEndEdit
+        If _suppressDrugQrCellEvents Then Exit Sub
+        If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Exit Sub
+        If Not rbDrugs.Checked Then Exit Sub
+        If Not IsDrugQrCodeColumn(dgvPricesParadrugs.Columns(e.ColumnIndex)) Then Exit Sub
+
+        Dim row = dgvPricesParadrugs.Rows(e.RowIndex)
+        Dim rawNewQr = row.Cells(e.ColumnIndex).Value
+        Dim scannedValue As String = If(rawNewQr Is Nothing OrElse IsDBNull(rawNewQr), String.Empty, rawNewQr.ToString()).Trim()
+        Dim newQr As String = NormalizeQrCodeInput(scannedValue)
+        Dim oldQr As String = If(_pricesCellOldValue, String.Empty).Trim()
+
+        If String.Equals(newQr, oldQr, StringComparison.Ordinal) Then Exit Sub
+
+        Dim apId As Long
+        Dim rawApCode = row.Cells(4).Value
+        Dim rawDrugName = row.Cells(0).Value
+        Dim apCode As String = If(rawApCode Is Nothing OrElse IsDBNull(rawApCode), String.Empty, rawApCode.ToString()).Trim()
+        Dim drugName As String = If(rawDrugName Is Nothing OrElse IsDBNull(rawDrugName), String.Empty, rawDrugName.ToString()).Trim()
+
+        If Not Long.TryParse(If(row.Cells(5).Value, String.Empty).ToString(), apId) OrElse apId <= 0 Then
+            MessageBox.Show("Δεν βρέθηκε έγκυρο AP_ID για το φάρμακο.", "QRcode", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            _suppressDrugQrCellEvents = True
+            row.Cells(e.ColumnIndex).Value = oldQr
+            _suppressDrugQrCellEvents = False
+            Exit Sub
+        End If
+
+        Dim prompt As String
+        If newQr = "" Then
+            prompt = "Να διαγραφεί το custom QRcode για το φάρμακο '" & drugName & "';" & vbCrLf &
+                     "Αν συνεχίσεις, θα χρησιμοποιείται ξανά το QRcode της Pharmacy2013C."
+        Else
+            prompt = "Να αποθηκευτεί το νέο QRcode για το φάρμακο '" & drugName & "';" & vbCrLf &
+                     oldQr & "  ->  " & newQr
+            If scannedValue <> "" AndAlso scannedValue <> newQr Then
+                prompt &= vbCrLf & vbCrLf & "Το scan μετατράπηκε αυτόματα από raw QR σε product code."
+            End If
+        End If
+
+        If MessageBox.Show(prompt, "Επιβεβαίωση QRcode", MessageBoxButtons.YesNo, MessageBoxIcon.Question) <> DialogResult.Yes Then
+            _suppressDrugQrCellEvents = True
+            row.Cells(e.ColumnIndex).Value = oldQr
+            _suppressDrugQrCellEvents = False
+            Exit Sub
+        End If
+
+        Try
+            SaveDrugQrCodeOverride(apId, apCode, drugName, newQr)
+        Catch ex As Exception
+            _suppressDrugQrCellEvents = True
+            row.Cells(e.ColumnIndex).Value = oldQr
+            _suppressDrugQrCellEvents = False
+            MessageBox.Show("Αποτυχία αποθήκευσης QRcode: " & ex.Message, "QRcode", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Exit Sub
+        End Try
+
+        Dim effectiveQr As String = If(GetEffectiveDrugQrCode(apId), String.Empty)
+        Dim hasCustom As Boolean = HasDrugQrCodeOverride(apId)
+
+        _suppressDrugQrCellEvents = True
+        row.Cells(e.ColumnIndex).Value = effectiveQr
+        If dgvPricesParadrugs.Columns.Contains("colDrugQRCodeCustom") Then
+            row.Cells("colDrugQRCodeCustom").Value = If(hasCustom, 1, 0)
+        End If
+        _suppressDrugQrCellEvents = False
+
+        _pricesCellOldValue = effectiveQr
+        ApplyDrugQrCodeVisuals()
+    End Sub
+
 
     Private Sub dgvPricesParadrugs_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles dgvPricesParadrugs.CellValueChanged
         If rbParadrugs.Checked = True Then
@@ -15012,11 +15198,14 @@ Handles dgvDebtsList.EditingControlShowing
 
     ' --- Λιανική τιμή από QR-ProductCode ---
     Private Function LookupRetailByQRCode(productCode As String) As Decimal?
+        EnsureDrugQrCodeOverridesTable()
+
         Const sql As String =
         "SELECT TOP (1) A.AP_TIMH_LIAN " &
         "FROM dbo.APOTIKH AS A " &
-        "INNER JOIN dbo.APOTIKH_QRCODES AS Q ON Q.APQ_AP_ID = A.AP_ID " &
-        "WHERE Q.APQ_PRODUCT_CODE = @code " &
+        "LEFT JOIN dbo.APOTIKH_QRCODES AS Q ON Q.APQ_AP_ID = A.AP_ID " &
+        "LEFT JOIN PharmacyCustomFiles.dbo.DrugQrCodeOverrides AS QO ON QO.AP_ID = A.AP_ID " &
+        "WHERE ISNULL(NULLIF(QO.QRCode, ''), Q.APQ_PRODUCT_CODE) = @code " &
         "ORDER BY A.AP_ID;"
         Using con As New SqlConnection(connectionstring)
             Using cmd As New SqlCommand(sql, con)
@@ -15074,11 +15263,14 @@ Handles dgvDebtsList.EditingControlShowing
     ' --- Το SQL lookup: AP_DESCRIPTION + AP_MORFI από APOTIKH, via APOTIKH_QRCODES ---
     Private Function LookupFullDescriptionByQRCode(productCode As String) As String
         ' Γύρισε Nothing αν δεν βρεθεί ΑΚΡΙΒΩΣ μία εγγραφή
+        EnsureDrugQrCodeOverridesTable()
+
         Const sql As String =
         "SELECT TOP (2) ISNULL(A.AP_DESCRIPTION,'') + ' ' + ISNULL(A.AP_MORFI,'') AS FullDescription " &
-        "FROM dbo.APOTIKH_QRCODES Q " &
-        "JOIN dbo.APOTIKH A ON A.AP_ID = Q.APQ_AP_ID " &
-        "WHERE Q.APQ_PRODUCT_CODE = @code;"
+        "FROM dbo.APOTIKH A " &
+        "LEFT JOIN dbo.APOTIKH_QRCODES Q ON A.AP_ID = Q.APQ_AP_ID " &
+        "LEFT JOIN PharmacyCustomFiles.dbo.DrugQrCodeOverrides AS QO ON QO.AP_ID = A.AP_ID " &
+        "WHERE ISNULL(NULLIF(QO.QRCode, ''), Q.APQ_PRODUCT_CODE) = @code;"
 
         Try
             Using con As New SqlClient.SqlConnection(connectionstring)
@@ -16863,6 +17055,10 @@ Handles dgvDebtsList.EditingControlShowing
 
     Private Sub dgvPricesParadrugs_DataError1(sender As Object, e As DataGridViewDataErrorEventArgs) Handles dgvPricesParadrugs.DataError
         rtxtPricesParadrugs.Text = "DB Error!"
+    End Sub
+
+    Private Sub dgvPricesParadrugs_DataBindingComplete(sender As Object, e As DataGridViewBindingCompleteEventArgs) Handles dgvPricesParadrugs.DataBindingComplete
+        ApplyDrugQrCodeVisuals()
     End Sub
 
 

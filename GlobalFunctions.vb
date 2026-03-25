@@ -888,27 +888,37 @@ Public Class GlobalFunctions
 
     Public Shared Function GetIDFromQRCode(productCode As String) As Integer
         Dim result As Integer = 0
-        Dim connStr As String = "Data Source=SERVERNAME;Initial Catalog=Pharmacy2013C;Integrated Security=True"
-        ' Αν χρησιμοποιείς SQL authentication, βάζεις: User ID=xxx;Password=yyy;
 
-        Dim query As String = "SELECT APQ_AP_ID FROM dbo.APOTIKH_QRCODES WHERE APQ_PRODUCT_CODE = @code"
+        EnsureDrugQrCodeOverridesTable()
 
-        'Using conn As New SqlConnection(connStr)
-        Using cmd As New SqlCommand(query, con)
-            cmd.Parameters.AddWithValue("@code", productCode)
+        Dim query As String =
+            "SELECT TOP 1 T.AP_ID " &
+            "FROM (" &
+            "    SELECT QO.AP_ID " &
+            "    FROM [PharmacyCustomFiles].[dbo].[DrugQrCodeOverrides] AS QO " &
+            "    WHERE QO.QRCode = @code " &
+            "    UNION ALL " &
+            "    SELECT Q.APQ_AP_ID " &
+            "    FROM dbo.APOTIKH_QRCODES AS Q " &
+            "    WHERE Q.APQ_PRODUCT_CODE = @code " &
+            ") AS T"
 
-            Try
-                con.Open()
-                Dim obj = cmd.ExecuteScalar()
-                If obj IsNot Nothing AndAlso Not IsDBNull(obj) Then
-                    result = Convert.ToInt32(obj)
-                End If
-            Catch ex As Exception
-                MessageBox.Show("SQL Error: " & ex.Message)
-            End Try
+        Using localCon As New SqlConnection(connectionstring)
+            Using cmd As New SqlCommand(query, localCon)
+                cmd.Parameters.AddWithValue("@code", productCode)
+
+                Try
+                    localCon.Open()
+                    Dim obj = cmd.ExecuteScalar()
+                    If obj IsNot Nothing AndAlso Not IsDBNull(obj) Then
+                        result = Convert.ToInt32(obj)
+                    End If
+                Catch ex As Exception
+                    MessageBox.Show("SQL Error: " & ex.Message)
+                End Try
+            End Using
         End Using
-        'End Using
-        con.Close()
+
         Return result
     End Function
 
@@ -1556,6 +1566,119 @@ Public Class GlobalFunctions
         Using con As New SqlClient.SqlConnection(connectionstring)
             Using cmd As New SqlClient.SqlCommand(sql, con)
                 con.Open()
+                cmd.ExecuteNonQuery()
+            End Using
+        End Using
+    End Sub
+
+    Public Shared Sub EnsureDrugQrCodeOverridesTable()
+        Dim sql As String = "IF OBJECT_ID('[PharmacyCustomFiles].[dbo].[DrugQrCodeOverrides]', 'U') IS NULL " & _
+                            "BEGIN " & _
+                            "CREATE TABLE [PharmacyCustomFiles].[dbo].[DrugQrCodeOverrides](" & _
+                            "[Id] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY, " & _
+                            "[AP_ID] [bigint] NOT NULL, " & _
+                            "[AP_Code] [nvarchar](50) NULL, " & _
+                            "[DrugName] [nvarchar](255) NULL, " & _
+                            "[QRCode] [nvarchar](100) NOT NULL, " & _
+                            "[LastUpdated] [datetime] NOT NULL CONSTRAINT [DF_DrugQrCodeOverrides_LastUpdated] DEFAULT (GETDATE())" & _
+                            "); " & _
+                            "CREATE UNIQUE INDEX [IX_DrugQrCodeOverrides_AP_ID] ON [PharmacyCustomFiles].[dbo].[DrugQrCodeOverrides]([AP_ID]); " & _
+                            "CREATE INDEX [IX_DrugQrCodeOverrides_QRCode] ON [PharmacyCustomFiles].[dbo].[DrugQrCodeOverrides]([QRCode]); " & _
+                            "END"
+
+        Using con As New SqlClient.SqlConnection(connectionstring)
+            Using cmd As New SqlClient.SqlCommand(sql, con)
+                con.Open()
+                cmd.ExecuteNonQuery()
+            End Using
+        End Using
+    End Sub
+
+    Public Shared Function GetDrugQrCodeOverride(ByVal apId As Long) As String
+        If apId <= 0 Then Return Nothing
+
+        EnsureDrugQrCodeOverridesTable()
+
+        Dim sql As String = "SELECT TOP 1 QRCode FROM [PharmacyCustomFiles].[dbo].[DrugQrCodeOverrides] WHERE AP_ID = @AP_ID"
+
+        Using con As New SqlClient.SqlConnection(connectionstring)
+            Using cmd As New SqlClient.SqlCommand(sql, con)
+                cmd.Parameters.AddWithValue("@AP_ID", apId)
+                con.Open()
+
+                Dim result = cmd.ExecuteScalar()
+                If result Is Nothing OrElse IsDBNull(result) Then Return Nothing
+
+                Return Convert.ToString(result).Trim()
+            End Using
+        End Using
+    End Function
+
+    Public Shared Function HasDrugQrCodeOverride(ByVal apId As Long) As Boolean
+        Return Not String.IsNullOrWhiteSpace(GetDrugQrCodeOverride(apId))
+    End Function
+
+    Public Shared Function GetEffectiveDrugQrCode(ByVal apId As Long) As String
+        If apId <= 0 Then Return Nothing
+
+        EnsureDrugQrCodeOverridesTable()
+
+        Dim sql As String =
+            "SELECT TOP 1 ISNULL(NULLIF(QO.QRCode, ''), Q.APQ_PRODUCT_CODE) AS EffectiveQRCode " &
+            "FROM dbo.APOTIKH AS A " &
+            "LEFT JOIN dbo.APOTIKH_QRCODES AS Q ON Q.APQ_AP_ID = A.AP_ID " &
+            "LEFT JOIN [PharmacyCustomFiles].[dbo].[DrugQrCodeOverrides] AS QO ON QO.AP_ID = A.AP_ID " &
+            "WHERE A.AP_ID = @AP_ID"
+
+        Using con As New SqlClient.SqlConnection(connectionstring)
+            Using cmd As New SqlClient.SqlCommand(sql, con)
+                cmd.Parameters.AddWithValue("@AP_ID", apId)
+                con.Open()
+
+                Dim result = cmd.ExecuteScalar()
+                If result Is Nothing OrElse IsDBNull(result) Then Return Nothing
+
+                Return Convert.ToString(result).Trim()
+            End Using
+        End Using
+    End Function
+
+    Public Shared Sub SaveDrugQrCodeOverride(ByVal apId As Long, ByVal apCode As String, ByVal drugName As String, ByVal qrCode As String)
+        If apId <= 0 Then Exit Sub
+
+        EnsureDrugQrCodeOverridesTable()
+
+        Dim trimmedQr As String = If(qrCode, String.Empty).Trim()
+
+        Using con As New SqlClient.SqlConnection(connectionstring)
+            con.Open()
+
+            If trimmedQr = "" Then
+                Using cmd As New SqlClient.SqlCommand(
+                    "DELETE FROM [PharmacyCustomFiles].[dbo].[DrugQrCodeOverrides] WHERE AP_ID = @AP_ID", con)
+                    cmd.Parameters.AddWithValue("@AP_ID", apId)
+                    cmd.ExecuteNonQuery()
+                End Using
+                Exit Sub
+            End If
+
+            Dim sql As String = "IF EXISTS (SELECT 1 FROM [PharmacyCustomFiles].[dbo].[DrugQrCodeOverrides] WHERE AP_ID = @AP_ID) " & _
+                                "BEGIN " & _
+                                "UPDATE [PharmacyCustomFiles].[dbo].[DrugQrCodeOverrides] " & _
+                                "SET AP_Code = @AP_Code, DrugName = @DrugName, QRCode = @QRCode, LastUpdated = GETDATE() " & _
+                                "WHERE AP_ID = @AP_ID " & _
+                                "END " & _
+                                "ELSE " & _
+                                "BEGIN " & _
+                                "INSERT INTO [PharmacyCustomFiles].[dbo].[DrugQrCodeOverrides] ([AP_ID], [AP_Code], [DrugName], [QRCode]) " & _
+                                "VALUES (@AP_ID, @AP_Code, @DrugName, @QRCode) " & _
+                                "END"
+
+            Using cmd As New SqlClient.SqlCommand(sql, con)
+                cmd.Parameters.AddWithValue("@AP_ID", apId)
+                cmd.Parameters.AddWithValue("@AP_Code", If(String.IsNullOrWhiteSpace(apCode), DBNull.Value, CType(apCode.Trim(), Object)))
+                cmd.Parameters.AddWithValue("@DrugName", If(String.IsNullOrWhiteSpace(drugName), DBNull.Value, CType(drugName.Trim(), Object)))
+                cmd.Parameters.AddWithValue("@QRCode", trimmedQr)
                 cmd.ExecuteNonQuery()
             End Using
         End Using
