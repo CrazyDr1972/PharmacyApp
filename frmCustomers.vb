@@ -45,11 +45,12 @@ Public Class frmCustomers
     Private WithEvents tmrSel As New System.Windows.Forms.Timer() With {.Interval = 250}
     Private _pendingCustomerId As Integer = -1
     ' ======= [frmCustomers] Paradrugs search – cloned from frmChooseParadrugFromCatalog =======
-    Private WithEvents tmrTextboxEntry As New System.Windows.Forms.Timer() With {.Interval = 300}
+    Private WithEvents tmrTextboxEntry As New System.Windows.Forms.Timer() With {.Interval = 150}
     Private lastKeyWasAlphaNumeric As Boolean = False
     Private _loadingChooseFromCatalog As Boolean = False   ' guard όπως στο choose-form
     Private barcodeType As String = ""                     ' "name" / "barcode" / "qrcode"
     Private _resolvedDrugQrApId As Integer = 0
+    Private _suppressSearchModeChangedQuery As Boolean = False
     Private _pricesCellOldValue As String = ""
     Private _pricesCellOldRow As Integer = -1
     Private _pricesCellOldColumn As Integer = -1
@@ -174,7 +175,7 @@ Public Class frmCustomers
         Me.Text = "Διαχείρηση φαρμακείου! " & Version
 
         tmrTextboxEntry.Stop()
-        tmrTextboxEntry.Interval = 300
+        tmrTextboxEntry.Interval = 150
 
         FixHeadersLook(dgvCustomers)
         FixHeadersLook(dgvDebtsList)
@@ -291,7 +292,12 @@ Public Class frmCustomers
 
         ' προαιρετικό UX: αν φαίνεται ανθρώπινη πληκτρολόγηση → γύρνα σε Name
         If lastKeyWasAlphaNumeric Then
-            rbByName.Checked = True : rbByBarcode.Checked = False : rbByQRcode.Checked = False
+            _suppressSearchModeChangedQuery = True
+            Try
+                rbByName.Checked = True : rbByBarcode.Checked = False : rbByQRcode.Checked = False
+            Finally
+                _suppressSearchModeChangedQuery = False
+            End Try
         End If
 
         ' Debounce: κάθε αλλαγή restart τον timer, και κρατάμε snapshot στο Tag
@@ -16411,6 +16417,7 @@ Handles dgvDebtsList.EditingControlShowing
             _resolvedDrugQrApId = 0
             chkManualBarcode.Visible = True
             barcodeType = "barcode"
+            If _suppressSearchModeChangedQuery Then Exit Sub
             GetDrugs("barcode")
         Else
             chkManualBarcode.Visible = False
@@ -17275,6 +17282,7 @@ Handles dgvDebtsList.EditingControlShowing
     Private Sub RbByName_CheckedChanged(sender As Object, e As EventArgs) Handles rbByName.CheckedChanged
         If rbByName.Checked = True And _loadingChooseFromCatalog = False Then
             _resolvedDrugQrApId = 0
+            If _suppressSearchModeChangedQuery Then Exit Sub
             GetDrugs("name")
         End If
 
@@ -17283,6 +17291,7 @@ Handles dgvDebtsList.EditingControlShowing
     Private Sub RbByQRcode_CheckedChanged(sender As Object, e As EventArgs) Handles rbByQRcode.CheckedChanged
         If rbByQRcode.Checked = True And _loadingChooseFromCatalog = False Then
             barcodeType = "qrcode"
+            If _suppressSearchModeChangedQuery Then Exit Sub
             GetDrugs("qrcode")
         End If
 
