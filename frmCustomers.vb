@@ -16823,7 +16823,9 @@ Handles dgvDebtsList.EditingControlShowing
         Catch ex As Exception
         End Try
 
-        If dirty = True Then
+        If rbDrugs.Checked = True Then
+            lblNewRecordAdded.Text = ""
+        ElseIf dirty = True Then
             UpdateParadrug(index)
         Else
             lblNewRecordAdded.Text = ""
@@ -16836,7 +16838,9 @@ Handles dgvDebtsList.EditingControlShowing
         dirty = dgvPricesParadrugs.IsCurrentRowDirty
         txtRowChanged3.Text = dirty.ToString
 
-        If dirty = True Then
+        If rbDrugs.Checked = True Then
+            lblNewRecordAdded.Text = ""
+        ElseIf dirty = True Then
             UpdateParadrug(e.RowIndex)
         Else
             lblNewRecordAdded.Text = ""
