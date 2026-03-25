@@ -886,22 +886,104 @@ Public Class GlobalFunctions
         Return qr
     End Function
 
+    Public Shared Function GetSerialFromScannedCode(ByVal scannedCode As String) As String
+        If String.IsNullOrWhiteSpace(scannedCode) Then Return ""
+
+        Dim startIdx As Integer = 0
+        Dim productMatch As Match = Regex.Match(scannedCode, "01(\d{14})", RegexOptions.CultureInvariant)
+        If productMatch.Success Then
+            startIdx = productMatch.Index + productMatch.Length
+        End If
+
+        Dim payload As String = scannedCode.Substring(startIdx)
+        If String.IsNullOrEmpty(payload) Then Return ""
+
+        Dim i As Integer = 0
+        While i >= 0 AndAlso i < payload.Length
+            i = payload.IndexOf("21", i, StringComparison.Ordinal)
+            If i < 0 Then Exit While
+
+            Dim valueStart As Integer = i + 2
+            If valueStart >= payload.Length Then Exit While
+
+            Dim endIdx As Integer = payload.Length
+
+            Dim fnc1 As Integer = payload.IndexOf(ChrW(29), valueStart)
+            If fnc1 >= 0 Then endIdx = Math.Min(endIdx, fnc1)
+
+            Dim nextAIs As String() = {"10", "11", "15", "17", "21", "30", "37", "90", "91", "92", "93", "94", "95", "96", "97", "98", "99"}
+            For Each ai In nextAIs
+                Dim k As Integer = payload.IndexOf(ai, valueStart, StringComparison.Ordinal)
+                If k >= 0 Then endIdx = Math.Min(endIdx, k)
+            Next
+
+            Dim serial As String = payload.Substring(valueStart, Math.Max(0, endIdx - valueStart)).Trim()
+            If serial <> "" Then
+                Return serial
+            End If
+
+            i = valueStart
+        End While
+
+        Return ""
+    End Function
+
+    Private Shared Function GetIDFromQRCodeSerial(serialNumber As String) As Integer
+        If String.IsNullOrWhiteSpace(serialNumber) Then Return 0
+
+        Dim result As Integer = 0
+        Dim query As String =
+            "SELECT TOP 1 D.TD_AP_ID " &
+            "FROM dbo.SCANNED_TD_QR_CODES AS S " &
+            "INNER JOIN dbo.DETAIL_TD AS D ON D.TD_TM_ID = S.SDQ_TM_ID AND D.TD_ID = S.SDQ_TD_ID " &
+            "WHERE S.SDQ_SERIAL_NUMBER = @serial " &
+            "AND D.TD_AP_ID IS NOT NULL " &
+            "ORDER BY S.SDQ_TM_ID DESC, S.SDQ_TD_ID DESC"
+
+        Using localCon As New SqlConnection(connectionstring)
+            Using cmd As New SqlCommand(query, localCon)
+                cmd.Parameters.AddWithValue("@serial", serialNumber)
+
+                Try
+                    localCon.Open()
+                    Dim obj = cmd.ExecuteScalar()
+                    If obj IsNot Nothing AndAlso Not IsDBNull(obj) Then
+                        result = Convert.ToInt32(obj)
+                    End If
+                Catch ex As Exception
+                    MessageBox.Show("SQL Error: " & ex.Message)
+                End Try
+            End Using
+        End Using
+
+        Return result
+    End Function
+
     Public Shared Function GetIDFromQRCode(productCode As String) As Integer
         Dim result As Integer = 0
+
+        If String.IsNullOrWhiteSpace(productCode) Then Return 0
 
         EnsureDrugQrCodeOverridesTable()
 
         Dim query As String =
             "SELECT TOP 1 T.AP_ID " &
             "FROM (" &
-            "    SELECT QO.AP_ID " &
+            "    SELECT QO.AP_ID, 1 AS SortOrder " &
             "    FROM [PharmacyCustomFiles].[dbo].[DrugQrCodeOverrides] AS QO " &
             "    WHERE QO.QRCode = @code " &
             "    UNION ALL " &
-            "    SELECT Q.APQ_AP_ID " &
+            "    SELECT Q.APQ_AP_ID, 2 AS SortOrder " &
             "    FROM dbo.APOTIKH_QRCODES AS Q " &
             "    WHERE Q.APQ_PRODUCT_CODE = @code " &
-            ") AS T"
+            "    UNION ALL " &
+            "    SELECT D.TD_AP_ID, 3 AS SortOrder " &
+            "    FROM dbo.SCANNED_TD_QR_CODES AS S " &
+            "    INNER JOIN dbo.DETAIL_TD AS D ON D.TD_TM_ID = S.SDQ_TM_ID AND D.TD_ID = S.SDQ_TD_ID " &
+            "    WHERE S.SDQ_PRODUCT_CODE = @code " &
+            ") AS T " &
+            "WHERE T.AP_ID IS NOT NULL " &
+            "ORDER BY T.SortOrder, T.AP_ID"
 
         Using localCon As New SqlConnection(connectionstring)
             Using cmd As New SqlCommand(query, localCon)
@@ -920,6 +1002,19 @@ Public Class GlobalFunctions
         End Using
 
         Return result
+    End Function
+
+    Public Shared Function GetIDFromScannedQRCode(scannedCode As String) As Integer
+        If String.IsNullOrWhiteSpace(scannedCode) Then Return 0
+
+        Dim productCode As String = GetQRFromScannedCode(scannedCode)
+        Dim result As Integer = GetIDFromQRCode(productCode)
+        If result > 0 Then Return result
+
+        Dim serialNumber As String = GetSerialFromScannedCode(scannedCode)
+        If serialNumber = "" Then Return 0
+
+        Return GetIDFromQRCodeSerial(serialNumber)
     End Function
 
 

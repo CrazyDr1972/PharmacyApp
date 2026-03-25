@@ -25,7 +25,7 @@ Public Class GlobalVariables
     Public Shared Pharmacy2013Server As String ' H μεταβλητή για το SQL server του προγράμματος μου για χρήση σε όλο το πρόγραμμα
 
     ' Το version του προγράμματος μου
-Public Shared Version As String = "v7.9.5"
+Public Shared Version As String = "v7.9.6"
     ' Το folder του SQL server που χρησιμοποιεί το Pharmakon (το πραγματικό στο φαρμακείο, το δοκιμαστικό στο σπίτι)
     Public Shared strCSAfolder_Home As String = "C:\Program Files\Microsoft SQL Server\MSSQL11.MSSQLSERVER\MSSQL\DATA\"  ' Home
     Public Shared strCSAfolder_Farm As String = "C:\FarmakoNet SQL\DATA\"  ' Pharmakeio
@@ -174,6 +174,7 @@ Public Shared Version As String = "v7.9.5"
 
 
 End Class
+
 
 
 

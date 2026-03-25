@@ -358,17 +358,24 @@ Public Class frmAddDrugOnLoan
         ElseIf mode = "qrcode" Then
             EnsureDrugQrCodeOverridesTable()
             qr = GetQRFromScannedCode(barcode)
-            If qr IsNot Nothing Then
+            If Not String.IsNullOrEmpty(qr) Then
                 txtDrugBarcode.Text = qr
             Else
                 Exit Function
             End If
 
-            sqlString = "SELECT [AP_DESCRIPTION], [AP_Morfi], [AP_TIMH_LIAN] " &
-                                "FROM APOTIKH " &
-                                "LEFT JOIN APOTIKH_QRCODES ON APOTIKH.AP_ID = APOTIKH_QRCODES.APQ_AP_ID " &
-                                "LEFT JOIN PharmacyCustomFiles.dbo.DrugQrCodeOverrides AS QRO ON APOTIKH.AP_ID = QRO.AP_ID " &
-                                "WHERE ISNULL(NULLIF(QRO.QRCode, ''), APQ_PRODUCT_CODE) like '%" & qr & "%' "
+            Dim resolvedApId As Integer = GetIDFromScannedQRCode(barcode)
+            If resolvedApId > 0 Then
+                sqlString = "SELECT [AP_DESCRIPTION], [AP_Morfi], [AP_TIMH_LIAN] " &
+                                    "FROM APOTIKH " &
+                                    "WHERE APOTIKH.AP_ID = " & resolvedApId & " "
+            Else
+                sqlString = "SELECT [AP_DESCRIPTION], [AP_Morfi], [AP_TIMH_LIAN] " &
+                                    "FROM APOTIKH " &
+                                    "LEFT JOIN APOTIKH_QRCODES ON APOTIKH.AP_ID = APOTIKH_QRCODES.APQ_AP_ID " &
+                                    "LEFT JOIN PharmacyCustomFiles.dbo.DrugQrCodeOverrides AS QRO ON APOTIKH.AP_ID = QRO.AP_ID " &
+                                    "WHERE ISNULL(NULLIF(QRO.QRCode, ''), APQ_PRODUCT_CODE) like '%" & qr & "%' "
+            End If
         End If
 
         Dim DrugInfo() As String = {"", ""}

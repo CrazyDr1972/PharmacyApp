@@ -10,6 +10,7 @@ Imports System.Reflection.Emit
 
 Public Class frmChooseParadrugFromCatalog
 
+    Private _resolvedDrugQrApId As Integer = 0
 
     Private Function GetMorfesList(ByVal mode As String) As Integer
 
@@ -35,10 +36,17 @@ Public Class frmChooseParadrugFromCatalog
                         "WHERE BRAP_AP_BARCODE = '" & txtSearchParaDrugsByName.Text & "' " &
                         "ORDER BY [AP_MORFI]"
         ElseIf mode = "qrcode" Then
-            stringDTG = "SELECT [AP_MORFI], [AP_TIMH_XON], [AP_TIMH_LIAN], [AP_CODE], [AP_ID], [APQ_PRODUCT_CODE] " &
-                        "FROM APOTIKH left JOIN APOTIKH_QRCODES ON APOTIKH.AP_ID = APOTIKH_QRCODES.APQ_AP_ID " &
-                        "WHERE APQ_PRODUCT_CODE = '" & txtSearchParaDrugsByName.Text & "' " &
-                        "ORDER BY [AP_MORFI]"
+            If _resolvedDrugQrApId > 0 Then
+                stringDTG = "SELECT [AP_MORFI], [AP_TIMH_XON], [AP_TIMH_LIAN], [AP_CODE], [AP_ID], ISNULL([APQ_PRODUCT_CODE], '" & txtSearchParaDrugsByName.Text & "') AS [APQ_PRODUCT_CODE] " &
+                            "FROM APOTIKH left JOIN APOTIKH_QRCODES ON APOTIKH.AP_ID = APOTIKH_QRCODES.APQ_AP_ID " &
+                            "WHERE APOTIKH.AP_ID = " & _resolvedDrugQrApId & " " &
+                            "ORDER BY [AP_MORFI]"
+            Else
+                stringDTG = "SELECT [AP_MORFI], [AP_TIMH_XON], [AP_TIMH_LIAN], [AP_CODE], [AP_ID], [APQ_PRODUCT_CODE] " &
+                            "FROM APOTIKH left JOIN APOTIKH_QRCODES ON APOTIKH.AP_ID = APOTIKH_QRCODES.APQ_AP_ID " &
+                            "WHERE APQ_PRODUCT_CODE = '" & txtSearchParaDrugsByName.Text & "' " &
+                            "ORDER BY [AP_MORFI]"
+            End If
 
         End If
 
@@ -83,10 +91,17 @@ Public Class frmChooseParadrugFromCatalog
             'End If
             'qrCode = GetQRFromScannedCode(newString)
 
-            stringDTG = "SELECT distinct [AP_DESCRIPTION] " &
-                           "FROM APOTIKH left JOIN APOTIKH_QRCODES ON APOTIKH.AP_ID = APOTIKH_QRCODES.APQ_AP_ID " &
-                           "WHERE APQ_PRODUCT_CODE = '" & txtSearchParaDrugsByName.Text & "' " &
-                           "ORDER BY [AP_DESCRIPTION]"
+            If _resolvedDrugQrApId > 0 Then
+                stringDTG = "SELECT distinct [AP_DESCRIPTION] " &
+                               "FROM APOTIKH " &
+                               "WHERE AP_ID = " & _resolvedDrugQrApId & " " &
+                               "ORDER BY [AP_DESCRIPTION]"
+            Else
+                stringDTG = "SELECT distinct [AP_DESCRIPTION] " &
+                               "FROM APOTIKH left JOIN APOTIKH_QRCODES ON APOTIKH.AP_ID = APOTIKH_QRCODES.APQ_AP_ID " &
+                               "WHERE APQ_PRODUCT_CODE = '" & txtSearchParaDrugsByName.Text & "' " &
+                               "ORDER BY [AP_DESCRIPTION]"
+            End If
         End If
 
 
@@ -227,6 +242,7 @@ Public Class frmChooseParadrugFromCatalog
 
     Private Sub rbByName_CheckedChanged(sender As Object, e As EventArgs) Handles rbByName.CheckedChanged
         If _loadingChooseFromCatalog = False Then
+            _resolvedDrugQrApId = 0
             If rbByName.Checked = True Then
                 txtSearchParaDrugsByName.Focus()
                 txtSearchParaDrugsByName.Width = 177
@@ -240,6 +256,7 @@ Public Class frmChooseParadrugFromCatalog
 
     Private Sub rbByBarcode_CheckedChanged(sender As Object, e As EventArgs) Handles rbByBarcode.CheckedChanged
         If _loadingChooseFromCatalog = False Then
+            _resolvedDrugQrApId = 0
             txtSearchParaDrugsByName.Focus()
             barcodeType = "barcode"
             If txtSearchParaDrugsByName.Text <> "" Then
@@ -304,6 +321,7 @@ Public Class frmChooseParadrugFromCatalog
 
         Dim found As Integer, foundM As Integer, qr As String, id As Integer
         barcodeType = ""
+        _resolvedDrugQrApId = 0
 
         If String.IsNullOrWhiteSpace(input) Then
             _loadingChooseFromCatalog = False
@@ -321,10 +339,11 @@ Public Class frmChooseParadrugFromCatalog
         Else
             ' 2) Είναι QRCode;
             qr = GetQRFromScannedCode(input)
-            If qr IsNot Nothing Then
+            If Not String.IsNullOrEmpty(qr) Then
                 txtSearchParaDrugsByName.Text = qr
-                id = GetIDFromQRCode(qr)
+                id = GetIDFromScannedQRCode(input)
                 If id > 0 Then
+                    _resolvedDrugQrApId = id
                     barcodeType = "qrcode"
                     rbByBarcode.Checked = False
                     rbByQRcode.Checked = True
@@ -388,6 +407,7 @@ Public Class frmChooseParadrugFromCatalog
 
     Private Sub txtSearchParaDrugsByName_TextChanged(sender As Object, e As EventArgs) Handles txtSearchParaDrugsByName.TextChanged
         If _loadingChooseFromCatalog Then Exit Sub
+        _resolvedDrugQrApId = 0
 
         ' (προαιρετικό) αν πληκτρολογεί άνθρωπος, γύρνα σε αναζήτηση ονόματος
         If lastKeyWasAlphaNumeric Then

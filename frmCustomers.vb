@@ -49,6 +49,7 @@ Public Class frmCustomers
     Private lastKeyWasAlphaNumeric As Boolean = False
     Private _loadingChooseFromCatalog As Boolean = False   ' guard όπως στο choose-form
     Private barcodeType As String = ""                     ' "name" / "barcode" / "qrcode"
+    Private _resolvedDrugQrApId As Integer = 0
     Private _pricesCellOldValue As String = ""
     Private _pricesCellOldRow As Integer = -1
     Private _pricesCellOldColumn As Integer = -1
@@ -200,6 +201,7 @@ Public Class frmCustomers
 
         Dim found As Integer, qr As String
         Dim expDate As String = ""
+        _resolvedDrugQrApId = 0
 
         ' 1) Barcode;
         If IsNumeric(input) AndAlso input.Length <= 20 Then
@@ -209,6 +211,7 @@ Public Class frmCustomers
             ' 2) QRCode;
             qr = GetQRFromScannedCode(input)   ' υπάρχει ήδη στο frmCustomers
             If Not String.IsNullOrEmpty(qr) AndAlso IsNumeric(qr) Then
+                _resolvedDrugQrApId = GlobalFunctions.GetIDFromScannedQRCode(input)
                 barcodeType = "qrcode"
                 expDate = GetFirstYYMM(input)
                 rbByBarcode.Checked = False : rbByQRcode.Checked = True : rbByName.Checked = False
@@ -284,6 +287,7 @@ Public Class frmCustomers
 
     Private Sub txtSearchPricesParadrugs_TextChanged(sender As Object, e As EventArgs) Handles txtSearchPricesParadrugs.TextChanged
         If _loadingChooseFromCatalog Then Exit Sub
+        _resolvedDrugQrApId = 0
 
         ' προαιρετικό UX: αν φαίνεται ανθρώπινη πληκτρολόγηση → γύρνα σε Name
         If lastKeyWasAlphaNumeric Then
@@ -1764,15 +1768,25 @@ Handles dgvDebtsList.EditingControlShowing
 
             'qr = GetQRFromScannedCode(str2find)
 
-
-            stringDTG = "SELECT dbo.APOTIKH.AP_ID, dbo.APOTIKH.AP_CODE, dbo.APOTIKH.AP_DESCRIPTION, dbo.APOTIKH.AP_MORFI, dbo.APOTIKH.AP_NARKWTIKO, " &
-                            "dbo.APOTIKH.AP_NOSOKOMEIAKO, dbo.APOTIKH.AP_KTHNIATRIKO, dbo.APOTIKH.AP_ELLEICH, dbo.APOTIKH.AP_APOSYRSH, dbo.APOTIKH.AP_LISTA, " &
-                            "dbo.APOTIKH.AP_IFET, ISNULL(NULLIF(QRO.QRCode, ''), dbo.APOTIKH_QRCODES.APQ_PRODUCT_CODE) AS APQ_PRODUCT_CODE, CASE WHEN NULLIF(QRO.QRCode, '') IS NULL THEN 0 ELSE 1 END AS APQ_IS_CUSTOM_QR, dbo.APOTIKH.AP_TIMH_XON, dbo.APOTIKH.AP_TIMH_LIAN " &
-                        "FROM dbo.APOTIKH " &
-                        "LEFT JOIN dbo.APOTIKH_QRCODES ON dbo.APOTIKH.AP_ID = dbo.APOTIKH_QRCODES.APQ_AP_ID " &
-                        "LEFT JOIN PharmacyCustomFiles.dbo.DrugQrCodeOverrides AS QRO ON dbo.APOTIKH.AP_ID = QRO.AP_ID " &
-                        "WHERE ISNULL(NULLIF(QRO.QRCode, ''), dbo.APOTIKH_QRCODES.APQ_PRODUCT_CODE) like '%" & str2find & "%' " &
-                         "ORDER BY AP_DESCRIPTION, AP_MORFI"
+            If _resolvedDrugQrApId > 0 Then
+                stringDTG = "SELECT dbo.APOTIKH.AP_ID, dbo.APOTIKH.AP_CODE, dbo.APOTIKH.AP_DESCRIPTION, dbo.APOTIKH.AP_MORFI, dbo.APOTIKH.AP_NARKWTIKO, " &
+                                "dbo.APOTIKH.AP_NOSOKOMEIAKO, dbo.APOTIKH.AP_KTHNIATRIKO, dbo.APOTIKH.AP_ELLEICH, dbo.APOTIKH.AP_APOSYRSH, dbo.APOTIKH.AP_LISTA, " &
+                                "dbo.APOTIKH.AP_IFET, ISNULL(NULLIF(QRO.QRCode, ''), ISNULL(dbo.APOTIKH_QRCODES.APQ_PRODUCT_CODE, '" & str2find & "')) AS APQ_PRODUCT_CODE, CASE WHEN NULLIF(QRO.QRCode, '') IS NULL THEN 0 ELSE 1 END AS APQ_IS_CUSTOM_QR, dbo.APOTIKH.AP_TIMH_XON, dbo.APOTIKH.AP_TIMH_LIAN " &
+                            "FROM dbo.APOTIKH " &
+                            "LEFT JOIN dbo.APOTIKH_QRCODES ON dbo.APOTIKH.AP_ID = dbo.APOTIKH_QRCODES.APQ_AP_ID " &
+                            "LEFT JOIN PharmacyCustomFiles.dbo.DrugQrCodeOverrides AS QRO ON dbo.APOTIKH.AP_ID = QRO.AP_ID " &
+                            "WHERE dbo.APOTIKH.AP_ID = " & _resolvedDrugQrApId & " " &
+                             "ORDER BY AP_DESCRIPTION, AP_MORFI"
+            Else
+                stringDTG = "SELECT dbo.APOTIKH.AP_ID, dbo.APOTIKH.AP_CODE, dbo.APOTIKH.AP_DESCRIPTION, dbo.APOTIKH.AP_MORFI, dbo.APOTIKH.AP_NARKWTIKO, " &
+                                "dbo.APOTIKH.AP_NOSOKOMEIAKO, dbo.APOTIKH.AP_KTHNIATRIKO, dbo.APOTIKH.AP_ELLEICH, dbo.APOTIKH.AP_APOSYRSH, dbo.APOTIKH.AP_LISTA, " &
+                                "dbo.APOTIKH.AP_IFET, ISNULL(NULLIF(QRO.QRCode, ''), dbo.APOTIKH_QRCODES.APQ_PRODUCT_CODE) AS APQ_PRODUCT_CODE, CASE WHEN NULLIF(QRO.QRCode, '') IS NULL THEN 0 ELSE 1 END AS APQ_IS_CUSTOM_QR, dbo.APOTIKH.AP_TIMH_XON, dbo.APOTIKH.AP_TIMH_LIAN " &
+                            "FROM dbo.APOTIKH " &
+                            "LEFT JOIN dbo.APOTIKH_QRCODES ON dbo.APOTIKH.AP_ID = dbo.APOTIKH_QRCODES.APQ_AP_ID " &
+                            "LEFT JOIN PharmacyCustomFiles.dbo.DrugQrCodeOverrides AS QRO ON dbo.APOTIKH.AP_ID = QRO.AP_ID " &
+                            "WHERE ISNULL(NULLIF(QRO.QRCode, ''), dbo.APOTIKH_QRCODES.APQ_PRODUCT_CODE) like '%" & str2find & "%' " &
+                             "ORDER BY AP_DESCRIPTION, AP_MORFI"
+            End If
 
         End If
 
@@ -15070,8 +15084,7 @@ Handles dgvDebtsList.EditingControlShowing
         ' === Lookup QR/Barcode ===
         Dim fullDesc As String = Nothing
         If currentValue.Length > 15 Then
-            Dim qr = currentValue.Substring(2, 14)
-            fullDesc = LookupFullDescriptionByQRCode(qr)
+            fullDesc = LookupFullDescriptionFromScanned(currentValue)
         Else
             fullDesc = LookupFullDescriptionByBarcode(currentValue)
         End If
@@ -15196,26 +15209,27 @@ Handles dgvDebtsList.EditingControlShowing
 
 
 
-    ' --- Λιανική τιμή από QR-ProductCode ---
-    Private Function LookupRetailByQRCode(productCode As String) As Decimal?
-        EnsureDrugQrCodeOverridesTable()
+    Private Function LookupRetailByApId(apId As Integer) As Decimal?
+        If apId <= 0 Then Return Nothing
 
         Const sql As String =
         "SELECT TOP (1) A.AP_TIMH_LIAN " &
         "FROM dbo.APOTIKH AS A " &
-        "LEFT JOIN dbo.APOTIKH_QRCODES AS Q ON Q.APQ_AP_ID = A.AP_ID " &
-        "LEFT JOIN PharmacyCustomFiles.dbo.DrugQrCodeOverrides AS QO ON QO.AP_ID = A.AP_ID " &
-        "WHERE ISNULL(NULLIF(QO.QRCode, ''), Q.APQ_PRODUCT_CODE) = @code " &
-        "ORDER BY A.AP_ID;"
+        "WHERE A.AP_ID = @apId;"
         Using con As New SqlConnection(connectionstring)
             Using cmd As New SqlCommand(sql, con)
-                cmd.Parameters.AddWithValue("@code", productCode)
+                cmd.Parameters.AddWithValue("@apId", apId)
                 con.Open()
                 Dim obj = cmd.ExecuteScalar()
                 If obj Is DBNull.Value OrElse obj Is Nothing Then Return Nothing
                 Return Convert.ToDecimal(obj)
             End Using
         End Using
+    End Function
+
+    ' --- Λιανική τιμή από QR-ProductCode ---
+    Private Function LookupRetailByQRCode(productCode As String) As Decimal?
+        Return LookupRetailByApId(GlobalFunctions.GetIDFromQRCode(productCode))
     End Function
 
     ' --- Λιανική τιμή από barcode ---
@@ -15244,57 +15258,51 @@ Handles dgvDebtsList.EditingControlShowing
 
         ' ίδιο heuristic με της Περιγραφής: QR αν είναι “μεγάλο” string
         If scanned.Length > 15 Then
-            ' Στο δικό σου code κάνεις Substring(2,14) για το QR product code (GS1).
-            ' Χρησιμοποιούμε ακριβώς το ίδιο για συνέπεια.
-            Dim qrProductCode As String
-            If scanned.Length >= 16 Then
-                qrProductCode = scanned.Substring(2, 14)
-            Else
-                Return Nothing
-            End If
-            Return LookupRetailByQRCode(qrProductCode)
+            Return LookupRetailByApId(GlobalFunctions.GetIDFromScannedQRCode(scanned))
         Else
             ' barcode (π.χ. ΕΑΝ-13)
             Return LookupRetailByBarcode(scanned)
         End If
     End Function
 
-
-    ' --- Το SQL lookup: AP_DESCRIPTION + AP_MORFI από APOTIKH, via APOTIKH_QRCODES ---
-    Private Function LookupFullDescriptionByQRCode(productCode As String) As String
-        ' Γύρισε Nothing αν δεν βρεθεί ΑΚΡΙΒΩΣ μία εγγραφή
-        EnsureDrugQrCodeOverridesTable()
+    Private Function LookupFullDescriptionByApId(apId As Integer) As String
+        If apId <= 0 Then Return Nothing
 
         Const sql As String =
-        "SELECT TOP (2) ISNULL(A.AP_DESCRIPTION,'') + ' ' + ISNULL(A.AP_MORFI,'') AS FullDescription " &
-        "FROM dbo.APOTIKH A " &
-        "LEFT JOIN dbo.APOTIKH_QRCODES Q ON A.AP_ID = Q.APQ_AP_ID " &
-        "LEFT JOIN PharmacyCustomFiles.dbo.DrugQrCodeOverrides AS QO ON QO.AP_ID = A.AP_ID " &
-        "WHERE ISNULL(NULLIF(QO.QRCode, ''), Q.APQ_PRODUCT_CODE) = @code;"
+        "SELECT TOP (1) ISNULL(AP_DESCRIPTION,'') + ' ' + ISNULL(AP_MORFI,'') AS FullDescription " &
+        "FROM dbo.APOTIKH " &
+        "WHERE AP_ID = @apId;"
 
         Try
             Using con As New SqlClient.SqlConnection(connectionstring)
                 Using cmd As New SqlClient.SqlCommand(sql, con)
-                    cmd.Parameters.Add("@code", SqlDbType.NVarChar, 100).Value = productCode
+                    cmd.Parameters.Add("@apId", SqlDbType.Int).Value = apId
                     con.Open()
-                    Using rdr = cmd.ExecuteReader()
-                        Dim results As New List(Of String)
-                        While rdr.Read()
-                            results.Add(rdr.GetString(0))
-                        End While
-                        ' Αν βρέθηκε ακριβώς 1 εγγραφή, επιστρέφει το string, αλλιώς Nothing
-                        If results.Count = 1 Then
-                            Return results(0)
-                        Else
-                            Return Nothing
-                        End If
-                    End Using
+                    Dim obj = cmd.ExecuteScalar()
+                    If obj Is Nothing OrElse obj Is DBNull.Value Then Return Nothing
+                    Return Convert.ToString(obj)
                 End Using
             End Using
         Catch
-            ' Σε σφάλμα DB κράτα την παλιά τιμή (επιστρέφουμε Nothing)
             Return Nothing
         End Try
+    End Function
+
+
+    ' --- Το SQL lookup: AP_DESCRIPTION + AP_MORFI από APOTIKH, via APOTIKH_QRCODES ---
+    Private Function LookupFullDescriptionByQRCode(productCode As String) As String
+        Return LookupFullDescriptionByApId(GlobalFunctions.GetIDFromQRCode(productCode))
+    End Function
+
+    Private Function LookupFullDescriptionFromScanned(scanned As String) As String
+        If String.IsNullOrWhiteSpace(scanned) Then Return Nothing
+
+        scanned = scanned.Trim()
+        If scanned.Length > 15 Then
+            Return LookupFullDescriptionByApId(GlobalFunctions.GetIDFromScannedQRCode(scanned))
+        End If
+
+        Return LookupFullDescriptionByBarcode(scanned)
     End Function
 
     ' --- Το SQL lookup: AP_DESCRIPTION + AP_MORFI από APOTIKH, via APOTIKH_QRCODES ---
@@ -16400,6 +16408,7 @@ Handles dgvDebtsList.EditingControlShowing
 
     Private Sub rbByBarcode_CheckedChanged(sender As Object, e As EventArgs) Handles rbByBarcode.CheckedChanged
         If rbByBarcode.Checked = True And _loadingChooseFromCatalog = False Then
+            _resolvedDrugQrApId = 0
             chkManualBarcode.Visible = True
             barcodeType = "barcode"
             GetDrugs("barcode")
@@ -17265,6 +17274,7 @@ Handles dgvDebtsList.EditingControlShowing
 
     Private Sub RbByName_CheckedChanged(sender As Object, e As EventArgs) Handles rbByName.CheckedChanged
         If rbByName.Checked = True And _loadingChooseFromCatalog = False Then
+            _resolvedDrugQrApId = 0
             GetDrugs("name")
         End If
 
