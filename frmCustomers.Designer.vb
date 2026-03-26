@@ -172,7 +172,7 @@ Partial Class frmCustomers
         Me.rbByQRcode = New System.Windows.Forms.RadioButton()
         Me.rbByBarcode = New System.Windows.Forms.RadioButton()
         Me.rbByName = New System.Windows.Forms.RadioButton()
-        Me.Button3 = New System.Windows.Forms.Button()
+        Me.btnClearSearchText = New System.Windows.Forms.Button()
         Me.btnDeletePriceParadrugs = New System.Windows.Forms.Button()
         Me.rtxtPricesParadrugs = New System.Windows.Forms.RichTextBox()
         Me.Label6 = New System.Windows.Forms.Label()
@@ -1496,7 +1496,7 @@ Partial Class frmCustomers
         Me.tbpPricesParadrugs.Controls.Add(Me.grpCalculateLianiki)
         Me.tbpPricesParadrugs.Controls.Add(Me.grpLastUpdateParadrugs)
         Me.tbpPricesParadrugs.Controls.Add(Me.grpSearchParadrugOptions)
-        Me.tbpPricesParadrugs.Controls.Add(Me.Button3)
+        Me.tbpPricesParadrugs.Controls.Add(Me.btnClearSearchText)
         Me.tbpPricesParadrugs.Controls.Add(Me.btnDeletePriceParadrugs)
         Me.tbpPricesParadrugs.Controls.Add(Me.rtxtPricesParadrugs)
         Me.tbpPricesParadrugs.Controls.Add(Me.Label6)
@@ -1944,15 +1944,15 @@ Partial Class frmCustomers
         Me.rbByName.Text = "Όνομα"
         Me.rbByName.UseVisualStyleBackColor = True
         '
-        'Button3
+        'btnClearSearchText
         '
-        Me.Button3.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
-        Me.Button3.Image = CType(resources.GetObject("Button3.Image"), System.Drawing.Image)
-        Me.Button3.Location = New System.Drawing.Point(231, 23)
-        Me.Button3.Name = "Button3"
-        Me.Button3.Size = New System.Drawing.Size(23, 23)
-        Me.Button3.TabIndex = 38
-        Me.Button3.UseVisualStyleBackColor = True
+        Me.btnClearSearchText.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(161, Byte))
+        Me.btnClearSearchText.Image = CType(resources.GetObject("btnClearSearchText.Image"), System.Drawing.Image)
+        Me.btnClearSearchText.Location = New System.Drawing.Point(231, 23)
+        Me.btnClearSearchText.Name = "btnClearSearchText"
+        Me.btnClearSearchText.Size = New System.Drawing.Size(23, 23)
+        Me.btnClearSearchText.TabIndex = 38
+        Me.btnClearSearchText.UseVisualStyleBackColor = True
         '
         'btnDeletePriceParadrugs
         '
@@ -3483,7 +3483,7 @@ Partial Class frmCustomers
     Friend WithEvents cboTameia As System.Windows.Forms.ComboBox
     Friend WithEvents lblLastBuilded As System.Windows.Forms.Label
     Friend WithEvents Label20 As System.Windows.Forms.Label
-    Friend WithEvents Button3 As System.Windows.Forms.Button
+    Friend WithEvents btnClearSearchText As System.Windows.Forms.Button
     Friend WithEvents Button4 As System.Windows.Forms.Button
     Friend WithEvents cboFPA_Paradrugs As System.Windows.Forms.ComboBox
     Friend WithEvents txtTotalPrice_Paradrugs As System.Windows.Forms.TextBox

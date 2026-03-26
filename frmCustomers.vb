@@ -1,4 +1,4 @@
-﻿Imports Pharmacy.GlobalFunctions
+Imports Pharmacy.GlobalFunctions
 Imports Pharmacy.GlobalVariables
 Imports System.Data.SqlClient
 Imports System.Windows.Forms.Timer
@@ -289,6 +289,13 @@ Public Class frmCustomers
     Private Sub txtSearchPricesParadrugs_TextChanged(sender As Object, e As EventArgs) Handles txtSearchPricesParadrugs.TextChanged
         If _loadingChooseFromCatalog Then Exit Sub
         _resolvedDrugQrApId = 0
+        If String.IsNullOrWhiteSpace(txtSearchPricesParadrugs.Text) Then
+            tmrTextboxEntry.Stop()
+            barcodeType = ""
+            ClearPricesGrid()
+            HideExpirationDatagrid(True)
+            Return
+        End If
 
         ' προαιρετικό UX: αν φαίνεται ανθρώπινη πληκτρολόγηση → γύρνα σε Name
         If lastKeyWasAlphaNumeric Then
@@ -14861,13 +14868,14 @@ Handles dgvDebtsList.EditingControlShowing
         MsgBox(dgvPricesParadrugs.Rows(index).Cells(0).Value & "-" & dgvPricesParadrugs.Rows(index).Cells(2).Value & "-" & dgvPricesParadrugs.Rows(index).Cells(3).Value & "-" & dgvPricesParadrugs.Rows(index).Cells(4).Value & "-" & dgvPricesParadrugs.Rows(index).Cells(5).Value & "-")
         MsgBox(dgvPricesParadrugs.Rows(3).Cells(5).Value)
     End Sub
-
-    Private Sub Button3_Click_2(sender As Object, e As EventArgs) Handles Button3.Click
+    Private Sub Button3_Click_2(sender As Object, e As EventArgs) Handles btnClearSearchText.Click
+        tmrTextboxEntry.Stop()
+        lastKeyWasAlphaNumeric = False
+        barcodeType = ""
         txtSearchPricesParadrugs.Text = ""
         txtSearchPricesParadrugs.Focus()
 
     End Sub
-
     Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
         txtSearchPhones.Text = ""
         txtSearchPhones.Focus()
@@ -17578,3 +17586,4 @@ Handles dgvDebtsList.EditingControlShowing
     End Sub
 
 End Class
+
