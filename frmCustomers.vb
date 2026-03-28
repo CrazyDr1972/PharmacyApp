@@ -352,17 +352,10 @@ Public Class frmCustomers
                 _suppressSearchModeChangedQuery = False
             End Try
         End If
-
-        ' Debounce: κάθε αλλαγή restart τον timer, και κρατάμε snapshot στο Tag
-        tmrTextboxEntry.Stop()
-        tmrTextboxEntry.Tag = txtSearchPricesParadrugs.Text
-        tmrTextboxEntry.Start()
     End Sub
 
     Private Sub tmrTextboxEntry_Tick(sender As Object, e As EventArgs) Handles tmrTextboxEntry.Tick
         tmrTextboxEntry.Stop()
-        Dim snapshot As String = TryCast(tmrTextboxEntry.Tag, String)
-        ProcessScannedInput(If(snapshot, txtSearchPricesParadrugs.Text))
     End Sub
 
 
@@ -10811,6 +10804,14 @@ Handles dgvDebtsList.EditingControlShowing
             HideExpirationDatagrid(True)
             rtxtPricesParadrugs.Text = "Πληκτρολόγησε όνομα ή σκάναρε barcode/QRcode"
             Debug.WriteLine("[PricesTab] DisplayDrugsOrParadrugs skipped empty search: " & perf.ElapsedMilliseconds & " ms")
+            Exit Sub
+        End If
+
+        If (barcodeType = "name" OrElse rbByName.Checked) AndAlso str2find.Trim().Length < 3 Then
+            ClearPricesGrid()
+            HideExpirationDatagrid(True)
+            rtxtPricesParadrugs.Text = "Πληκτρολόγησε τουλάχιστον 3 χαρακτήρες για αναζήτηση με όνομα"
+            Debug.WriteLine("[PricesTab] DisplayDrugsOrParadrugs skipped short name search: " & perf.ElapsedMilliseconds & " ms")
             Exit Sub
         End If
 
