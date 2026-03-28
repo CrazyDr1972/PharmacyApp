@@ -51,6 +51,10 @@ Public Class frmCustomers
     Private barcodeType As String = ""                     ' "name" / "barcode" / "qrcode"
     Private _resolvedDrugQrApId As Integer = 0
     Private _suppressSearchModeChangedQuery As Boolean = False
+    Private _customersTabLoaded As Boolean = False
+    Private _exchangesTabLoaded As Boolean = False
+    Private _pricesTabLoaded As Boolean = False
+    Private _lastExpirationsSelectionKey As String = ""
     Private _pricesCellOldValue As String = ""
     Private _pricesCellOldRow As Integer = -1
     Private _pricesCellOldColumn As Integer = -1
@@ -66,6 +70,7 @@ Public Class frmCustomers
     Private _confirmingFromRowLeave As Boolean = False
     ' Κορυφή του frmCustomers:
     Private _suppressDebtsValidation As Boolean = False
+    Private _isSwitchingTabs As Boolean = False
 
 
 
@@ -135,25 +140,14 @@ Public Class frmCustomers
         FillComboBox(cboMyPharmacist, GetDistinctContentsDBField(
                    "SELECT DISTINCT FromWho FROM PharmacyCustomFiles.dbo.ExchangesMaster", "FromWho"), {})
 
-        'Εμφανίζει τις τιμές των παραφαρμάκων
-        DisplayDrugsOrParadrugs()
-        GetExpirationsList()
-
         GetAgoresOrSoldList()
         DisplayAgoresSoldTotals()
         UpdateDataTameia()
         GetPhonesList()
 
-        GetExchangesList("given")
-        GetExchangesList("taken")
-        DisplayExchangesBalance()
-
         CalculatePreviousTotalBalance()
 
         DisplayLastUpdate()
-
-        ' Βρίσκει τους πελάτες που αντιστοιχούν στις επιλογές μας και τους γράφει στο ListBox
-        GetCustomersList()
 
         UpdateStartDateExchanges("get")
 
@@ -180,7 +174,58 @@ Public Class frmCustomers
         FixHeadersLook(dgvCustomers)
         FixHeadersLook(dgvDebtsList)
 
+        If tbcMain.SelectedIndex = 0 Then
+            EnsureExchangesTabLoaded()
+        ElseIf tbcMain.SelectedIndex = 1 Then
+            EnsureCustomersTabLoaded()
+        ElseIf tbcMain.SelectedIndex = 2 Then
+            EnsurePricesTabLoaded()
+        End If
 
+
+    End Sub
+
+    Private Sub EnsureCustomersTabLoaded(Optional force As Boolean = False)
+        If Not force AndAlso _customersTabLoaded Then Exit Sub
+        Dim perf As Stopwatch = Stopwatch.StartNew()
+        Debug.WriteLine("[CustomersTab] EnsureCustomersTabLoaded start")
+        GetCustomersList()
+        _customersTabLoaded = True
+        Debug.WriteLine("[CustomersTab] EnsureCustomersTabLoaded total: " & perf.ElapsedMilliseconds & " ms")
+    End Sub
+
+    Private Sub EnsureExchangesTabLoaded(Optional force As Boolean = False)
+        If Not force AndAlso _exchangesTabLoaded Then Exit Sub
+        If String.IsNullOrWhiteSpace(cbExchangers.Text) Then Exit Sub
+        Dim perf As Stopwatch = Stopwatch.StartNew()
+        Debug.WriteLine("[ExchangesTab] EnsureExchangesTabLoaded start")
+
+        GetExchangesList("given")
+        Debug.WriteLine("[ExchangesTab] GetExchangesList(given): " & perf.ElapsedMilliseconds & " ms")
+        GetExchangesList("taken")
+        Debug.WriteLine("[ExchangesTab] GetExchangesList(taken): " & perf.ElapsedMilliseconds & " ms")
+        CalculatePreviousTotalBalance()
+        Debug.WriteLine("[ExchangesTab] CalculatePreviousTotalBalance: " & perf.ElapsedMilliseconds & " ms")
+        DisplayExchangesBalance()
+        Debug.WriteLine("[ExchangesTab] DisplayExchangesBalance: " & perf.ElapsedMilliseconds & " ms")
+        DisplayFPAPerCurrentIntervall()
+        Debug.WriteLine("[ExchangesTab] DisplayFPAPerCurrentIntervall: " & perf.ElapsedMilliseconds & " ms")
+        _exchangesTabLoaded = True
+        Debug.WriteLine("[ExchangesTab] EnsureExchangesTabLoaded total: " & perf.ElapsedMilliseconds & " ms")
+    End Sub
+
+    Private Sub EnsurePricesTabLoaded(Optional force As Boolean = False)
+        If Not force AndAlso _pricesTabLoaded Then Exit Sub
+
+        Dim perf As Stopwatch = Stopwatch.StartNew()
+        ResetExpirationsSelectionCache()
+        Debug.WriteLine("[PricesTab] EnsurePricesTabLoaded start")
+        DisplayDrugsOrParadrugs()
+        Debug.WriteLine("[PricesTab] DisplayDrugsOrParadrugs: " & perf.ElapsedMilliseconds & " ms")
+        GetExpirationsList(True)
+        Debug.WriteLine("[PricesTab] GetExpirationsList: " & perf.ElapsedMilliseconds & " ms")
+        _pricesTabLoaded = True
+        Debug.WriteLine("[PricesTab] EnsurePricesTabLoaded total: " & perf.ElapsedMilliseconds & " ms")
     End Sub
 
 
@@ -279,6 +324,7 @@ Public Class frmCustomers
 
     Private Sub ClearPricesGrid()
         If dgvPricesParadrugs Is Nothing Then Exit Sub
+        ResetExpirationsSelectionCache()
         Dim dt As New DataTable()
         dgvPricesParadrugs.DataSource = dt
         rtxtPricesParadrugs.Clear()
@@ -1817,10 +1863,13 @@ Handles dgvDebtsList.EditingControlShowing
                 rtxtPricesParadrugs.Text = "Βρέθηκαν " & sumDrugs.ToString("###,###") & " προιόντα"
         End Select
 
-        Dim TotKorres As Integer = CalculateTotCount("SELECT * FROM APOTIKH WHERE  AP_DESCRIPTION like '%" & txtSearchPricesParadrugs.Text.ToString & "%'AND " &
-                                                     "(AP_DESCRIPTION like '%KORRES%' or AP_DESCRIPTION like '%ΚΟΡΡΕΣ%' or AP_CODE like '%KOR')")
-        If TotKorres > 0 Then
-            rtxtPricesParadrugs.Text &= ", KORRES (" & TotKorres.ToString("###,###") & ")"
+        Dim TotKorres As Integer = 0
+        If mode = "name" AndAlso txtSearchPricesParadrugs.Text.Trim().Length >= 3 Then
+            TotKorres = CalculateTotCount("SELECT * FROM APOTIKH WHERE  AP_DESCRIPTION like '%" & txtSearchPricesParadrugs.Text.ToString & "%'AND " &
+                                          "(AP_DESCRIPTION like '%KORRES%' or AP_DESCRIPTION like '%ΚΟΡΡΕΣ%' or AP_CODE like '%KOR')")
+            If TotKorres > 0 Then
+                rtxtPricesParadrugs.Text &= ", KORRES (" & TotKorres.ToString("###,###") & ")"
+            End If
         End If
 
         ' Αλλάζει με κόκκινο χρώμα τον αριθμό των πελατών
@@ -1893,6 +1942,7 @@ Handles dgvDebtsList.EditingControlShowing
 
     Private Sub GetPhonesList()
         Dim total As Integer = 0
+        Dim perf As Stopwatch = Stopwatch.StartNew()
 
         ' Με βάση το μέρος ονόματος (textbox) 
         ' βρίσκει όλα τα παραφάρμακα και τις τιμές τους..
@@ -1954,6 +2004,8 @@ Handles dgvDebtsList.EditingControlShowing
                                                           {250, 250, 120, 120}, {"", "", "", ""}, {})
 
         End Select
+
+        Debug.WriteLine("[PhonesTab] GetPhonesList source=" & cboPhoneCatalog.Text & " total=" & perf.ElapsedMilliseconds & " ms")
 
         Select Case total
             Case 0
@@ -2109,6 +2161,7 @@ Handles dgvDebtsList.EditingControlShowing
     Private Sub GetCustomersList()
 
         Dim sumCustomers As Integer = 0
+        Dim perf As Stopwatch = Stopwatch.StartNew()
 
         ' If rbSearchAll.Checked = True Then
         If cboSearchCustomers.Text = "Όλους" Then
@@ -2186,6 +2239,7 @@ Handles dgvDebtsList.EditingControlShowing
         ' Γράφει μια ενημερωση στο Label κάτω από το ListBox
         ' ανάλογα με τον αριθμό των πελατών που βρέθηκαν
         DisplaySumsCustomers()
+        Debug.WriteLine("[CustomersTab] GetCustomersList filter=" & cboSearchCustomers.Text & " total=" & perf.ElapsedMilliseconds & " ms")
 
     End Sub
 
@@ -2365,6 +2419,7 @@ Handles dgvDebtsList.EditingControlShowing
 
     Private Sub GetExchangesList(ByVal mode As String)
         Dim FromDate, ToDate As String
+        Dim perf As Stopwatch = Stopwatch.StartNew()
 
         FromDate = dtpFromDate.Value
         ToDate = dtpToDate.Value
@@ -2388,6 +2443,8 @@ Handles dgvDebtsList.EditingControlShowing
             DisplayCustomDatagrid_Exchanges(bsExchangesTakenFrom, dgvTakenFrom)
 
         End If
+
+        Debug.WriteLine("[ExchangesTab] GetExchangesList mode=" & mode & " bind=" & perf.ElapsedMilliseconds & " ms")
 
 
         ' Γράφει μια ενημερωση στο Label κάτω από το datagrid
@@ -2455,6 +2512,7 @@ Handles dgvDebtsList.EditingControlShowing
         End If
 
         ApplyReadOnlyOnExchangeGrids() ' <— πρόσθεσέ το εδώ
+        Debug.WriteLine("[ExchangesTab] GetExchangesList mode=" & mode & " total=" & perf.ElapsedMilliseconds & " ms")
 
     End Sub
 
@@ -4682,6 +4740,7 @@ Handles dgvDebtsList.EditingControlShowing
     'End Sub
 
     Public Shared Sub DisplayLastUpdate()
+        Dim perf As Stopwatch = Stopwatch.StartNew()
 
         With frmCustomers
             If .tbcMain.SelectedIndex = 0 Then
@@ -4707,54 +4766,62 @@ Handles dgvDebtsList.EditingControlShowing
             End If
         End With
 
+        Debug.WriteLine("[UI] DisplayLastUpdate tab=" & frmCustomers.tbcMain.SelectedIndex.ToString() & " total=" & perf.ElapsedMilliseconds & " ms")
+
     End Sub
 
 
 
     Private Sub tbcMain_SelectedIndexChanged(sender As Object, e As EventArgs) Handles tbcMain.SelectedIndexChanged
+        _isSwitchingTabs = True
+        Try
 
-        ' Ανανεώνει την ώρα τελευταίας ανανέωσης
-        DisplayLastUpdate()
-
-        If tbcMain.SelectedIndex <> 1 Then
-            Try
-                frmPrescriptionInfo.Close()
-            Catch ex As Exception
-            End Try
-        End If
-
-        If tbcMain.SelectedIndex = 0 Then
-
-            cbExchangers.Text = "Λίντα"
-
-        ElseIf tbcMain.SelectedIndex = 1 Then
-            GetCustomersList()
-
-        ElseIf tbcMain.SelectedIndex = 2 Then
-
-            txtSearchPricesParadrugs.Focus()
             ' Ανανεώνει την ώρα τελευταίας ανανέωσης
             DisplayLastUpdate()
-            DisplayDrugsOrParadrugs()
-            GetExpirationsList()
 
-        ElseIf tbcMain.SelectedIndex = 3 Then
-            GetPhonesList()
+            If tbcMain.SelectedIndex <> 1 Then
+                Try
+                    frmPrescriptionInfo.Close()
+                Catch ex As Exception
+                End Try
+            End If
 
-        ElseIf tbcMain.SelectedIndex = 4 Then
+            If tbcMain.SelectedIndex = 0 Then
 
-            SetPCTerminal()
+                If String.IsNullOrWhiteSpace(cbExchangers.Text) Then
+                    cbExchangers.Text = "Λίντα"
+                Else
+                    EnsureExchangesTabLoaded()
+                End If
 
-            lblLastBuilded.Text = LastModifiedDate(My.Computer.FileSystem.CurrentDirectory & "\Pharmacy.exe")
+            ElseIf tbcMain.SelectedIndex = 1 Then
+                EnsureCustomersTabLoaded()
 
-            lblLastUpdatedDB1.Text = "Created on " & CreatedDate("C:\Program Files\Microsoft SQL Server\MSSQL11.MSSQLSERVER\MSSQL\DATA\Pharmacy2013C.MDF")
+            ElseIf tbcMain.SelectedIndex = 2 Then
 
-            lblLastUpdated.Text = Format(GetLastUpdateFarmnet(), "dd-MM-yyyy, HH:mm")
+                EnsurePricesTabLoaded()
+                txtSearchPricesParadrugs.Focus()
 
-            'lblLastMod_DB2.Text = LastModifiedDate("C:\Program Files\Microsoft SQL Server\MSSQL11.MSSQLSERVER\MSSQL\DATA\Pharmacy2013C.LDF")
-            'MsgBox(My.Computer.FileSystem.CurrentDirectory & "\Pharmacy.exe")
+            ElseIf tbcMain.SelectedIndex = 3 Then
+                GetPhonesList()
 
-        End If
+            ElseIf tbcMain.SelectedIndex = 4 Then
+
+                SetPCTerminal()
+
+                lblLastBuilded.Text = LastModifiedDate(My.Computer.FileSystem.CurrentDirectory & "\Pharmacy.exe")
+
+                lblLastUpdatedDB1.Text = "Created on " & CreatedDate("C:\Program Files\Microsoft SQL Server\MSSQL11.MSSQLSERVER\MSSQL\DATA\Pharmacy2013C.MDF")
+
+                lblLastUpdated.Text = Format(GetLastUpdateFarmnet(), "dd-MM-yyyy, HH:mm")
+
+                'lblLastMod_DB2.Text = LastModifiedDate("C:\Program Files\Microsoft SQL Server\MSSQL11.MSSQLSERVER\MSSQL\DATA\Pharmacy2013C.LDF")
+                'MsgBox(My.Computer.FileSystem.CurrentDirectory & "\Pharmacy.exe")
+
+            End If
+        Finally
+            BeginInvoke(Sub() _isSwitchingTabs = False)
+        End Try
     End Sub
 
 
@@ -7575,6 +7642,7 @@ Handles dgvDebtsList.EditingControlShowing
     End Sub
 
     Private Sub dgvExpirations_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvExpirations.CellClick
+        If _isSwitchingTabs Then Exit Sub
 
         If CurrentRowHasId() = 0 Then
             HideExpirationDatagrid(True)
@@ -7584,25 +7652,30 @@ Handles dgvDebtsList.EditingControlShowing
 
 
     Private Sub dgvExpirations_CellValidating(sender As Object, e As DataGridViewCellValidatingEventArgs) Handles dgvExpirations.CellValidating
+        If _isSwitchingTabs Then Exit Sub
+        If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Exit Sub
+        If tbcMain.SelectedIndex <> 2 Then Exit Sub
+        If dgvExpirations.Columns.Count <= e.ColumnIndex Then Exit Sub
 
 
         'Δήλωση μεταβλητών
         Dim headerText As String = dgvExpirations.Columns(e.ColumnIndex).HeaderText
         Dim int As Integer
 
-        If e.FormattedValue.ToString = "" Then Exit Sub
+        Dim formattedValueText As String = If(e.FormattedValue, String.Empty).ToString()
+        If formattedValueText = "" Then Exit Sub
 
         'Αν είμαστε στο πεδίο "Μήνας"
         If headerText.Equals("Μήνας") Then
             Try
                 ' και η καταχωρημένη τιμή που ΔΕΝ είναι ακέραιος αριθμός
-                If Not Integer.TryParse(e.FormattedValue.ToString, int) Then
-                    MessageBox.Show("To '" & e.FormattedValue.ToString & "' δεν είναι ακέραιος αριθμός!",
+                If Not Integer.TryParse(formattedValueText, int) Then
+                    MessageBox.Show("To '" & formattedValueText & "' δεν είναι ακέραιος αριθμός!",
                                     "Επιβεβαίωση στοιχείων", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     e.Cancel = True
                 Else
                     'Αν δεν είναι μήνας 
-                    If CType(e.FormattedValue.ToString, Integer) > 12 Or CType(e.FormattedValue.ToString, Integer) < 1 Then
+                    If int > 12 OrElse int < 1 Then
                         MessageBox.Show("Δεν καταχωρήσατε έγκυρο μήνα (1-12)!",
                                     "Επιβεβαίωση στοιχείων", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                         e.Cancel = True
@@ -7617,8 +7690,8 @@ Handles dgvDebtsList.EditingControlShowing
         If headerText.Equals("Έτος") Then
             Try
                 ' και η καταχωρημένη τιμή που ΔΕΝ είναι ακέραιος αριθμός
-                If Not Integer.TryParse(e.FormattedValue.ToString, int) Then
-                    MessageBox.Show("To '" & e.FormattedValue.ToString & "' δεν είναι ακέραιος αριθμός!",
+                If Not Integer.TryParse(formattedValueText, int) Then
+                    MessageBox.Show("To '" & formattedValueText & "' δεν είναι ακέραιος αριθμός!",
                                     "Επιβεβαίωση στοιχείων", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     e.Cancel = True
                     'Else
@@ -7642,24 +7715,29 @@ Handles dgvDebtsList.EditingControlShowing
 
 
     Private Sub dgvTakenFrom_CellValidating(sender As Object, e As DataGridViewCellValidatingEventArgs) Handles dgvTakenFrom.CellValidating
+        If _isSwitchingTabs Then Exit Sub
+        If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Exit Sub
+        If tbcMain.SelectedIndex <> 0 Then Exit Sub
+        If dgvTakenFrom.Columns.Count <= e.ColumnIndex Then Exit Sub
 
 
         'Δήλωση μεταβλητών
         Dim headerText As String = dgvTakenFrom.Columns(e.ColumnIndex).HeaderText
         Dim int As Integer
+        Dim formattedValueText As String = If(e.FormattedValue, String.Empty).ToString()
 
         'Αν είμαστε στο πεδίο "Τεμάχια"
         If headerText.Equals("Ποσ") Then
             Try
                 ' και η καταχωρημένη τιμή που ΔΕΝ είναι ακέραιος αριθμός
-                If Not Integer.TryParse(e.FormattedValue.ToString, int) Then
-                    MessageBox.Show("To '" & e.FormattedValue.ToString & "' δεν είναι ακέραιος αριθμός!",
+                If Not Integer.TryParse(formattedValueText, int) Then
+                    MessageBox.Show("To '" & formattedValueText & "' δεν είναι ακέραιος αριθμός!",
                                     "Επιβεβαίωση στοιχείων", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     e.Cancel = True
                 Else
 
                     'Αν η υπόσοτητα υπερβαίνει το 999 
-                    If CType(e.FormattedValue.ToString, Integer) > 999 Then
+                    If int > 999 Then
                         MessageBox.Show("H ποσότητα είναι πολύ μεγάλη!",
                                     "Επιβεβαίωση στοιχείων", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                         e.Cancel = True
@@ -7678,24 +7756,29 @@ Handles dgvDebtsList.EditingControlShowing
 
 
     Private Sub dgvGivenTo_CellValidating(sender As Object, e As DataGridViewCellValidatingEventArgs) Handles dgvGivenTo.CellValidating
+        If _isSwitchingTabs Then Exit Sub
+        If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Exit Sub
+        If tbcMain.SelectedIndex <> 0 Then Exit Sub
+        If dgvGivenTo.Columns.Count <= e.ColumnIndex Then Exit Sub
 
 
         'Δήλωση μεταβλητών
         Dim headerText As String = dgvGivenTo.Columns(e.ColumnIndex).HeaderText
         Dim int As Integer
+        Dim formattedValueText As String = If(e.FormattedValue, String.Empty).ToString()
 
         'Αν είμαστε στο πεδίο "Τεμάχια"
         If headerText.Equals("Ποσ") Then
             Try
                 ' και η καταχωρημένη τιμή που ΔΕΝ είναι ακέραιος αριθμός
-                If Not Integer.TryParse(e.FormattedValue.ToString, int) Then
-                    MessageBox.Show("To '" & e.FormattedValue.ToString & "' δεν είναι ακέραιος αριθμός!",
+                If Not Integer.TryParse(formattedValueText, int) Then
+                    MessageBox.Show("To '" & formattedValueText & "' δεν είναι ακέραιος αριθμός!",
                                     "Επιβεβαίωση στοιχείων", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     e.Cancel = True
                 Else
 
                     'Αν η υπόσοτητα υπερβαίνει το 999 
-                    If CType(e.FormattedValue.ToString, Integer) > 999 Then
+                    If int > 999 Then
                         MessageBox.Show("H ποσότητα είναι πολύ μεγάλη!",
                                     "Επιβεβαίωση στοιχείων", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                         e.Cancel = True
@@ -10719,12 +10802,25 @@ Handles dgvDebtsList.EditingControlShowing
 
     Private Sub DisplayDrugsOrParadrugs(Optional mode As String = "")
         Dim str2find As String, found As Integer
+        Dim perf As Stopwatch = Stopwatch.StartNew()
 
         str2find = txtSearchPricesParadrugs.Text
 
+        If String.IsNullOrWhiteSpace(str2find) Then
+            ClearPricesGrid()
+            HideExpirationDatagrid(True)
+            rtxtPricesParadrugs.Text = "Πληκτρολόγησε όνομα ή σκάναρε barcode/QRcode"
+            Debug.WriteLine("[PricesTab] DisplayDrugsOrParadrugs skipped empty search: " & perf.ElapsedMilliseconds & " ms")
+            Exit Sub
+        End If
+
         ' Ψάχνει πρώτα ανάμεσα στα φάρμακα
         If GetDrugs(barcodeType) = 0 Then
+            Debug.WriteLine("[PricesTab] GetDrugs(" & barcodeType & "): " & perf.ElapsedMilliseconds & " ms")
             GetPriceParaDrugs(barcodeType) ' και μετά στα παραφάρμακα
+            Debug.WriteLine("[PricesTab] GetPriceParaDrugs(" & barcodeType & "): " & perf.ElapsedMilliseconds & " ms")
+        Else
+            Debug.WriteLine("[PricesTab] GetDrugs(" & barcodeType & "): " & perf.ElapsedMilliseconds & " ms")
         End If
 
         'If rbParadrugs.Checked = True Then
@@ -10780,13 +10876,17 @@ Handles dgvDebtsList.EditingControlShowing
 
 
     Private Sub dgvPricesParadrugs_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvPricesParadrugs.CellClick
+        If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Exit Sub
+
+        Dim currentRow As DataGridViewRow = GetCurrentPricesRow()
+        If currentRow Is Nothing Then Exit Sub
 
         ' Αλλάζει το ΦΠΑ στον υπολογισμό της Λιανικής ανάλογα με το επιλεγμένο φάρμακο
         Try
-            If dgvPricesParadrugs.SelectedRows(0).Cells(4).Value <> 0 Then
+            If currentRow.Cells(4).Value IsNot Nothing AndAlso Not IsDBNull(currentRow.Cells(4).Value) AndAlso Convert.ToString(currentRow.Cells(4).Value) <> "0" Then
                 Dim fpa As Integer = 0
 
-                SelectedDetailsApCode = dgvPricesParadrugs.SelectedRows(0).Cells(4).Value
+                SelectedDetailsApCode = currentRow.Cells(4).Value
 
                 fpa = CType(frmParadrugSelectedDetails.GetOtherDetails("SELECT AP_FP_ID FROM APOTIKH "), Integer)
 
@@ -10828,23 +10928,23 @@ Handles dgvDebtsList.EditingControlShowing
                 rowIndex = e.RowIndex
                 columnIndex = e.ColumnIndex
 
-                If IsDBNull(dgvPricesParadrugs.SelectedRows(0).Cells(e.ColumnIndex).Value) Then
+                If currentRow.Cells(e.ColumnIndex).Value Is Nothing OrElse IsDBNull(currentRow.Cells(e.ColumnIndex).Value) Then
 
                     'MsgBox(dgvPricesParadrugs.SelectedRows(0).Cells(e.ColumnIndex).EditedFormattedValue & " " & dgvPricesParadrugs.SelectedRows(0).Cells(e.ColumnIndex).Value)
 
                     OpenDrugSelectionFromCatalogForm("newParadrug")
 
                     'Αν δεν έχουμε αντιστοιχήσει Κωδικό στο επιλεγμένο παραφάρμακο
-                ElseIf dgvPricesParadrugs.SelectedRows(0).Cells(e.ColumnIndex).Value = 0 Then
+                ElseIf Convert.ToString(currentRow.Cells(e.ColumnIndex).Value) = "0" Then
 
                     'txtSearchPricesParadrugs.Text = dgvPricesParadrugs.SelectedRows(0).Cells(0).Value
 
                     OpenDrugSelectionFromCatalogForm("oldParadrug")
 
-                ElseIf dgvPricesParadrugs.SelectedRows(0).Cells(e.ColumnIndex).Value > 0 Then
+                ElseIf Val(Convert.ToString(currentRow.Cells(e.ColumnIndex).Value)) > 0 Then
 
-                    SelectedDetailsApCode = dgvPricesParadrugs.SelectedRows(0).Cells(4).Value
-                    SelectedDetailsDrugName = dgvPricesParadrugs.SelectedRows(0).Cells(0).Value
+                    SelectedDetailsApCode = currentRow.Cells(4).Value
+                    SelectedDetailsDrugName = Convert.ToString(currentRow.Cells(0).Value)
                     OpenParadrugSelectionDetails()
 
                 End If
@@ -10863,8 +10963,8 @@ Handles dgvDebtsList.EditingControlShowing
                 rowIndex = e.RowIndex
                 columnIndex = e.ColumnIndex
 
-                SelectedDetailsApCode = dgvPricesParadrugs.SelectedRows(0).Cells(4).Value
-                SelectedDetailsDrugName = dgvPricesParadrugs.SelectedRows(0).Cells(0).Value
+                SelectedDetailsApCode = currentRow.Cells(4).Value
+                SelectedDetailsDrugName = Convert.ToString(currentRow.Cells(0).Value)
                 OpenParadrugSelectionDetails()
 
             End If
@@ -10874,26 +10974,42 @@ Handles dgvDebtsList.EditingControlShowing
     End Sub
 
 
-    Private Sub GetExpirationsList()
+    Private Sub GetExpirationsList(Optional ByVal force As Boolean = False)
         Dim myTot As Integer
 
         Dim ParadrugId As Integer = 0
         Dim ParadrugName As String = ""
         Dim AP_ID As Integer = 0
         Dim AP_CODE As Integer = 0
+        Dim currentRow As DataGridViewRow = GetCurrentPricesRow()
+        Dim selectionKey As String = GetCurrentExpirationsSelectionKey()
+
+        If currentRow Is Nothing Then
+            HideExpirationDatagrid(True)
+            Exit Sub
+        End If
+
+        If force = False Then
+            If selectionKey = "" Then
+                Exit Sub
+            End If
+            If selectionKey = _lastExpirationsSelectionKey Then
+                Exit Sub
+            End If
+        End If
 
         If rbParadrugs.Checked = True Then
 
             Try
-                ParadrugId = dgvPricesParadrugs.SelectedRows(0).Cells(5).Value
-                AP_ID = dgvPricesParadrugs.SelectedRows(0).Cells(6).Value
-                AP_CODE = dgvPricesParadrugs.SelectedRows(0).Cells(4).Value
+                ParadrugId = currentRow.Cells(5).Value
+                AP_ID = currentRow.Cells(6).Value
+                AP_CODE = currentRow.Cells(4).Value
             Catch ex As Exception
                 ParadrugId = 0
             End Try
 
             Try
-                ParadrugName = dgvPricesParadrugs.SelectedRows(0).Cells(0).Value
+                ParadrugName = Convert.ToString(currentRow.Cells(0).Value)
             Catch ex As Exception
             End Try
 
@@ -10925,8 +11041,8 @@ Handles dgvDebtsList.EditingControlShowing
         ElseIf rbDrugs.Checked = True Then
             Try
                 'ParadrugId = dgvPricesParadrugs.SelectedRows(0).Cells(5).Value
-                AP_ID = dgvPricesParadrugs.SelectedRows(0).Cells(5).Value
-                AP_CODE = dgvPricesParadrugs.SelectedRows(0).Cells(4).Value
+                AP_ID = currentRow.Cells(5).Value
+                AP_CODE = currentRow.Cells(4).Value
             Catch ex As Exception
             End Try
 
@@ -10945,6 +11061,8 @@ Handles dgvDebtsList.EditingControlShowing
         Else
             HideExpirationDatagrid(False)
         End If
+
+        _lastExpirationsSelectionKey = selectionKey
 
 
     End Sub
@@ -11074,7 +11192,8 @@ Handles dgvDebtsList.EditingControlShowing
         If ExpRows = 0 Then
             DeletePricesParadrugs()
             GetPriceParaDrugs("name")
-            GetExpirationsList()
+            ResetExpirationsSelectionCache()
+            GetExpirationsList(True)
         Else
             MsgBox("ΑΔΥΝΑΤΗ ΔΙΑΓΡΑΦΗ - Το προιόν έχει ακόμα λήξεις (" & ExpRows & ")")
         End If
@@ -11151,16 +11270,17 @@ Handles dgvDebtsList.EditingControlShowing
 
 
     Private Sub cbExchangers_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbExchangers.SelectedIndexChanged
-
-        GetExchangesList("given")
-        GetExchangesList("taken")
-        CalculatePreviousTotalBalance()
-        DisplayExchangesBalance()
-        DisplayFPAPerCurrentIntervall()
+        If String.IsNullOrWhiteSpace(cbExchangers.Text) Then Exit Sub
+        EnsureExchangesTabLoaded(True)
 
     End Sub
 
     Private Sub dgvGivenTo_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvGivenTo.CellClick
+        If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Exit Sub
+
+        Dim currentRow As DataGridViewRow = GetCurrentGridRow(dgvGivenTo)
+        If currentRow Is Nothing Then Exit Sub
+
         If e.ColumnIndex = 1 And chkAutoInsertName.Checked = True Then
 
             ExchangesGivenOrTaken = "given"
@@ -11170,7 +11290,7 @@ Handles dgvDebtsList.EditingControlShowing
             columnIndex = e.ColumnIndex
 
             'Αν πρόκειται για καταχώρηση προιόντος σε νέα ανταλλαγή
-            If IsDBNull(dgvGivenTo.SelectedRows(0).Cells(e.ColumnIndex).Value) = True Then
+            If currentRow.Cells(e.ColumnIndex).Value Is Nothing OrElse IsDBNull(currentRow.Cells(e.ColumnIndex).Value) Then
 
                 Me.Enabled = False
 
@@ -11287,6 +11407,11 @@ Handles dgvDebtsList.EditingControlShowing
     End Sub
 
     Private Sub dgvGivenTo_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvGivenTo.CellContentClick
+        If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Exit Sub
+
+        Dim currentRow As DataGridViewRow = GetCurrentGridRow(dgvGivenTo)
+        If currentRow Is Nothing Then Exit Sub
+
         If e.ColumnIndex = 1 And chkAutoInsertName.Checked = True Then
 
             ExchangesGivenOrTaken = "given"
@@ -11298,17 +11423,17 @@ Handles dgvDebtsList.EditingControlShowing
             columnIndex = e.ColumnIndex
 
             'Αν έχουμε ήδη καταχωρήσει όνομα προιόντος αλλά χωρίς κωδικό
-            If IsDBNull(dgvGivenTo.SelectedRows(0).Cells(e.ColumnIndex).Value) = False And (IsDBNull(dgvGivenTo.SelectedRows(0).Cells(6).Value) = True OrElse dgvGivenTo.SelectedRows(0).Cells(6).Value = "") Then
+            If (currentRow.Cells(e.ColumnIndex).Value IsNot Nothing AndAlso Not IsDBNull(currentRow.Cells(e.ColumnIndex).Value)) AndAlso (currentRow.Cells(6).Value Is Nothing OrElse IsDBNull(currentRow.Cells(6).Value) OrElse Convert.ToString(currentRow.Cells(6).Value) = "") Then
 
                 OpenDrugSelectionFromCatalogForm("oldExchanges")
 
             Else
 
-                SelectedDetailsApCode = dgvGivenTo.SelectedRows(0).Cells(6).Value
-                SelectedDetailsDrugName = dgvGivenTo.SelectedRows(0).Cells(1).Value
+                SelectedDetailsApCode = currentRow.Cells(6).Value
+                SelectedDetailsDrugName = currentRow.Cells(1).Value
                 OpenParadrugSelectionDetails()
 
-                dgvGivenTo.SelectedRows(0).Cells(4).Value = dgvGivenTo.SelectedRows(0).Cells(3).Value * SelectedDetailsXondr
+                currentRow.Cells(4).Value = currentRow.Cells(3).Value * SelectedDetailsXondr
 
             End If
 
@@ -11348,6 +11473,11 @@ Handles dgvDebtsList.EditingControlShowing
     End Sub
 
     Private Sub dgvTakenFrom_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvTakenFrom.CellClick
+        If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Exit Sub
+
+        Dim currentRow As DataGridViewRow = GetCurrentGridRow(dgvTakenFrom)
+        If currentRow Is Nothing Then Exit Sub
+
         If e.ColumnIndex = 1 And chkAutoInsertName.Checked = True Then
 
             ExchangesGivenOrTaken = "taken"
@@ -11357,7 +11487,7 @@ Handles dgvDebtsList.EditingControlShowing
             columnIndex = e.ColumnIndex
 
             'Αν πρόκειται για καταχώρηση προιόντος σε νέα ανταλλαγή
-            If IsDBNull(dgvTakenFrom.SelectedRows(0).Cells(e.ColumnIndex).Value) = True Then
+            If currentRow.Cells(e.ColumnIndex).Value Is Nothing OrElse IsDBNull(currentRow.Cells(e.ColumnIndex).Value) Then
 
                 Me.Enabled = False
 
@@ -11378,6 +11508,11 @@ Handles dgvDebtsList.EditingControlShowing
     End Sub
 
     Private Sub dgvTakenFrom_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvTakenFrom.CellContentClick
+        If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Exit Sub
+
+        Dim currentRow As DataGridViewRow = GetCurrentGridRow(dgvTakenFrom)
+        If currentRow Is Nothing Then Exit Sub
+
         If e.ColumnIndex = 1 And chkAutoInsertName.Checked = True Then
 
             ExchangesGivenOrTaken = "taken"
@@ -11387,7 +11522,7 @@ Handles dgvDebtsList.EditingControlShowing
             columnIndex = e.ColumnIndex
 
             'Αν έχουμε ήδη καταχωρήσει όνομα προιόντος αλλά χωρίς κωδικό
-            If IsDBNull(dgvTakenFrom.SelectedRows(0).Cells(e.ColumnIndex).Value) = False And (IsDBNull(dgvTakenFrom.SelectedRows(0).Cells(6).Value) = True OrElse dgvTakenFrom.SelectedRows(0).Cells(6).Value = "") Then
+            If (currentRow.Cells(e.ColumnIndex).Value IsNot Nothing AndAlso Not IsDBNull(currentRow.Cells(e.ColumnIndex).Value)) AndAlso (currentRow.Cells(6).Value Is Nothing OrElse IsDBNull(currentRow.Cells(6).Value) OrElse Convert.ToString(currentRow.Cells(6).Value) = "") Then
 
                 Me.Enabled = False
 
@@ -11395,11 +11530,11 @@ Handles dgvDebtsList.EditingControlShowing
 
             Else
 
-                SelectedDetailsApCode = dgvTakenFrom.SelectedRows(0).Cells(6).Value
-                SelectedDetailsDrugName = dgvTakenFrom.SelectedRows(0).Cells(1).Value
+                SelectedDetailsApCode = currentRow.Cells(6).Value
+                SelectedDetailsDrugName = currentRow.Cells(1).Value
                 OpenParadrugSelectionDetails()
 
-                dgvTakenFrom.SelectedRows(0).Cells(4).Value = dgvTakenFrom.SelectedRows(0).Cells(3).Value * SelectedDetailsXondr
+                currentRow.Cells(4).Value = currentRow.Cells(3).Value * SelectedDetailsXondr
 
             End If
 
@@ -12978,6 +13113,347 @@ Handles dgvDebtsList.EditingControlShowing
     End Function
 
 
+    Private Function EnsureGridLayout(ByVal dgv As DataGridView, ByVal layoutKey As String, ByVal configure As Action(Of DataGridView)) As Boolean
+        Dim currentKey As String = TryCast(dgv.Tag, String)
+        If currentKey = layoutKey AndAlso dgv.Columns.Count > 0 Then
+            Return False
+        End If
+
+        dgv.SuspendLayout()
+        Try
+            dgv.Columns.Clear()
+            dgv.AutoGenerateColumns = False
+            configure(dgv)
+            dgv.Tag = layoutKey
+        Finally
+            dgv.ResumeLayout()
+        End Try
+
+        Return True
+    End Function
+
+    Private Sub ConfigureExchangeGridColumns(ByVal dgv As DataGridView)
+        EnsureGridLayout(dgv, "exchanges", Sub(grid)
+                                               Dim idCol As New DataGridViewTextBoxColumn With {
+                                                   .Name = "colExchangeId",
+                                                   .DataPropertyName = "Id",
+                                                   .HeaderText = "Id",
+                                                   .Width = 30
+                                               }
+                                               Dim drugNameCol As New DataGridViewTextBoxColumn With {
+                                                   .Name = "colExchangeDrugName",
+                                                   .DataPropertyName = "DrugName",
+                                                   .HeaderText = "Προιόν",
+                                                   .Width = 260
+                                               }
+                                               Dim fpaCol As New DataGridViewTextBoxColumn With {
+                                                   .Name = "colExchangeFpa",
+                                                   .DataPropertyName = "FPA",
+                                                   .HeaderText = "ΦΠΑ",
+                                                   .Width = 35
+                                               }
+                                               Dim qntCol As New DataGridViewTextBoxColumn With {
+                                                   .Name = "colExchangeQnt",
+                                                   .DataPropertyName = "Qnt",
+                                                   .HeaderText = "Ποσ",
+                                                   .Width = 30
+                                               }
+                                               Dim xondrCol As New DataGridViewTextBoxColumn With {
+                                                   .Name = "colExchangeXondr",
+                                                   .DataPropertyName = "Xondr",
+                                                   .HeaderText = "Χονδρική",
+                                                   .Width = 55
+                                               }
+                                               xondrCol.DefaultCellStyle.Format = "F2"
+
+                                               Dim rpCol As New DataGridViewTextBoxColumn With {
+                                                   .Name = "colExchangeRp",
+                                                   .DataPropertyName = "RP",
+                                                   .HeaderText = "RP",
+                                                   .Width = 35
+                                               }
+                                               Dim apCodeCol As New DataGridViewTextBoxColumn With {
+                                                   .Name = "colExchangeApCode",
+                                                   .DataPropertyName = "AP_Code",
+                                                   .HeaderText = "Κωδικός",
+                                                   .Width = 80
+                                               }
+                                               Dim myDateCol As New DataGridViewTextBoxColumn With {
+                                                   .Name = "colExchangeDate",
+                                                   .DataPropertyName = "MyDate",
+                                                   .HeaderText = "MyDate",
+                                                   .Width = 80
+                                               }
+
+                                               grid.Columns.Add(idCol)
+                                               grid.Columns.Add(drugNameCol)
+                                               grid.Columns.Add(fpaCol)
+                                               grid.Columns.Add(qntCol)
+                                               grid.Columns.Add(xondrCol)
+                                               grid.Columns.Add(rpCol)
+                                               grid.Columns.Add(apCodeCol)
+                                               grid.Columns.Add(myDateCol)
+
+                                               grid.RowsDefaultCellStyle.BackColor = Color.Bisque
+                                               grid.AlternatingRowsDefaultCellStyle.BackColor = Color.Beige
+                                               grid.Columns("colExchangeId").Visible = False
+                                               grid.Columns("colExchangeApCode").Visible = False
+                                               grid.Columns("colExchangeDate").Visible = False
+                                           End Sub)
+    End Sub
+
+    Private Sub ConfigurePricesParadrugsGridColumns()
+        EnsureGridLayout(dgvPricesParadrugs, "prices_paradrugs", Sub(grid)
+                                                                     Dim nameCol As New DataGridViewTextBoxColumn With {
+                                                                         .Name = "colParadrugName",
+                                                                         .DataPropertyName = "Name2",
+                                                                         .HeaderText = "Όνομα",
+                                                                         .Width = 260
+                                                                     }
+                                                                     Dim xondrCol As New DataGridViewTextBoxColumn With {
+                                                                         .Name = "colParadrugXondr",
+                                                                         .DataPropertyName = "Xondr2",
+                                                                         .HeaderText = "Χονδρική",
+                                                                         .Width = 60
+                                                                     }
+                                                                     xondrCol.DefaultCellStyle.Format = "F2"
+
+                                                                     Dim lianCol As New DataGridViewTextBoxColumn With {
+                                                                         .Name = "colParadrugLian",
+                                                                         .DataPropertyName = "Lian2",
+                                                                         .HeaderText = "Λιανική",
+                                                                         .Width = 60
+                                                                     }
+                                                                     lianCol.DefaultCellStyle.Format = "F2"
+
+                                                                     Dim notesCol As New DataGridViewTextBoxColumn With {
+                                                                         .Name = "colParadrugNotes",
+                                                                         .DataPropertyName = "Notes2",
+                                                                         .HeaderText = "Σημειώσεις",
+                                                                         .Width = 120
+                                                                     }
+                                                                     Dim apCodeCol As New DataGridViewTextBoxColumn With {
+                                                                         .Name = "colParadrugApCode",
+                                                                         .DataPropertyName = "AP_Code2",
+                                                                         .HeaderText = "Κωδικός",
+                                                                         .Width = 70
+                                                                     }
+                                                                     Dim idCol As New DataGridViewTextBoxColumn With {
+                                                                         .Name = "colParadrugId",
+                                                                         .DataPropertyName = "Id",
+                                                                         .HeaderText = "Id",
+                                                                         .Width = 50
+                                                                     }
+                                                                     Dim apIdCol As New DataGridViewTextBoxColumn With {
+                                                                         .Name = "colParadrugApId",
+                                                                         .DataPropertyName = "AP_ID2",
+                                                                         .HeaderText = "Κωδικός",
+                                                                         .Width = 70
+                                                                     }
+                                                                     Dim barcodeCol As New DataGridViewTextBoxColumn With {
+                                                                         .Name = "colParadrugBarcode",
+                                                                         .DataPropertyName = "Barcode2",
+                                                                         .HeaderText = "Barcode",
+                                                                         .Width = 90
+                                                                     }
+
+                                                                     grid.Columns.Add(nameCol)
+                                                                     grid.Columns.Add(xondrCol)
+                                                                     grid.Columns.Add(lianCol)
+                                                                     grid.Columns.Add(notesCol)
+                                                                     grid.Columns.Add(apCodeCol)
+                                                                     grid.Columns.Add(idCol)
+                                                                     grid.Columns.Add(apIdCol)
+                                                                     grid.Columns.Add(barcodeCol)
+
+                                                                     grid.RowsDefaultCellStyle.BackColor = Color.Bisque
+                                                                     grid.AlternatingRowsDefaultCellStyle.BackColor = Color.Beige
+                                                                     grid.Columns("colParadrugId").Visible = False
+                                                                     grid.Columns("colParadrugApId").Visible = False
+                                                                 End Sub)
+    End Sub
+
+    Private Function GetDrugGridLayoutKey() As String
+        If rbByName.Checked Then Return "drugs_name"
+        If barcodeType = "qrcode" OrElse rbByQRcode.Checked Then Return "drugs_qrcode"
+        Return "drugs_barcode"
+    End Function
+
+    Private Sub ResetExpirationsSelectionCache()
+        _lastExpirationsSelectionKey = ""
+    End Sub
+
+    Private Function GetCurrentPricesRow() As DataGridViewRow
+        If dgvPricesParadrugs Is Nothing Then Return Nothing
+
+        Dim row As DataGridViewRow = Nothing
+
+        If dgvPricesParadrugs.SelectedRows.Count > 0 Then
+            row = dgvPricesParadrugs.SelectedRows(0)
+        Else
+            row = dgvPricesParadrugs.CurrentRow
+        End If
+
+        If row Is Nothing OrElse row.IsNewRow Then Return Nothing
+        Return row
+    End Function
+
+    Private Function GetCurrentGridRow(ByVal dgv As DataGridView) As DataGridViewRow
+        If dgv Is Nothing Then Return Nothing
+
+        Dim row As DataGridViewRow = Nothing
+
+        If dgv.SelectedRows.Count > 0 Then
+            row = dgv.SelectedRows(0)
+        Else
+            row = dgv.CurrentRow
+        End If
+
+        If row Is Nothing OrElse row.IsNewRow Then Return Nothing
+        Return row
+    End Function
+
+    Private Function GetCurrentExpirationsSelectionKey() As String
+        Dim currentRow As DataGridViewRow = GetCurrentPricesRow()
+        If currentRow Is Nothing Then Return ""
+
+        Try
+            If rbParadrugs.Checked Then
+                Dim paradrugIdObj = currentRow.Cells(5).Value
+                Dim productNameObj = currentRow.Cells(0).Value
+                Dim paradrugId As Integer = 0
+                If paradrugIdObj IsNot Nothing AndAlso Not IsDBNull(paradrugIdObj) Then
+                    Integer.TryParse(Convert.ToString(paradrugIdObj), paradrugId)
+                End If
+
+                If paradrugId > 0 Then
+                    Return "PARA_ID:" & paradrugId.ToString()
+                End If
+
+                Dim productName As String = Convert.ToString(productNameObj).Trim()
+                If productName <> "" Then
+                    Return "PARA_NAME:" & productName
+                End If
+            ElseIf rbDrugs.Checked Then
+                Dim apIdObj = currentRow.Cells(5).Value
+                Dim apCodeObj = currentRow.Cells(4).Value
+                Dim apId As Integer = 0
+                Dim apCode As Integer = 0
+                If apIdObj IsNot Nothing AndAlso Not IsDBNull(apIdObj) Then
+                    Integer.TryParse(Convert.ToString(apIdObj), apId)
+                End If
+                If apCodeObj IsNot Nothing AndAlso Not IsDBNull(apCodeObj) Then
+                    Integer.TryParse(Convert.ToString(apCodeObj), apCode)
+                End If
+
+                If apId > 0 OrElse apCode > 0 Then
+                    Return "DRUG:" & apId.ToString() & ":" & apCode.ToString()
+                End If
+            End If
+        Catch
+        End Try
+
+        Return ""
+    End Function
+
+    Private Sub ConfigureDrugsGridColumns()
+        Dim layoutKey As String = GetDrugGridLayoutKey()
+
+        EnsureGridLayout(dgvPricesParadrugs, layoutKey, Sub(grid)
+                                                            Dim nameCol As New DataGridViewTextBoxColumn With {
+                                                                .Name = "colDrugName",
+                                                                .DataPropertyName = "AP_DESCRIPTION",
+                                                                .HeaderText = "Όνομα",
+                                                                .Width = 240
+                                                            }
+                                                            Dim morfiCol As New DataGridViewTextBoxColumn With {
+                                                                .Name = "colDrugMorfi",
+                                                                .DataPropertyName = "AP_MORFI",
+                                                                .HeaderText = "Μορφή",
+                                                                .Width = 180
+                                                            }
+                                                            Dim xondrCol As New DataGridViewTextBoxColumn With {
+                                                                .Name = "colDrugXondr",
+                                                                .DataPropertyName = "AP_TIMH_XON",
+                                                                .HeaderText = "Χονδρική",
+                                                                .Width = 60
+                                                            }
+                                                            xondrCol.DefaultCellStyle.Format = "F2"
+
+                                                            Dim lianCol As New DataGridViewTextBoxColumn With {
+                                                                .Name = "colDrugLian",
+                                                                .DataPropertyName = "AP_TIMH_LIAN",
+                                                                .HeaderText = "Λιανική",
+                                                                .Width = 60
+                                                            }
+                                                            lianCol.DefaultCellStyle.Format = "F2"
+
+                                                            Dim apCodeCol As New DataGridViewTextBoxColumn With {
+                                                                .Name = "colDrugApCode",
+                                                                .DataPropertyName = "AP_CODE",
+                                                                .HeaderText = "AP_Code",
+                                                                .Width = 70
+                                                            }
+                                                            Dim apIdCol As New DataGridViewTextBoxColumn With {
+                                                                .Name = "colDrugApId",
+                                                                .DataPropertyName = "AP_ID",
+                                                                .HeaderText = "AP_ID",
+                                                                .Width = 70
+                                                            }
+                                                            Dim barcodeCol As New DataGridViewTextBoxColumn With {
+                                                                .Name = "colDrugBarcode",
+                                                                .DataPropertyName = "BRAP_AP_BARCODE",
+                                                                .HeaderText = "Barcode",
+                                                                .Width = 90,
+                                                                .ReadOnly = True
+                                                            }
+                                                            Dim qrCodeCol As New DataGridViewTextBoxColumn With {
+                                                                .Name = "colDrugQRCode",
+                                                                .DataPropertyName = "APQ_PRODUCT_CODE",
+                                                                .HeaderText = "QRcode",
+                                                                .Width = 100,
+                                                                .ReadOnly = False
+                                                            }
+                                                            Dim qrCustomCol As New DataGridViewTextBoxColumn With {
+                                                                .Name = "colDrugQRCodeCustom",
+                                                                .DataPropertyName = "APQ_IS_CUSTOM_QR",
+                                                                .HeaderText = "IsCustomQr",
+                                                                .Visible = False
+                                                            }
+
+                                                            grid.Columns.Add(nameCol)
+                                                            grid.Columns.Add(morfiCol)
+                                                            grid.Columns.Add(xondrCol)
+                                                            grid.Columns.Add(lianCol)
+                                                            grid.Columns.Add(apCodeCol)
+                                                            grid.Columns.Add(apIdCol)
+
+                                                            Select Case layoutKey
+                                                                Case "drugs_name"
+                                                                    grid.Columns.Add(barcodeCol)
+                                                                    grid.Columns.Add(qrCodeCol)
+                                                                    grid.Columns.Add(qrCustomCol)
+                                                                Case "drugs_qrcode"
+                                                                    grid.Columns.Add(qrCodeCol)
+                                                                    grid.Columns.Add(qrCustomCol)
+                                                                Case Else
+                                                                    grid.Columns.Add(barcodeCol)
+                                                            End Select
+
+                                                            grid.RowsDefaultCellStyle.BackColor = Color.Bisque
+                                                            grid.AlternatingRowsDefaultCellStyle.BackColor = Color.Beige
+                                                            grid.ReadOnly = False
+                                                            For Each col As DataGridViewColumn In grid.Columns
+                                                                col.ReadOnly = True
+                                                            Next
+                                                            If grid.Columns.Contains("colDrugQRCode") Then
+                                                                grid.Columns("colDrugQRCode").ReadOnly = False
+                                                            End If
+                                                            grid.Columns("colDrugApCode").Visible = False
+                                                            grid.Columns("colDrugApId").Visible = False
+                                                        End Sub)
+    End Sub
+
     Private Function DisplayCustomDatagrid_Exchanges(ByVal oBinding As BindingSource, ByVal oDatagrid As DataGridView) As Integer
 
         'Initialization νεας σύνδεσης με το connectionString που παίρνει από τις GlobalVariables
@@ -13003,125 +13479,8 @@ Handles dgvDebtsList.EditingControlShowing
         'Κλείνει την σύνδεση
         con.Close()
 
-
-        With oDatagrid
-
-            'Αδειάζει το datagridView
-            .Columns.Clear()
-
-            'Εμποδίσει το Datagrid να εμφανίσει αυτόματα τα Columns
-            .AutoGenerateColumns = False
-
-            'Καθορίζει το  source του DataGrid ως το BindingSource
-            .DataSource = oBinding
-
-        End With
-
-
-        'Όρίζει το 1ο πεδίο του Datagrid σαν textbox
-        Dim Id As New DataGridViewTextBoxColumn
-        With Id
-            ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-            .DataPropertyName = "Id"
-            ' Formatting..
-            .HeaderText = "Id"
-            .Width = 30
-            .DefaultCellStyle.Format = ""
-        End With
-
-        'Όρίζει το 2ο πεδίο του Datagrid σαν textbox
-        Dim DrugName As New DataGridViewTextBoxColumn
-        With DrugName
-            ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-            .DataPropertyName = "DrugName"
-            ' Formatting..
-            .HeaderText = "Προιόν"
-            .Width = 260
-            .DefaultCellStyle.Format = ""
-        End With
-
-        Dim Qnt As New DataGridViewTextBoxColumn
-        With Qnt
-            ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-            .DataPropertyName = "Qnt"
-            ' Formatting..
-            .HeaderText = "Ποσ"
-            .Width = 30
-            .DefaultCellStyle.Format = ""
-        End With
-
-        Dim Xondr As New DataGridViewTextBoxColumn
-        With Xondr
-            ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-            .DataPropertyName = "Xondr"
-            ' Formatting..
-            .HeaderText = "Χονδρική"
-            .Width = 55
-            .DefaultCellStyle.Format = "F2"
-        End With
-
-        Dim RP As New DataGridViewTextBoxColumn
-        With RP
-            ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-            .DataPropertyName = "RP"
-            ' Formatting..
-            .HeaderText = "RP"
-            .Width = 35
-            .DefaultCellStyle.Format = ""
-        End With
-
-        Dim AP_Code As New DataGridViewTextBoxColumn
-        With AP_Code
-            ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-            .DataPropertyName = "AP_Code"
-            ' Formatting..
-            .HeaderText = "Κωδικός"
-            .Width = 80
-            .DefaultCellStyle.Format = ""
-        End With
-
-        Dim MyDate As New DataGridViewTextBoxColumn
-        With MyDate
-            ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-            .DataPropertyName = "MyDate"
-            ' Formatting..
-            .HeaderText = "MyDate"
-            .Width = 80
-            .DefaultCellStyle.Format = ""
-        End With
-
-        Dim FPA As New DataGridViewTextBoxColumn
-        With FPA
-            ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-            .DataPropertyName = "FPA"
-            ' Formatting..
-            .HeaderText = "ΦΠΑ"
-            .Width = 35
-            .DefaultCellStyle.Format = ""
-        End With
-
-
-        With oDatagrid
-
-            'Εμφανίζει τα columns του Datagrid
-            .Columns.Add(Id)
-            .Columns.Add(DrugName)
-            .Columns.Add(FPA)
-            .Columns.Add(Qnt)
-            .Columns.Add(Xondr)
-            .Columns.Add(RP)
-            .Columns.Add(AP_Code)
-            .Columns.Add(MyDate)
-
-            ' Εναλλαγή του χρωματισμού των rows
-            .RowsDefaultCellStyle.BackColor = Color.Bisque
-            .AlternatingRowsDefaultCellStyle.BackColor = Color.Beige
-
-            'Εξαφανίζει τo πεδίο "Id"
-            .Columns(0).Visible = False
-            .Columns(6).Visible = False
-            .Columns(7).Visible = False
-        End With
+        ConfigureExchangeGridColumns(oDatagrid)
+        oDatagrid.DataSource = oBinding
 
         'Επιστρέφει τον συνολικό αριθμό εγγραφών του Datagrid
         Return dsDTG.Tables(0).Rows.Count
@@ -13157,121 +13516,8 @@ Handles dgvDebtsList.EditingControlShowing
         con.Close()
 
 
-        With dgvPricesParadrugs
-
-            'Αδειάζει το datagridView
-            .Columns.Clear()
-
-            'Εμποδίσει το Datagrid να εμφανίσει αυτόματα τα Columns
-            .AutoGenerateColumns = False
-
-            'Καθορίζει το  source του DataGrid ως το BindingSource
-            .DataSource = bsPricesParadrugs
-
-        End With
-
-        'Όρίζει το 1ο πεδίο του Datagrid σαν textbox
-        Dim Name2 As New DataGridViewTextBoxColumn
-        With Name2
-            ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-            .DataPropertyName = "Name2"
-            ' Formatting..
-            .HeaderText = "Όνομα"
-            .Width = 260
-            .DefaultCellStyle.Format = ""
-        End With
-
-        'Όρίζει το 2ο πεδίο του Datagrid σαν textbox
-        Dim Xondr2 As New DataGridViewTextBoxColumn
-        With Xondr2
-            ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-            .DataPropertyName = "Xondr2"
-            ' Formatting..
-            .HeaderText = "Χονδρική"
-            .Width = 60
-            .DefaultCellStyle.Format = "F2"
-        End With
-
-        Dim Lian2 As New DataGridViewTextBoxColumn
-        With Lian2
-            ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-            .DataPropertyName = "Lian2"
-            ' Formatting..
-            .HeaderText = "Λιανική"
-            .Width = 60
-            .DefaultCellStyle.Format = "F2"
-        End With
-
-        Dim Notes2 As New DataGridViewTextBoxColumn
-        With Notes2
-            ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-            .DataPropertyName = "Notes2"
-            ' Formatting..
-            .HeaderText = "Σημειώσεις"
-            .Width = 120
-            .DefaultCellStyle.Format = ""
-        End With
-
-        Dim AP_Code2 As New DataGridViewTextBoxColumn
-        With AP_Code2
-            ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-            .DataPropertyName = "AP_Code2"
-            ' Formatting..
-            .HeaderText = "Κωδικός"
-            .Width = 70
-            .DefaultCellStyle.Format = ""
-        End With
-
-        Dim AP_ID2 As New DataGridViewTextBoxColumn
-        With AP_ID2
-            ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-            .DataPropertyName = "AP_ID2"
-            ' Formatting..
-            .HeaderText = "Κωδικός"
-            .Width = 70
-            .DefaultCellStyle.Format = ""
-        End With
-
-        Dim Barcode2 As New DataGridViewTextBoxColumn
-        With Barcode2
-            ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-            .DataPropertyName = "Barcode2"
-            ' Formatting..
-            .HeaderText = "Barcode"
-            .Width = 90
-            .DefaultCellStyle.Format = ""
-        End With
-
-        Dim Id As New DataGridViewTextBoxColumn
-        With Id
-            ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-            .DataPropertyName = "Id"
-            ' Formatting..
-            .HeaderText = "Id"
-            .Width = 50
-            .DefaultCellStyle.Format = ""
-        End With
-
-
-        With dgvPricesParadrugs
-            'Εμφανίζει τα columns του Datagrid
-            .Columns.Add(Name2)
-            .Columns.Add(Xondr2)
-            .Columns.Add(Lian2)
-            .Columns.Add(Notes2)
-            .Columns.Add(AP_Code2)
-            .Columns.Add(Id)
-            .Columns.Add(AP_ID2)
-            .Columns.Add(Barcode2)
-
-            ' Εναλλαγή του χρωματισμού των rows
-            .RowsDefaultCellStyle.BackColor = Color.Bisque
-            .AlternatingRowsDefaultCellStyle.BackColor = Color.Beige
-
-            'Εξαφανίζει τo πεδίο "Id"
-            .Columns(5).Visible = False
-            .Columns(6).Visible = False
-        End With
+        ConfigurePricesParadrugsGridColumns()
+        dgvPricesParadrugs.DataSource = bsPricesParadrugs
 
         'Επιστρέφει τον συνολικό αριθμό εγγραφών του Datagrid
         Return dsDTG.Tables("DTG-Prdg").Rows.Count
@@ -13306,211 +13552,8 @@ Handles dgvDebtsList.EditingControlShowing
         con.Close()
 
 
-        With dgvPricesParadrugs
-
-            'Αδειάζει το datagridView
-            .Columns.Clear()
-
-            'Εμποδίσει το Datagrid να εμφανίσει αυτόματα τα Columns
-            .AutoGenerateColumns = False
-
-            'Καθορίζει το  source του DataGrid ως το BindingSource
-            .DataSource = bsDrugs2
-
-        End With
-
-        'Όρίζει το 1ο πεδίο του Datagrid σαν textbox
-        Dim Name2 As New DataGridViewTextBoxColumn
-        With Name2
-            ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-            .DataPropertyName = "AP_DESCRIPTION"
-            ' Formatting..
-            .HeaderText = "Όνομα"
-            .Width = 240
-            .DefaultCellStyle.Format = ""
-        End With
-
-        'Όρίζει το 1ο πεδίο του Datagrid σαν textbox
-        Dim Morfi2 As New DataGridViewTextBoxColumn
-        With Morfi2
-            ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-            .DataPropertyName = "AP_MORFI"
-            ' Formatting..
-            .HeaderText = "Μορφή"
-            .Width = 180
-            .DefaultCellStyle.Format = ""
-        End With
-
-        'Όρίζει το 2ο πεδίο του Datagrid σαν textbox
-        Dim Xondr2 As New DataGridViewTextBoxColumn
-        With Xondr2
-            ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-            .DataPropertyName = "AP_TIMH_XON"
-            ' Formatting..
-            .HeaderText = "Χονδρική"
-            .Width = 60
-            .DefaultCellStyle.Format = "F2"
-        End With
-
-        Dim Lian2 As New DataGridViewTextBoxColumn
-        With Lian2
-            ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-            .DataPropertyName = "AP_TIMH_LIAN"
-            ' Formatting..
-            .HeaderText = "Λιανική"
-            .Width = 60
-            .DefaultCellStyle.Format = "F2"
-        End With
-
-        Dim AP_Code2 As New DataGridViewTextBoxColumn
-        With AP_Code2
-            ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-            .DataPropertyName = "AP_CODE"
-            ' Formatting..
-            .HeaderText = "AP_Code"
-            .Width = 70
-            .DefaultCellStyle.Format = ""
-        End With
-
-        Dim AP_ID2 As New DataGridViewTextBoxColumn
-        With AP_ID2
-            ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-            .DataPropertyName = "AP_ID"
-            ' Formatting..
-            .HeaderText = "AP_ID"
-            .Width = 70
-            .DefaultCellStyle.Format = ""
-        End With
-
-        'Dim Barcode2 As New DataGridViewTextBoxColumn
-        'With Barcode2
-        '    If barcodeType = "barcode" Then
-        '        ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-        '        .DataPropertyName = "BRAP_AP_BARCODE"
-        '        ' Formatting..
-        '        .HeaderText = "Barcode"
-        '        .Width = 90
-        '        .DefaultCellStyle.Format = ""
-        '    ElseIf barcodeType = "qrcode" Then
-        '        ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-        '        .DataPropertyName = "APQ_PRODUCT_CODE"
-        '        ' Formatting..
-        '        .HeaderText = "QRcode"
-        '        .Width = 90
-        '        .DefaultCellStyle.Format = ""
-        '    End If
-        'End With
-
-        Dim Barcode2 As New DataGridViewTextBoxColumn
-        Dim Qrcode2 As New DataGridViewTextBoxColumn
-        Dim QrcodeCustom2 As New DataGridViewTextBoxColumn
-        If rbByName.Checked = True Then
-            With Barcode2
-                ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-                .Name = "colDrugBarcode"
-                .DataPropertyName = "BRAP_AP_BARCODE"
-                ' Formatting..
-                .HeaderText = "Barcode"
-                .Width = 90
-                .DefaultCellStyle.Format = ""
-                .ReadOnly = True
-            End With
-
-            With Qrcode2
-                ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-                .Name = "colDrugQRCode"
-                .DataPropertyName = "APQ_PRODUCT_CODE"
-                ' Formatting..
-                .HeaderText = "QRcode"
-                .Width = 100
-                .DefaultCellStyle.Format = ""
-                .ReadOnly = False
-            End With
-
-            With QrcodeCustom2
-                .Name = "colDrugQRCodeCustom"
-                .DataPropertyName = "APQ_IS_CUSTOM_QR"
-                .HeaderText = "IsCustomQr"
-                .Visible = False
-            End With
-        Else
-            If barcodeType = "barcode" Then
-                With Barcode2
-                    ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-                    .Name = "colDrugBarcode"
-                    .DataPropertyName = "BRAP_AP_BARCODE"
-                    ' Formatting..
-                    .HeaderText = "Barcode"
-                    .Width = 90
-                    .DefaultCellStyle.Format = ""
-                    .ReadOnly = True
-                End With
-            ElseIf barcodeType = "qrcode" Then
-                With Barcode2
-                    ' και του δίνει τη τιμή του αντίστοιχου πεδίου
-                    .Name = "colDrugQRCode"
-                    .DataPropertyName = "APQ_PRODUCT_CODE"
-                    ' Formatting..
-                    .HeaderText = "QRcode"
-                    .Width = 100
-                    .DefaultCellStyle.Format = ""
-                    .ReadOnly = False
-                End With
-
-                With QrcodeCustom2
-                    .Name = "colDrugQRCodeCustom"
-                    .DataPropertyName = "APQ_IS_CUSTOM_QR"
-                    .HeaderText = "IsCustomQr"
-                    .Visible = False
-                End With
-            End If
-        End If
-
-
-        'Εμφανίζει τα columns του Datagrid
-        With dgvPricesParadrugs
-            If rbByName.Checked = True Then
-                .Columns.Add(Name2)
-                .Columns.Add(Morfi2)
-                .Columns.Add(Xondr2)
-                .Columns.Add(Lian2)
-                .Columns.Add(AP_Code2)
-                .Columns.Add(AP_ID2)
-                .Columns.Add(Barcode2)
-                .Columns.Add(Qrcode2)
-                .Columns.Add(QrcodeCustom2)
-            Else
-                .Columns.Add(Name2)
-                .Columns.Add(Morfi2)
-                .Columns.Add(Xondr2)
-                .Columns.Add(Lian2)
-                .Columns.Add(AP_Code2)
-                .Columns.Add(AP_ID2)
-                .Columns.Add(Barcode2)
-                If barcodeType = "qrcode" Then
-                    .Columns.Add(QrcodeCustom2)
-                End If
-            End If
-
-            ' Εναλλαγή του χρωματισμού των rows
-            .RowsDefaultCellStyle.BackColor = Color.Bisque
-            .AlternatingRowsDefaultCellStyle.BackColor = Color.Beige
-
-            .ReadOnly = False
-            For Each col As DataGridViewColumn In .Columns
-                col.ReadOnly = True
-            Next
-            If .Columns.Contains("colDrugQRCode") Then
-                .Columns("colDrugQRCode").ReadOnly = False
-            End If
-            If .Columns.Contains("colDrugQRCodeCustom") Then
-                .Columns("colDrugQRCodeCustom").Visible = False
-            End If
-
-            'Εξαφανίζει τo πεδίο "Id"
-            .Columns(4).Visible = False
-            .Columns(5).Visible = False
-        End With
+        ConfigureDrugsGridColumns()
+        dgvPricesParadrugs.DataSource = bsDrugs2
 
         'Επιστρέφει τον συνολικό αριθμό εγγραφών του Datagrid
         Return dsDTG.Tables(0).Rows.Count
@@ -14233,6 +14276,7 @@ Handles dgvDebtsList.EditingControlShowing
     End Function
 
     Private Sub dgvGivenTo_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles dgvGivenTo.CellEndEdit
+        If _isSwitchingTabs Then Exit Sub
 
         ' Αν πιέσουμε πάνω σε ποσότητα επαναπροσδιορίζει την τιμή
         If e.ColumnIndex = 3 Then
@@ -14328,6 +14372,7 @@ Handles dgvDebtsList.EditingControlShowing
     End Sub
 
     Private Sub dgvTakenFrom_KeyPress(sender As Object, e As KeyPressEventArgs) Handles dgvTakenFrom.KeyPress
+        If _isSwitchingTabs Then Exit Sub
         If e.KeyChar = Microsoft.VisualBasic.ChrW(Keys.Return) And dgvTakenFrom.CurrentCell.RowIndex = dgvTakenFrom.Rows.Count - 1 Then
             'MessageBox.Show("Enter key pressed on last row (" & dgvGivenTo.CurrentCell.RowIndex & "-" & (dgvGivenTo.Rows.Count - 1) & ")")
             If IsDBNull(dgvTakenFrom.SelectedRows(0).Cells(1).Value) = False Then
@@ -14494,6 +14539,7 @@ Handles dgvDebtsList.EditingControlShowing
     End Sub
 
     Private Sub dgvGivenTo_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles dgvGivenTo.CellValueChanged
+        If _isSwitchingTabs Then Exit Sub
         If e.RowIndex < 0 Then Exit Sub
         If e.ColumnIndex = 4 Then PersistExchangeXondrOverride(dgvGivenTo, e.RowIndex)
 
@@ -14579,6 +14625,7 @@ Handles dgvDebtsList.EditingControlShowing
 
 
     Private Sub dgvTakenFrom_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles dgvTakenFrom.CellValueChanged
+        If _isSwitchingTabs Then Exit Sub
         If e.RowIndex < 0 Then Exit Sub
         If e.ColumnIndex = 4 Then PersistExchangeXondrOverride(dgvTakenFrom, e.RowIndex)
 
@@ -14614,6 +14661,8 @@ Handles dgvDebtsList.EditingControlShowing
 
 
     Private Sub dgvPricesParadrugs_CellEnter(sender As Object, e As DataGridViewCellEventArgs) Handles dgvPricesParadrugs.CellEnter
+        If _isSwitchingTabs Then Exit Sub
+        If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Exit Sub
 
         If e.ColumnIndex = 2 Then
             If rbParadrugs.Checked = True Then
@@ -14647,8 +14696,12 @@ Handles dgvDebtsList.EditingControlShowing
 
     Private Sub ApplyDrugQrCodeVisuals()
         If dgvPricesParadrugs Is Nothing OrElse dgvPricesParadrugs.Columns.Count = 0 Then Exit Sub
+        If Not rbDrugs.Checked OrElse dgvPricesParadrugs.Rows.Count = 0 Then Exit Sub
         If Not dgvPricesParadrugs.Columns.Contains("colDrugQRCode") Then Exit Sub
         If Not dgvPricesParadrugs.Columns.Contains("colDrugQRCodeCustom") Then Exit Sub
+
+        Dim boldFont As New Font(dgvPricesParadrugs.Font, FontStyle.Bold)
+        Dim regularFont As New Font(dgvPricesParadrugs.Font, FontStyle.Regular)
 
         For Each row As DataGridViewRow In dgvPricesParadrugs.Rows
             If row.IsNewRow Then Continue For
@@ -14665,18 +14718,22 @@ Handles dgvDebtsList.EditingControlShowing
             If isCustom Then
                 qrCell.Style.BackColor = Color.LightGoldenrodYellow
                 qrCell.Style.SelectionBackColor = Color.Goldenrod
-                qrCell.Style.Font = New Font(dgvPricesParadrugs.Font, FontStyle.Bold)
+                qrCell.Style.Font = boldFont
                 qrCell.ToolTipText = "Custom override από PharmacyCustomFiles"
             Else
                 qrCell.Style.BackColor = dgvPricesParadrugs.DefaultCellStyle.BackColor
                 qrCell.Style.SelectionBackColor = dgvPricesParadrugs.DefaultCellStyle.SelectionBackColor
-                qrCell.Style.Font = New Font(dgvPricesParadrugs.Font, FontStyle.Regular)
+                qrCell.Style.Font = regularFont
                 qrCell.ToolTipText = "QRcode από Pharmacy2013C"
             End If
         Next
     End Sub
 
     Private Sub dgvPricesParadrugs_CellBeginEdit(sender As Object, e As DataGridViewCellCancelEventArgs) Handles dgvPricesParadrugs.CellBeginEdit
+        If _isSwitchingTabs Then
+            e.Cancel = True
+            Exit Sub
+        End If
         If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Exit Sub
 
         If rbDrugs.Checked AndAlso IsDrugQrCodeColumn(dgvPricesParadrugs.Columns(e.ColumnIndex)) Then
@@ -14692,6 +14749,7 @@ Handles dgvDebtsList.EditingControlShowing
     End Sub
 
     Private Sub dgvPricesParadrugs_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles dgvPricesParadrugs.CellEndEdit
+        If _isSwitchingTabs Then Exit Sub
         If _suppressDrugQrCellEvents Then Exit Sub
         If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Exit Sub
         If Not rbDrugs.Checked Then Exit Sub
@@ -14764,6 +14822,9 @@ Handles dgvDebtsList.EditingControlShowing
 
 
     Private Sub dgvPricesParadrugs_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles dgvPricesParadrugs.CellValueChanged
+        If _isSwitchingTabs Then Exit Sub
+        If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Exit Sub
+
         If rbParadrugs.Checked = True Then
             If e.ColumnIndex = 0 Then
             ElseIf e.ColumnIndex = 1 Then
@@ -15752,7 +15813,7 @@ Handles dgvDebtsList.EditingControlShowing
 
     Private Sub btnDeleteExpiration_Click(sender As Object, e As EventArgs) Handles btnDeleteExpiration.Click
         DeleteExpiration()
-        GetExpirationsList()
+        GetExpirationsList(True)
     End Sub
 
     Private Sub tbpPricesParadrugs_Click(sender As Object, e As EventArgs) Handles tbpPricesParadrugs.Click
@@ -15762,9 +15823,10 @@ Handles dgvDebtsList.EditingControlShowing
     Private Sub rbParadrugs_CheckedChanged(sender As Object, e As EventArgs) Handles rbParadrugs.CheckedChanged
         If _loadingChooseFromCatalog = True Then Exit Sub
 
+        ResetExpirationsSelectionCache()
         HideExpirationDatagrid(True)
         DisplayDrugsOrParadrugs()
-        GetExpirationsList()
+        GetExpirationsList(True)
 
         If rbParadrugs.Checked = True Then
             grpCalculateLianiki.Visible = True
@@ -15785,11 +15847,9 @@ Handles dgvDebtsList.EditingControlShowing
 
 
     Private Sub dgvPricesParadrugs_KeyDown(sender As Object, e As KeyEventArgs) Handles dgvPricesParadrugs.KeyDown
-        GetExpirationsList()
     End Sub
 
     Private Sub dgvPricesParadrugs_KeyUp(sender As Object, e As KeyEventArgs) Handles dgvPricesParadrugs.KeyUp
-        GetExpirationsList()
     End Sub
 
     Private Sub chkPairing_CheckedChanged(sender As Object, e As EventArgs) Handles chkPairing.CheckedChanged
@@ -15814,6 +15874,8 @@ Handles dgvDebtsList.EditingControlShowing
 
 
     Private Sub dtpFromDate_LostFocus(sender As Object, e As EventArgs) Handles dtpFromDate.LostFocus
+        If _isSwitchingTabs Then Exit Sub
+        If tbcMain.SelectedIndex <> 0 Then Exit Sub
         GetExchangesList("given")
         GetExchangesList("taken")
         CalculatePreviousTotalBalance()
@@ -15823,6 +15885,8 @@ Handles dgvDebtsList.EditingControlShowing
     End Sub
 
     Private Sub dtpToDate_LostFocus(sender As Object, e As EventArgs) Handles dtpToDate.LostFocus
+        If _isSwitchingTabs Then Exit Sub
+        If tbcMain.SelectedIndex <> 0 Then Exit Sub
         GetExchangesList("given")
         GetExchangesList("taken")
         CalculatePreviousTotalBalance()
@@ -16122,50 +16186,61 @@ Handles dgvDebtsList.EditingControlShowing
     Public Sub DisplayFPAPerCurrentIntervall()
         Dim sqlString1, sqlString2 As String
         Dim FromDate As String = dtpFromDate.Value
+        Dim perf As Stopwatch = Stopwatch.StartNew()
 
         ' Μηδενισμός μεταβλητών
         FPA65A = 0
         FPA13A = 0
         FPA23A = 0
+        FPA0A = 0
         FPA65B = 0
         FPA13B = 0
         FPA23B = 0
+        FPA0B = 0
 
-        Try
-            ' Λϊστα φαρμάκων (φάρμακα που δώσαμε)
-            For i As Integer = 0 To dgvGivenTo.RowCount - 2
+        For Each row As DataGridViewRow In dgvGivenTo.Rows
+            If row Is Nothing OrElse row.IsNewRow Then Continue For
 
-                If CType(dgvGivenTo.Rows(i).Cells(2).Value, Decimal) = "6,0" Then
-                    FPA65A += dgvGivenTo.Rows(i).Cells(4).Value
-                ElseIf CType(dgvGivenTo.Rows(i).Cells(2).Value, Decimal) = "13,0" Then
-                    FPA13A += dgvGivenTo.Rows(i).Cells(4).Value
-                ElseIf CType(dgvGivenTo.Rows(i).Cells(2).Value, Decimal) = "23,0" Or CType(dgvGivenTo.Rows(i).Cells(2).Value, Decimal) = "24,0" Then
-                    FPA23A += dgvGivenTo.Rows(i).Cells(4).Value
-                Else
-                    FPA0A += dgvGivenTo.Rows(i).Cells(4).Value
-                End If
-            Next
-        Catch ex As Exception
-            MsgBox(ex.Message)
-        End Try
+            Dim fpaValue As Decimal = 0D
+            Dim xondrValue As Decimal = 0D
 
-        Try
-            ' Λϊστα φαρμάκων (φάρμακα που πήραμε)
-            For i As Integer = 0 To dgvTakenFrom.RowCount - 2
+            Decimal.TryParse(Convert.ToString(row.Cells(2).Value), fpaValue)
+            Decimal.TryParse(Convert.ToString(row.Cells(4).Value), xondrValue)
 
-                If CType(dgvTakenFrom.Rows(i).Cells(2).Value, Decimal) = "6,0" Then
-                    FPA65B += dgvTakenFrom.Rows(i).Cells(4).Value
-                ElseIf CType(dgvTakenFrom.Rows(i).Cells(2).Value, Decimal) = "13,0" Then
-                    FPA13B += dgvTakenFrom.Rows(i).Cells(4).Value
-                ElseIf CType(dgvTakenFrom.Rows(i).Cells(2).Value, Decimal) = "23,0" Or CType(dgvTakenFrom.Rows(i).Cells(2).Value, Decimal) = "24,0" Then
-                    FPA23B += dgvTakenFrom.Rows(i).Cells(4).Value
-                Else
-                    FPA0B += dgvTakenFrom.Rows(i).Cells(4).Value
-                End If
-            Next
-        Catch ex As Exception
-            MsgBox(ex.Message)
-        End Try
+            Select Case fpaValue
+                Case 6D
+                    FPA65A += xondrValue
+                Case 13D
+                    FPA13A += xondrValue
+                Case 23D, 24D
+                    FPA23A += xondrValue
+                Case Else
+                    FPA0A += xondrValue
+            End Select
+        Next
+
+        For Each row As DataGridViewRow In dgvTakenFrom.Rows
+            If row Is Nothing OrElse row.IsNewRow Then Continue For
+
+            Dim fpaValue As Decimal = 0D
+            Dim xondrValue As Decimal = 0D
+
+            Decimal.TryParse(Convert.ToString(row.Cells(2).Value), fpaValue)
+            Decimal.TryParse(Convert.ToString(row.Cells(4).Value), xondrValue)
+
+            Select Case fpaValue
+                Case 6D
+                    FPA65B += xondrValue
+                Case 13D
+                    FPA13B += xondrValue
+                Case 23D, 24D
+                    FPA23B += xondrValue
+                Case Else
+                    FPA0B += xondrValue
+            End Select
+        Next
+
+        Debug.WriteLine("[ExchangesTab] DisplayFPAPerCurrentIntervall grid-scan=" & perf.ElapsedMilliseconds & " ms")
 
         'Υπολογίζει το ισοζύγιο κατά ΦΠΑ της τρέχουσας περιόδου
         FPA65 = FPA65A - FPA65B
@@ -16192,6 +16267,8 @@ Handles dgvDebtsList.EditingControlShowing
         sqlString2 = "SELECT Xondr FROM [PharmacyCustomFiles].[dbo].[Exchanges] " &
                     "WHERE (FPA='23' OR FPA='24') AND Exch ='" & cbExchangers.Text & "' AND FromTo=1 AND Datediff(day, MyDate, '" & CType(FromDate, Date).ToString("yyyy-MM-dd") & "') >0 "
         FPA23Prev = CalculateSums(sqlString1, "Xondr") - CalculateSums(sqlString2, "Xondr")
+
+        Debug.WriteLine("[ExchangesTab] DisplayFPAPerCurrentIntervall prev-sums=" & perf.ElapsedMilliseconds & " ms")
 
         'Υπολογίζει το συνολικό ισοζύγιο κατά ΦΠΑ
         FPA65Tot = FPA65 + FPA65Prev
@@ -16301,6 +16378,8 @@ Handles dgvDebtsList.EditingControlShowing
         Else
             HightlightInRichTextBox(rtxtTotalFPA, {Format(Abs(FPA23Tot), "f")}, "Green")
         End If
+
+        Debug.WriteLine("[ExchangesTab] DisplayFPAPerCurrentIntervall total=" & perf.ElapsedMilliseconds & " ms")
 
     End Sub
 
@@ -16713,7 +16792,8 @@ Handles dgvDebtsList.EditingControlShowing
                 End If
             End If
             DisplayDrugsOrParadrugs()
-            GetExpirationsList()
+            ResetExpirationsSelectionCache()
+            GetExpirationsList(True)
             txtSearchPricesParadrugs.SelectAll()
             txtSearchPricesParadrugs.Focus()
             barcodeType = ""
@@ -16857,6 +16937,7 @@ Handles dgvDebtsList.EditingControlShowing
     End Sub
 
     Private Sub dgvPricesParadrugs_RowLeave(sender As Object, e As DataGridViewCellEventArgs) Handles dgvPricesParadrugs.RowLeave
+        If _isSwitchingTabs Then Exit Sub
         Dim name As String = ""
 
         dirty = dgvPricesParadrugs.IsCurrentRowDirty
@@ -16918,6 +16999,9 @@ Handles dgvDebtsList.EditingControlShowing
 
 
     Private Sub dgvPricesParadrugs_RowEnter(sender As Object, e As DataGridViewCellEventArgs) Handles dgvPricesParadrugs.RowEnter
+        If _isSwitchingTabs Then Exit Sub
+        If e.RowIndex < 0 Then Exit Sub
+
         'ParadrugRowEnter = True
         'Dim id As Integer = e.RowIndex
         'txtRowChanged.Clear()
@@ -16934,6 +17018,8 @@ Handles dgvDebtsList.EditingControlShowing
         'For t = 0 To 7
         '    txtRowChanged.Text &= RowValuesOld(t) & vbCrLf
         'Next
+
+        GetExpirationsList()
 
     End Sub
 
@@ -17022,6 +17108,7 @@ Handles dgvDebtsList.EditingControlShowing
     End Sub
 
     Private Sub dgvExpirations_RowLeave(sender As Object, e As DataGridViewCellEventArgs) Handles dgvExpirations.RowLeave
+        If _isSwitchingTabs Then Exit Sub
         dirty = dgvExpirations.IsCurrentRowDirty
         lblDirtyState_Exp.Text = dirty.ToString
 
@@ -17091,22 +17178,20 @@ Handles dgvDebtsList.EditingControlShowing
 
 
     Private Function CurrentRowHasId() As Integer
-        Dim index, id As Integer
-        Try
-            index = dgvPricesParadrugs.CurrentCell.RowIndex
-        Catch ex As Exception
-        End Try
-        Try
-            id = dgvPricesParadrugs.CurrentRow.Cells(5).Value
-        Catch ex As Exception
-        End Try
+        Dim currentRow As DataGridViewRow = GetCurrentPricesRow()
+        If currentRow Is Nothing OrElse currentRow.Cells.Count <= 5 Then
+            Return 0
+        End If
 
-        If dgvPricesParadrugs.CurrentRow.Cells(5).Value Is DBNull.Value Then
+        Dim id As Integer = 0
+        Dim idValue = currentRow.Cells(5).Value
+        If idValue Is Nothing OrElse IsDBNull(idValue) Then
             MsgBox("Το νέο παραφάρμακο δεν έχει καταχωρηθεί ακόμα στο DB")
             Return 0
-        Else
-            Return id
         End If
+
+        Integer.TryParse(Convert.ToString(idValue), id)
+        Return id
     End Function
 
 

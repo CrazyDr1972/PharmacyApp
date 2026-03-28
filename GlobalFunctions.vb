@@ -696,10 +696,15 @@ Public Class GlobalFunctions
 
             ' Ψάχνει μια-μια τις λέξεις που πρέπει να χρωματίσει διαφορετικά (από το Array stringToFind)
             For t = 0 To stringToFind.Length - 1
-                oRichTextBox.SelectionStart = oRichTextBox.Find(stringToFind(t)) ' θέση του τμήματος μέσα στο Rich TextBox
-                oRichTextBox.SelectionLength = Len(stringToFind(t)) ' μήκος του τμήματος
-                oRichTextBox.SelectionColor = Color.FromName(MyColor)
-                ' αλλαγή χρώματος
+                Dim token As String = If(stringToFind(t), String.Empty)
+                If token = "" Then Continue For
+
+                Dim foundAt As Integer = oRichTextBox.Find(token)
+                If foundAt < 0 Then Continue For
+
+                oRichTextBox.SelectionStart = foundAt ' θέση του τμήματος μέσα στο Rich TextBox
+                oRichTextBox.SelectionLength = token.Length ' μήκος του τμήματος
+                oRichTextBox.SelectionColor = Color.FromName(MyColor) ' αλλαγή χρώματος
             Next t
 
         Catch ex As Exception
@@ -1240,8 +1245,14 @@ Public Class GlobalFunctions
 
             ' Ψάχνει μια-μια τις λέξεις που πρέπει να χρωματίσει διαφορετικά (από το Array stringToFind)
             For t = 0 To stringToFind.Length - 1
-                oRichTextBox.SelectionStart = oRichTextBox.Find(stringToFind(t)) ' θέση του τμήματος μέσα στο Rich TextBox
-                oRichTextBox.SelectionLength = Len(stringToFind(t)) ' μήκος του τμήματος
+                Dim token As String = If(stringToFind(t), String.Empty)
+                If token = "" Then Continue For
+
+                Dim foundAt As Integer = oRichTextBox.Find(token)
+                If foundAt < 0 Then Continue For
+
+                oRichTextBox.SelectionStart = foundAt ' θέση του τμήματος μέσα στο Rich TextBox
+                oRichTextBox.SelectionLength = token.Length ' μήκος του τμήματος
                 oRichTextBox.SelectionColor = Color.Green ' αλλαγή χρώματος
             Next t
 
