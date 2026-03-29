@@ -1,4 +1,4 @@
-﻿Imports Pharmacy.GlobalFunctions
+Imports Pharmacy.GlobalFunctions
 Imports Pharmacy.GlobalVariables
 Imports System.Data.SqlClient
 Imports System.Windows.Forms.Timer
@@ -59,8 +59,17 @@ Public Class frmMyBarcodes
             rbByName.Checked = True
         End If
 
-        GetBarcodesList()
+        If String.IsNullOrWhiteSpace(txtSearchBarcode.Text) Then
+            GetBarcodesList()
+        End If
 
+    End Sub
+
+    Private Sub txtSearchBarcode_KeyDown(sender As Object, e As KeyEventArgs) Handles txtSearchBarcode.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            e.SuppressKeyPress = True
+            GetBarcodesList()
+        End If
     End Sub
 
     Private Sub btnAddBarcode_Click(sender As Object, e As EventArgs) Handles btnAddBarcode.Click

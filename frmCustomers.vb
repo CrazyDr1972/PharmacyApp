@@ -11603,9 +11603,18 @@ Handles dgvDebtsList.EditingControlShowing
     End Sub
 
     Private Sub txtAgoresSoldSearch_TextChanged(sender As Object, e As EventArgs) Handles txtAgoresSoldSearch.TextChanged
-        GetAgoresOrSoldList()
-        DisplayAgoresSoldTotals()
+        If String.IsNullOrWhiteSpace(txtAgoresSoldSearch.Text) Then
+            GetAgoresOrSoldList()
+            DisplayAgoresSoldTotals()
+        End If
+    End Sub
 
+    Private Sub txtAgoresSoldSearch_KeyDown(sender As Object, e As KeyEventArgs) Handles txtAgoresSoldSearch.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            e.SuppressKeyPress = True
+            GetAgoresOrSoldList()
+            DisplayAgoresSoldTotals()
+        End If
     End Sub
 
     Private Sub btnAgoresSoldDeleteRecord_Click(sender As Object, e As EventArgs) Handles btnAgoresSoldDeleteRecord.Click
@@ -11690,19 +11699,25 @@ Handles dgvDebtsList.EditingControlShowing
                     HightlightInRichTextBox(rtxtAgoresSoldMessage, {totalRecords.ToString, total.ToString("###,###.##"), totalFPA.ToString("###,###.##"), grandtotal.ToString("###,###.#0")})
             End Select
         End If
-
-
     End Sub
 
-
-
-    ' Debounce 350ms για την αναζήτηση πελατών
+    ' Enter-only αναζήτηση πελατών
     Private Sub txtSearchCustomer_TextChanged(sender As Object, e As EventArgs) Handles txtSearchCustomer.TextChanged
-        If _suppressSearchTextChanged Then Return  ' δεν κάνουμε αναζήτηση όταν αλλάζουμε το Text προγραμματικά
+        If _suppressSearchTextChanged Then Return
         tmrSearchCustomers.Stop()
-        _debounceSnap = txtSearchCustomer.Text   ' snapshot για να αγνοούμε «μπαγιάτικα» ticks
-        tmrSearchCustomers.Interval = 350        ' 250–400 ms είναι καλή τιμή
-        tmrSearchCustomers.Start()
+        If String.IsNullOrWhiteSpace(txtSearchCustomer.Text) Then
+            _debounceSnap = ""
+            Dim prevId As Integer = GetSelectedCustomerId()
+            _isRebinding = True
+            _suppressSelectionChanged = True
+            Try
+                GetCustomersList()
+            Finally
+                _suppressSelectionChanged = False
+                _isRebinding = False
+            End Try
+            RestoreSelectionById(prevId)
+        End If
     End Sub
 
 
@@ -12197,30 +12212,37 @@ Handles dgvDebtsList.EditingControlShowing
         End Using
     End Sub
 
-    Private Sub InsertDebtPayment(amount As Decimal)
-        Dim insertData As String =
-        "INSERT INTO PharmacyCustomFiles.dbo.debts " &
-        "([CustomerId], [Date], [DebtDescription], [Ammount]) " &
-        "VALUES (@CustomerId, @Date, @DebtDescription, @Ammount)"
+    Private Sub InsertDebtPayment(ByVal amount As Decimal)
+        Dim insertData As String = ""
 
-        Using con As New SqlClient.SqlConnection(connectionstring)
+        Using con As SqlConnection = New System.Data.SqlClient.SqlConnection(connectionstring)
             con.Open()
-            Using cmd As New SqlClient.SqlCommand(insertData, con)
-                cmd.Parameters.AddWithValue("@CustomerId", If(dgvCustomers.SelectedRows(0).Cells(1).Value, DBNull.Value))
-                cmd.Parameters.AddWithValue("@Date", Today())
-                cmd.Parameters.AddWithValue("@DebtDescription", "--- ΑΠΟΠΛΗΡΩΜΗ ---")
-                cmd.Parameters.AddWithValue("@Ammount", -amount) ' αρνητικό: πληρωμή
-                cmd.ExecuteNonQuery()
-            End Using
+
+            insertData = "INSERT INTO PharmacyCustomFiles.dbo.debts " & _
+                            "([CustomerId], [Date], [DebtDescription], [Ammount]) VALUES (@CustomerId, @Date, @DebtDescription, @Ammount)"
+
+            Dim cmd As New SqlCommand(insertData, con)
+
+            cmd.Parameters.AddWithValue("@CustomerId", If(dgvCustomers.SelectedRows(0).Cells(1).Value, DBNull.Value))
+            cmd.Parameters.AddWithValue("@Date", Today())
+            cmd.Parameters.AddWithValue("@DebtDescription", "--- ΑΠΟΠΛΗΡΩΜΗ ---")
+            cmd.Parameters.AddWithValue("@Ammount", -amount)
+
+            cmd.ExecuteNonQuery()
         End Using
     End Sub
 
-
-
     Private Sub txtSearchTameia_TextChanged(sender As Object, e As EventArgs) Handles txtSearchTameia.TextChanged
+        If String.IsNullOrWhiteSpace(txtSearchTameia.Text) Then
+            UpdateDataTameia()
+        End If
+    End Sub
 
-        UpdateDataTameia()
-
+    Private Sub txtSearchTameia_KeyDown(sender As Object, e As KeyEventArgs) Handles txtSearchTameia.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            e.SuppressKeyPress = True
+            UpdateDataTameia()
+        End If
     End Sub
 
 
@@ -14476,35 +14498,22 @@ Handles dgvDebtsList.EditingControlShowing
         CalculateTotalTameiaPaidPerTransaction()
 
         Try
-            CalculateDiffAndPercPerRow(dgvTameiaAsked.CurrentCell.RowIndex)
-            UpdateTameiaAsked(dgvTameiaAsked.CurrentCell.RowIndex)
+            dgvTameiaGiven.CurrentCell = dgvTameiaGiven.SelectedRows(0).Cells(0)
         Catch ex As Exception
         End Try
-
-    End Sub
-
-    Private Sub rbWhereLaptop_CheckedChanged(sender As Object, e As EventArgs) Handles rbWhereLaptop.CheckedChanged
-        txtSourceFolderVS.Text = "C:\Pharmacy\VBNET Development"
-        txtDestinationDrive.Text = "C:\Pharmacy\MyPharmacy Files"
-        btnBackupRestore.Enabled = True
-        btnUpdatePharmacy2013C.Enabled = True
-        btnCoppyAppStation1.Enabled = False
-    End Sub
-
-    Private Sub dgvTameiaAsked_LostFocus(sender As Object, e As EventArgs) Handles dgvTameiaAsked.LostFocus
-
-    End Sub
-
-    Private Sub dgvTameiaAsked_RowLeave(sender As Object, e As DataGridViewCellEventArgs) Handles dgvTameiaAsked.RowLeave
-        Try
-            dgvTameiaAsked.CurrentCell = dgvTameiaAsked.SelectedRows(0).Cells(0)
-        Catch ex As Exception
-        End Try
-
     End Sub
 
     Private Sub txtSearchPhones_TextChanged(sender As Object, e As EventArgs) Handles txtSearchPhones.TextChanged
-        GetPhonesList()
+        If String.IsNullOrWhiteSpace(txtSearchPhones.Text) Then
+            GetPhonesList()
+        End If
+    End Sub
+
+    Private Sub txtSearchPhones_KeyDown(sender As Object, e As KeyEventArgs) Handles txtSearchPhones.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            e.SuppressKeyPress = True
+            GetPhonesList()
+        End If
     End Sub
 
 
@@ -15676,8 +15685,8 @@ Handles dgvDebtsList.EditingControlShowing
     Private Sub txtSearchCustomer_KeyDown(sender As Object, e As KeyEventArgs) Handles txtSearchCustomer.KeyDown
         If e.KeyCode = Keys.Enter Then
             e.SuppressKeyPress = True
+            _debounceSnap = txtSearchCustomer.Text
             tmrSearchCustomers.Stop()
-            tmrSearchCustomers.Tag = txtSearchCustomer.Text
             tmrSearchCustomers_Tick(tmrSearchCustomers, EventArgs.Empty)
         End If
     End Sub
@@ -17672,4 +17681,5 @@ Handles dgvDebtsList.EditingControlShowing
     End Sub
 
 End Class
+
 

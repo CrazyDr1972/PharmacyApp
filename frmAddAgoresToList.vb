@@ -1,4 +1,4 @@
-﻿Imports Pharmacy.GlobalFunctions
+Imports Pharmacy.GlobalFunctions
 Imports Pharmacy.GlobalVariables
 Imports System.Data.SqlClient
 Imports System.Windows.Forms.Timer
@@ -47,7 +47,16 @@ Public Class frmAddAgoresToList
 
 
     Private Sub txtSearchSuplier_TextChanged(sender As Object, e As EventArgs) Handles txtSearchSuplier.TextChanged
-        GetSuppliersList()
+        If String.IsNullOrWhiteSpace(txtSearchSuplier.Text) Then
+            GetSuppliersList()
+        End If
+    End Sub
+
+    Private Sub txtSearchSuplier_KeyDown(sender As Object, e As KeyEventArgs) Handles txtSearchSuplier.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            e.SuppressKeyPress = True
+            GetSuppliersList()
+        End If
     End Sub
 
     Private Sub frmAddAgoresToList_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed

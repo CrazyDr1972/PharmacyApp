@@ -1,4 +1,4 @@
-﻿Imports Pharmacy.GlobalFunctions
+Imports Pharmacy.GlobalFunctions
 Imports Pharmacy.GlobalVariables
 Imports System.Data.SqlClient
 Imports System.Data
@@ -641,12 +641,17 @@ Public Class frmDrugListEdit
 
     Private Sub txtSearchExpirDrugList_TextChanged(sender As Object, e As EventArgs) Handles txtSearchExpirDrugList.TextChanged
 
-        '' Γεμίζει το DatagridView 
-        'stringDTG = "SELECT Name, Category, Id FROM Drugs WHERE Name LIKE '%" & txtSearchExpirDrugList.Text & "%' ORDER BY Name"
-        'grpDrugLIstEdit.Text = "Σύνολο προιόντων: " & EditDrugListWithControls(dgvEditDrugsList, bsCustomersEdit, {"Όνομα", "Κατηγορία"}, {300, 200}, {"0", "0"})
+        If String.IsNullOrWhiteSpace(txtSearchExpirDrugList.Text) Then
+            FillDatagridWithDrugList()
+        End If
 
-        FillDatagridWithDrugList()
+    End Sub
 
+    Private Sub txtSearchExpirDrugList_KeyDown(sender As Object, e As KeyEventArgs) Handles txtSearchExpirDrugList.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            e.SuppressKeyPress = True
+            FillDatagridWithDrugList()
+        End If
     End Sub
 
 

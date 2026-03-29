@@ -1,4 +1,4 @@
-﻿Imports Pharmacy.GlobalFunctions
+Imports Pharmacy.GlobalFunctions
 Imports Pharmacy.GlobalVariables
 Imports System.Data.SqlClient
 Imports System.Windows.Forms.Timer
@@ -18,8 +18,18 @@ Public Class frmExpirationsList
     End Sub
 
     Private Sub txtSearchExpirations_TextChanged(sender As Object, e As EventArgs) Handles txtSearchExpirations.TextChanged
-        GetProductsList()
-        GetExpirationsList()
+        If String.IsNullOrWhiteSpace(txtSearchExpirations.Text) Then
+            GetProductsList()
+            GetExpirationsList()
+        End If
+    End Sub
+
+    Private Sub txtSearchExpirations_KeyDown(sender As Object, e As KeyEventArgs) Handles txtSearchExpirations.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            e.SuppressKeyPress = True
+            GetProductsList()
+            GetExpirationsList()
+        End If
     End Sub
 
     Private Sub GetProductsList()

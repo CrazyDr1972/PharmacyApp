@@ -1,4 +1,4 @@
-﻿Imports Pharmacy.GlobalFunctions
+Imports Pharmacy.GlobalFunctions
 Imports Pharmacy.GlobalVariables
 Imports System.Data.SqlClient
 Imports System.Windows.Forms.Timer
@@ -334,17 +334,35 @@ Public Class frmChooseDrug
         ' τον απενεργοποιεί
         tmrExchanges.Enabled = False
 
-        GetDrugsList()
+        If String.IsNullOrWhiteSpace(txtSearchDrugsByName.Text) Then
+            GetDrugsList()
+            GetMorfesList()
+        End If
 
-        GetMorfesList()
+    End Sub
 
+    Private Sub txtSearchDrugsByName_KeyDown(sender As Object, e As KeyEventArgs) Handles txtSearchDrugsByName.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            e.SuppressKeyPress = True
+            tmrExchanges.Enabled = False
+            GetDrugsList()
+            GetMorfesList()
+        End If
     End Sub
 
     Private Sub txtSearchDrugsByBarcode_TextChanged(sender As Object, e As EventArgs) Handles txtSearchDrugsByBarcode.TextChanged
 
-        ' ενεργοποιεί τον timer
-        tmrExchanges.Enabled = True
+        ' δεν κάνει αυτόματη αναζήτηση σε κάθε χαρακτήρα
+        tmrExchanges.Enabled = False
 
+    End Sub
+
+    Private Sub txtSearchDrugsByBarcode_KeyDown(sender As Object, e As KeyEventArgs) Handles txtSearchDrugsByBarcode.KeyDown
+        If e.KeyCode = Keys.Enter OrElse e.KeyCode = Keys.Tab Then
+            e.SuppressKeyPress = True
+            tmrExchanges.Enabled = False
+            tmrExchanges_Tick(tmrExchanges, EventArgs.Empty)
+        End If
     End Sub
 
     Private Sub chkBarcodeManually_CheckedChanged(sender As Object, e As EventArgs) Handles chkBarcodeManually.CheckedChanged
