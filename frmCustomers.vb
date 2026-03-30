@@ -11272,6 +11272,8 @@ Handles dgvDebtsList.EditingControlShowing
 
     Private Sub cbExchangers_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbExchangers.SelectedIndexChanged
         If String.IsNullOrWhiteSpace(cbExchangers.Text) Then Exit Sub
+        ResetExchangeGridBinding(dgvGivenTo, bsExchangesGivenTo)
+        ResetExchangeGridBinding(dgvTakenFrom, bsExchangesTakenFrom)
         EnsureExchangesTabLoaded(True)
 
     End Sub
@@ -13477,6 +13479,26 @@ Handles dgvDebtsList.EditingControlShowing
                                                         End Sub)
     End Sub
 
+    Private Sub ResetExchangeGridBinding(ByVal dgv As DataGridView, ByVal binding As BindingSource)
+        If dgv Is Nothing Then Exit Sub
+
+        Try
+            dgv.EndEdit()
+        Catch
+        End Try
+
+        Try
+            dgv.CurrentCell = Nothing
+        Catch
+        End Try
+
+        dgv.DataSource = Nothing
+        If binding IsNot Nothing Then
+            binding.DataSource = Nothing
+        End If
+    End Sub
+
+
     Private Function DisplayCustomDatagrid_Exchanges(ByVal oBinding As BindingSource, ByVal oDatagrid As DataGridView) As Integer
 
         'Initialization νεας σύνδεσης με το connectionString που παίρνει από τις GlobalVariables
@@ -13494,9 +13516,12 @@ Handles dgvDebtsList.EditingControlShowing
         ' και ο SqlDataAdapter γεμίζει το Dataset
         daDTG.Fill(dsDTG, "DTG")
         ' το οποίο γεμίζει το datatable
+        ' το οποίο γεμίζει το datatable
         dtDTG = dsDTG.Tables("DTG")
 
         'Καθορίζει το source του BindingSource ως το Datatable
+        oDatagrid.DataSource = Nothing
+        oBinding.DataSource = Nothing
         oBinding.DataSource = dtDTG
 
         'Κλείνει την σύνδεση
@@ -13504,7 +13529,6 @@ Handles dgvDebtsList.EditingControlShowing
 
         ConfigureExchangeGridColumns(oDatagrid)
         oDatagrid.DataSource = oBinding
-
         'Επιστρέφει τον συνολικό αριθμό εγγραφών του Datagrid
         Return dsDTG.Tables(0).Rows.Count
 
